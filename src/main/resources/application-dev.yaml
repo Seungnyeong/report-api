@@ -1,0 +1,26 @@
+server:
+  port: 8887
+
+spring:
+  profiles:
+    - dev
+  datasource:
+    url: jdbc:mysql://10.107.11.63:3306/wvms?serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name:  com.mysql.cj.jdbc.Driver
+  jpa:
+    database: MYSQL
+    hibernate:
+      ddl-auto: create
+      show-sql : true
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
+      hibernate.connection.provider_disables_autocommit: true
+
+
+logging:
+  config: classpath:logback.xml
+
+wkms:
+  key: dev-vms-report-api
+  token : 10412b099832011162af7f2c497552f1dc87c8d0
+  url : keyinfo-nd-dev.wemakeprice.kr

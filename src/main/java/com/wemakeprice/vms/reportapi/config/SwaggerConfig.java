@@ -26,8 +26,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Practice Swagger")
-                .description("practice swagger config")
+                .title("WVMS Report API")
+                .description("WKMS 리포트 API 입니다.")
                 .version("1.0")
                 .build();
     }

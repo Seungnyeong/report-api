@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/report")
+@Slf4j
 public class ReportController {
 
     @PostMapping
     public CommonResponse reportTest() {
+        log.info("controller test");
         return CommonResponse.success("Report Controller");
     }
 

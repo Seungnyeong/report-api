@@ -2,10 +2,12 @@ server:
   port: 8888
 
 spring:
+  profiles:
+    - local
   datasource:
     url: jdbc:mysql://127.0.0.1:13306/vms?serverTimezone=UTC&characterEncoding=UTF-8
-    driver-class-name:  com.mysql.cj.jdbc.Driver
-    username : root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
     password: secret
   jpa:
     database: MYSQL
@@ -15,3 +17,7 @@ spring:
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.connection.provider_disables_autocommit: true
+
+
+logging:
+  config: classpath:logback.xml
