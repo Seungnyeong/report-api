@@ -2,6 +2,7 @@ package com.wemakeprice.vms.reportapi.domain.vulnerItem;
 
 import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
+import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,9 +38,8 @@ public class VItem extends AbstractEntity {
     @Column(length = 1000)
     private String vDetail;
 
-    @ElementCollection
-    @CollectionTable(name = "v_item_detail", joinColumns = @JoinColumn(name = "v_item_detail_id"))
-    private List<String> vDetailList = Lists.newArrayList();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vItem" , cascade = CascadeType.PERSIST)
+    private List<VItemDetail> vItemDetailsList = Lists.newArrayList();
 
     @Column(length = 10)
     private String caseTag;

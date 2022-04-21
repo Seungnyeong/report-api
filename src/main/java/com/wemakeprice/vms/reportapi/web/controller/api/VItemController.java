@@ -2,7 +2,6 @@ package com.wemakeprice.vms.reportapi.web.controller.api;
 
 import com.wemakeprice.vms.reportapi.application.vitem.VItemFacade;
 import com.wemakeprice.vms.reportapi.common.response.CommonResponse;
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItemCommand;
 import com.wemakeprice.vms.reportapi.web.dto.VItemDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +19,8 @@ public class VItemController {
     private final VItemFacade vItemFacade;
 
     @PostMapping
-    public CommonResponse registerVItem(@RequestBody VItemDto.RegisterRequest request) {
-        var command = VItemCommand.RegisterVItemRequest.builder()
-                .vCategoryName(request.getVCategoryName())
-                .vSubCategoryName(request.getVSubCategoryName())
-                .vDetail(request.getVDetail())
-                .build();
+    public CommonResponse registerVItem(@RequestBody VItemDto.RegisterVItemRequest request) {
+        var command = request.toCommand();
         var response = vItemFacade.registerVItem(command);
         return CommonResponse.success(response);
     }

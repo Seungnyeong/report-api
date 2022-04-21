@@ -11,16 +11,14 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class VItemServiceImpl implements VItemService{
     private final VItemStore vItemStore;
+    private final VItemDetailSeriesFactory vItemDetailSeriesFactory;
 
     @Transactional
     @Override
-    public String  registerVItem(VItemCommand.RegisterVItemRequest request) {
-        var initItem = VItem.builder()
-                .vCategoryName(request.getVCategoryName())
-                .vSubCategoryName(request.getVSubCategoryName())
-                .vDetail(request.getVDetail())
-                .build();
+    public String registerVItem(VItemCommand.RegisterVItemRequest request) {
+        var initItem = request.toEntity();
         var item = vItemStore.store(initItem);
+        vItemDetailSeriesFactory.store(request, item);
         return item.getVDetail();
     }
 }
