@@ -10,7 +10,6 @@ import org.springframework.http.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -20,8 +19,8 @@ public class WkmsServiceImpl implements WkmsService {
     private final RestTemplate restTemplate;
 
     @Override
-    public Map<String, String> getWkmsData() {
-            var uri = UriComponentsBuilder.newInstance()
+    public WkmsData.Value getWkmsData() {
+        var uri = UriComponentsBuilder.newInstance()
                 .scheme("http")
                 .host(properties.getUrl())
                 .path("/api")

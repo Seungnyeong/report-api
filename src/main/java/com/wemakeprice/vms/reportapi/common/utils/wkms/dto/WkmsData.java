@@ -4,13 +4,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Map;
-
 @Getter
 @Setter
 @NoArgsConstructor
 public class WkmsData {
     private String key;
-    private Map<String, String> value;
+    private Value value;
     private String description;
+
+
+    @Getter
+    @Setter
+    public static class Value {
+        String username;
+        String password;
+    }
 }

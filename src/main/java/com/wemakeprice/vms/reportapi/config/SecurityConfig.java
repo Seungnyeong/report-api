@@ -14,7 +14,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
         web.ignoring()
-                .antMatchers("/asset/**","/configuration/security/**,/configuration/ui/**","/webjars/**","/swagger-ui.html","/swagger-resources/**","/configuration/security","/v1/api-docs", "/swagger/**");
+                .antMatchers("/asset/**","/configuration/security/**,/configuration/ui/**","/webjars/**","/swagger-ui.html","/swagger-resources/**","/configuration/security","/v1/api-docs", "/swagger/**", "/h2-console/*");
 
     }
 
@@ -24,10 +24,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**","/",
                         "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html","/webjars/**", "/swagger/**",   // swagger
-                        "/favicon.ico")
+                        "/favicon.ico", "/h2-console/*")
                 .permitAll()
                 .antMatchers("/api/v1/**")
                 .permitAll()
                 .anyRequest().authenticated();
+
+        http.headers().frameOptions().disable();
     }
 }

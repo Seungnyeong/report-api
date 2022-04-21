@@ -25,11 +25,11 @@ public class WkmsConfig {
     public DataSource getDataSource() {
         var wkmsData = wkmsService.getWkmsData();
 
-        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName(driverClassName);
-        dataSourceBuilder.url(url);
-        dataSourceBuilder.username(wkmsData.get("username"));
-        dataSourceBuilder.password(wkmsData.get("password"));
-        return dataSourceBuilder.build();
+        return DataSourceBuilder.create()
+                .driverClassName(driverClassName)
+                .url(url)
+                .username(wkmsData.getUsername())
+                .password(wkmsData.getPassword())
+                .build();
     }
 }

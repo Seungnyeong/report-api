@@ -1,8 +1,7 @@
 package com.wemakeprice.vms.reportapi.common.utils.wkms.service;
 
-import java.util.Map;
+import com.wemakeprice.vms.reportapi.common.utils.wkms.dto.WkmsData;
 
 public interface WkmsService {
-    int CONNECTION_TIMEOUT = 5000;
-    Map<String, String> getWkmsData();
+    WkmsData.Value getWkmsData();
 }

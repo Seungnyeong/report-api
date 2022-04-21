@@ -14,8 +14,5 @@ import java.time.LocalDateTime;
 public class AbstractEntity {
 
     @CreationTimestamp
-    LocalDateTime createdAt;
-
-    @CreationTimestamp
-    LocalDateTime updatedAt;
+    LocalDateTime createdDate;
 }

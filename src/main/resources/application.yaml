@@ -9,14 +9,29 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: secret
+
+#  datasource:
+#    url: jdbc:h2:./db/vms;MODE=MYSQL;database_to_upper=false
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password:
+#    initialization-mode: always
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console/
+
+
+
   jpa:
     database: MYSQL
+    generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       show-sql : true
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
-      hibernate.connection.provider_disables_autocommit: true
+      hibernate.connection.provider_disables_autocommit: false
 
 
 logging:
