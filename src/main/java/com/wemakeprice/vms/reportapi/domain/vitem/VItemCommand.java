@@ -13,15 +13,27 @@ public class VItemCommand {
     @ToString
     public static class RegisterVItemRequest {
         private final String vCategoryName;
+        private final Integer vCategoryCode;
         private final String vSubCategoryName;
+        private final Integer vSubCategoryCode;
         private final String vDetail;
         private final List<RegisterVItemDetailRequest> vItemDetailRequestList;
+        private final String caseTag;
+        private final String respondTag;
+        private final Integer ordering;
+        private final VItem.VGrade vGrade;
 
         public VItem toEntity() {
             return VItem.builder()
                     .vCategoryName(vCategoryName)
+                    .vCategoryCode(vCategoryCode)
                     .vSubCategoryName(vSubCategoryName)
+                    .vSubCategoryCode(vCategoryCode)
                     .vDetail(vDetail)
+                    .caseTag(caseTag)
+                    .respondTag(respondTag)
+                    .ordering(ordering)
+                    .vGrade(vGrade)
                     .build();
         }
     }
@@ -32,14 +44,26 @@ public class VItemCommand {
     public static class UpdateVItemRequest {
         private final Long id;
         private final String vCategoryName;
+        private final Integer vCategoryCode;
         private final String vSubCategoryName;
+        private final Integer vSubCategoryCode;
         private final String vDetail;
+        private final String caseTag;
+        private final String respondTag;
+        private final Integer ordering;
+        private final VItem.VGrade vGrade;
 
         public VItem toEntity() {
             return VItem.builder()
                     .vCategoryName(vCategoryName)
+                    .vCategoryCode(vCategoryCode)
                     .vSubCategoryName(vSubCategoryName)
+                    .vSubCategoryCode(vSubCategoryCode)
                     .vDetail(vDetail)
+                    .caseTag(caseTag)
+                    .respondTag(respondTag)
+                    .ordering(ordering)
+                    .vGrade(vGrade)
                     .build();
         }
     }

@@ -18,11 +18,11 @@ public class VItemInfo {
         private final String vSubCategoryName;
         private final Integer vSubCategoryCode;
         private final String vDetail;
-        private List<VItemDetailInfo> vItemDetailsList;
+        private  List<VItemDetailInfo> vItemDetailsList;
         private final String caseTag;
         private final VItem.VGrade vGrade;
         private final String respondTag;
-        private Integer ordering;
+        private final Integer ordering;
 
         public Main(VItem vItem, List<VItemDetailInfo> vItemDetailInfoList) {
             this.id = vItem.getId();
@@ -35,6 +35,7 @@ public class VItemInfo {
             this.caseTag = vItem.getCaseTag();
             this.vGrade = vItem.getVGrade();
             this.respondTag = vItem.getRespondTag();
+            this.ordering = vItem.getOrdering();
         }
     }
 

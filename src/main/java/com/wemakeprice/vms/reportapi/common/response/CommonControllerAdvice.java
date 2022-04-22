@@ -1,5 +1,6 @@
 package com.wemakeprice.vms.reportapi.common.response;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.common.exception.BaseException;
 import com.wemakeprice.vms.reportapi.common.interceptor.CommonHttpRequestInterceptor;
@@ -8,6 +9,7 @@ import org.apache.catalina.connector.ClientAbortException;
 import org.slf4j.MDC;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -97,5 +99,21 @@ public class CommonControllerAdvice {
         } else {
             return CommonResponse.fail(ErrorCode.COMMON_INVALID_PARAMETER.getErrorMsg(), ErrorCode.COMMON_INVALID_PARAMETER.name());
         }
+    }
+
+    /**
+     * http status: 400 AND result: FAIL
+     * json parsing 에러
+     *
+     * @param e
+     * @return
+     */
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    public CommonResponse methodJsonParseException(HttpMessageNotReadableException e){
+        String eventId = MDC.get(CommonHttpRequestInterceptor.HEADER_REQUEST_UUID_KEY);
+        log.warn("[BaseException] eventId = {}, errorMsg = {}", eventId, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
+        return CommonResponse.fail(ErrorCode.COMMON_JSON_PARSE.getErrorMsg(), ErrorCode.COMMON_JSON_PARSE.name());
     }
 }
