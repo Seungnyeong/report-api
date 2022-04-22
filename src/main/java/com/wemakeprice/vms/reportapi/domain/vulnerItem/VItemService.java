@@ -7,4 +7,7 @@ public interface VItemService {
     VItemInfo.VItemDetailInfo registerVItemDetail(VItemCommand.RegisterVItemDetailRequest request, Long vItemId);
     VItemInfo.Main retrieveVItem(Long vItemId);
     List<VItemInfo.Main> retrieveVItemList();
+
+    String deleteVItem(Long vItemId);
+
 }

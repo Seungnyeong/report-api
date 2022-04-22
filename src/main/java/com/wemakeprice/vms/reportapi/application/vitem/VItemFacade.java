@@ -31,4 +31,8 @@ public class VItemFacade {
     public List<VItemInfo.Main> retrieveVItemList() {
         return vItemService.retrieveVItemList();
     }
+
+    public String deleteVItem(Long vItemId) {
+        return vItemService.deleteVItem(vItemId);
+    }
 }

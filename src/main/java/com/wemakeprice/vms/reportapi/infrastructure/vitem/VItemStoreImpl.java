@@ -20,7 +20,8 @@ public class VItemStoreImpl implements VItemStore {
     }
 
     @Override
-    public VItemDetail store(VItemDetail vItemDetail) {
-        return null;
+    public String delete(VItem vItemEntity) {
+        vItemRepository.delete(vItemEntity);
+        return vItemEntity.getVDetail();
     }
 }

@@ -57,4 +57,11 @@ public class VItemServiceImpl implements VItemService{
         var vItemDetail = vItemDetailStore.store(initVItemDetail);
         return new VItemInfo.VItemDetailInfo(vItemDetail);
     }
+
+    @Transactional
+    @Override
+    public String deleteVItem(Long vItemId) {
+        var vItem = vItemReader.getVItemBy(vItemId);
+        return vItemStore.delete(vItem);
+    }
 }

@@ -37,7 +37,7 @@ public class VItem extends AbstractEntity {
     @Column(length = 1000)
     private String vDetail;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vItem" , cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vItem" , cascade = CascadeType.ALL)
     private List<VItemDetail> vItemDetailsList = Lists.newArrayList();
 
     @Column(length = 10)

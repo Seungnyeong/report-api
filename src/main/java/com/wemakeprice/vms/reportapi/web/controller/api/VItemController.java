@@ -42,4 +42,10 @@ public class VItemController {
         return CommonResponse.success(vItemDetail);
     }
 
+    @DeleteMapping("/{vItemId}")
+    public CommonResponse deleteVItem(@PathVariable("vItemId") String id) {
+        var response = vItemFacade.deleteVItem(Long.parseLong(id));
+        return CommonResponse.success(response);
+    }
+
 }
