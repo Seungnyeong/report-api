@@ -1,9 +1,9 @@
 package com.wemakeprice.vms.reportapi.infrastructure.vitem;
 
 import com.wemakeprice.vms.reportapi.common.exception.EntityNotFoundException;
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItem;
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItemInfo;
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItemReader;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItem;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.wemakeprice.vms.reportapi.domain.vulnerItem;
+package com.wemakeprice.vms.reportapi.domain.vitem;
 
 import java.util.List;
 

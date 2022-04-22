@@ -1,6 +1,6 @@
 package com.wemakeprice.vms.reportapi.infrastructure.vitem;
 
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItem;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

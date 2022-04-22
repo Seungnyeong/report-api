@@ -1,6 +1,6 @@
 package com.wemakeprice.vms.reportapi.infrastructure.vitem.detail;
 
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.*;
+import com.wemakeprice.vms.reportapi.domain.vitem.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

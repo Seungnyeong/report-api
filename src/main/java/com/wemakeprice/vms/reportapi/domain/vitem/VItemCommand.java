@@ -1,6 +1,5 @@
-package com.wemakeprice.vms.reportapi.domain.vulnerItem;
+package com.wemakeprice.vms.reportapi.domain.vitem;
 
-import com.wemakeprice.vms.reportapi.web.dto.VItemDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

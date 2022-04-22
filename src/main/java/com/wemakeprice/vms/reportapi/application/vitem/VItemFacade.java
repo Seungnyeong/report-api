@@ -1,9 +1,8 @@
 package com.wemakeprice.vms.reportapi.application.vitem;
 
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItem;
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItemCommand;
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItemInfo;
-import com.wemakeprice.vms.reportapi.domain.vulnerItem.VItemService;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemCommand;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

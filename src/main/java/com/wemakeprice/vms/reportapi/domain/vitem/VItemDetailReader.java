@@ -1,6 +1,4 @@
-package com.wemakeprice.vms.reportapi.domain.vulnerItem;
-
-import java.util.Optional;
+package com.wemakeprice.vms.reportapi.domain.vitem;
 
 public interface VItemDetailReader {
     VItemDetail getVItemDetail(Long vItemDetailId);

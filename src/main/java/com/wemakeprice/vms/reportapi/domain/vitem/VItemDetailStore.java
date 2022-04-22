@@ -1,4 +1,4 @@
-package com.wemakeprice.vms.reportapi.domain.vulnerItem;
+package com.wemakeprice.vms.reportapi.domain.vitem;
 
 public interface VItemDetailStore {
     VItemDetail store(VItemDetail vItemDetail);
