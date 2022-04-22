@@ -58,4 +58,38 @@ public class VItemDto {
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class UpdateVItemRequest {
+        private Long vItemId;
+        private String vCategoryName;
+        private String vSubCategoryName;
+        private String vDetail;
+
+        public VItemCommand.UpdateVItemRequest toCommand() {
+            return VItemCommand.UpdateVItemRequest.builder()
+                    .id(vItemId)
+                    .vCategoryName(vCategoryName)
+                    .vSubCategoryName(vSubCategoryName)
+                    .vDetail(vDetail)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class UpdateVItemDetailRequest {
+        private Long vItemDetailId;
+        private String detail;
+
+        public VItemCommand.UpdateVItemDetailRequest toCommand() {
+            return VItemCommand.UpdateVItemDetailRequest.builder()
+                    .id(vItemDetailId)
+                    .detail(detail)
+                    .build();
+        }
+    }
 }

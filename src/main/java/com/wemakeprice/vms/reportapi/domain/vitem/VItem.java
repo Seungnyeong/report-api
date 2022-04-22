@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -78,5 +79,11 @@ public class VItem extends AbstractEntity {
         this.respondTag = respondTag;
         this.vGrade = vGrade;
         this.ordering = ordering;
+    }
+
+    public void updateVItem(VItemCommand.UpdateVItemRequest command) {
+        if (!StringUtils.isEmpty(command.getVCategoryName())) this.vCategoryName = command.getVCategoryName();
+        if (!StringUtils.isEmpty(command.getVSubCategoryName())) this.vSubCategoryName = command.getVSubCategoryName();
+        if (!StringUtils.isEmpty(command.getVDetail())) this.vDetail = command.getVDetail();
     }
 }

@@ -23,14 +23,17 @@ public class VItemServiceImpl implements VItemService{
     * */
     @Transactional
     @Override
-    public VItemInfo.Main registerVItem(VItemCommand.RegisterVItemRequest request) {
-        var initItem = request.toEntity();
+    public VItemInfo.Main registerVItem(VItemCommand.RegisterVItemRequest command) {
+        var initItem = command.toEntity();
         var vItem = vItemStore.store(initItem);
-        vItemDetailSeriesFactory.store(request, vItem);
+        vItemDetailSeriesFactory.store(command, vItem);
         var vItemDetailList = vItemReader.getVItemDetail(vItem);
         return new VItemInfo.Main(vItem, vItemDetailList);
     }
 
+    /*
+    *   세부 진단 항목 조회
+    * */
     @Transactional
     @Override
     public VItemInfo.Main retrieveVItem(Long vItemId) {
@@ -53,9 +56,9 @@ public class VItemServiceImpl implements VItemService{
     * */
     @Transactional
     @Override
-    public VItemInfo.VItemDetailInfo registerVItemDetail(VItemCommand.RegisterVItemDetailRequest request, Long vItemId) {
+    public VItemInfo.VItemDetailInfo registerVItemDetail(VItemCommand.RegisterVItemDetailRequest command, Long vItemId) {
         var vItem = vItemReader.getVItemBy(vItemId);
-        var initVItemDetail = request.toEntity(vItem);
+        var initVItemDetail = command.toEntity(vItem);
         var vItemDetail = vItemDetailStore.store(initVItemDetail);
         return new VItemInfo.VItemDetailInfo(vItemDetail);
     }
@@ -72,5 +75,22 @@ public class VItemServiceImpl implements VItemService{
     public String deleteVItemDetail(Long vItemDetailId) {
         var vItemDetail = vItemDetailReader.getVItemDetail(vItemDetailId);
         return vItemDetailStore.delete(vItemDetail);
+    }
+
+    @Transactional
+    @Override
+    public VItemInfo.Main updateVItem(VItemCommand.UpdateVItemRequest command) {
+        var vItem = vItemReader.getOne(command.getId());
+        vItem.updateVItem(command);
+        var vItemDetailList = vItemReader.getVItemDetail(vItem);
+        return new VItemInfo.Main(vItem, vItemDetailList);
+    }
+
+    @Transactional
+    @Override
+    public VItemInfo.VItemDetailInfo updateVItemDetail(VItemCommand.UpdateVItemDetailRequest command) {
+        var vItemDetail = vItemDetailReader.getVItemDetail(command.getId());
+        vItemDetail.updateDetail(command);
+        return new VItemInfo.VItemDetailInfo(vItemDetail);
     }
 }

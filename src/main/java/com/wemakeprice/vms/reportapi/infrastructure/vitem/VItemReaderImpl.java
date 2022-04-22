@@ -32,6 +32,11 @@ public class VItemReaderImpl implements VItemReader {
     }
 
     @Override
+    public VItem getOne(Long vItemId) {
+        return vItemRepository.getOne(vItemId);
+    }
+
+    @Override
     public List<VItem> getVItemList() {
         return vItemRepository.findAll();
     }

@@ -4,6 +4,7 @@ import java.util.List;
 
 public interface VItemReader {
     VItem getVItemBy(Long vItemId);
+    VItem getOne(Long vItemId);
     List<VItemInfo.VItemDetailInfo> getVItemDetail(VItem vItem);
     List<VItem> getVItemList();
 }

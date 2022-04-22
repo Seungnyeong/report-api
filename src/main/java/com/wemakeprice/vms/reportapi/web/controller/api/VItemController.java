@@ -29,7 +29,7 @@ public class VItemController {
 
     }
 
-    @GetMapping()
+    @GetMapping
     public  CommonResponse retrieveAll() {
         var vItemInfoList = vItemFacade.retrieveVItemList();
         return CommonResponse.success(vItemInfoList);
@@ -54,7 +54,15 @@ public class VItemController {
         return CommonResponse.success(response);
     }
 
+    @PatchMapping
+    public CommonResponse updateVItem(@RequestBody VItemDto.UpdateVItemRequest request) {
+        var response = vItemFacade.updateVItem(request.toCommand());
+        return CommonResponse.success(response);
+    }
 
-
-
+    @PatchMapping("/detail")
+    public CommonResponse updateVItemDetail(@RequestBody VItemDto.UpdateVItemDetailRequest request) {
+        var response = vItemFacade.updateVItemDetail(request.toCommand());
+        return CommonResponse.success(response);
+    }
 }

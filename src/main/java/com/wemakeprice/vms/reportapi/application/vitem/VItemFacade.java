@@ -38,4 +38,12 @@ public class VItemFacade {
     public String deleteVItemDetail(Long vItemDetailId) {
         return vItemService.deleteVItemDetail(vItemDetailId);
     }
+
+    public VItemInfo.Main updateVItem(VItemCommand.UpdateVItemRequest request) {
+        return vItemService.updateVItem(request);
+    }
+
+    public VItemInfo.VItemDetailInfo updateVItemDetail(VItemCommand.UpdateVItemDetailRequest request) {
+        return vItemService.updateVItemDetail(request);
+    }
 }

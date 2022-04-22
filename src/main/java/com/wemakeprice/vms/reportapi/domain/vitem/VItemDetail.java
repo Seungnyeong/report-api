@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 
@@ -31,4 +32,7 @@ public class VItemDetail {
         this.vDetail = vDetail;
     }
 
+    void updateDetail(VItemCommand.UpdateVItemDetailRequest request) {
+        if(!StringUtils.isEmpty(request.getDetail())) this.vDetail = request.getDetail();
+    }
 }
