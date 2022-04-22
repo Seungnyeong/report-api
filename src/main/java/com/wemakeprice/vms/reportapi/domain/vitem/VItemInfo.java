@@ -1,14 +1,16 @@
 package com.wemakeprice.vms.reportapi.domain.vitem;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.ToString;
-
 import java.util.List;
 
 public class VItemInfo {
 
     @Getter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class Main {
         private final Long id;
         private final String vCategoryName;

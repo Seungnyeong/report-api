@@ -1,5 +1,7 @@
 package com.wemakeprice.vms.reportapi.web.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemCommand;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +15,7 @@ public class VItemDto {
     @Getter
     @Setter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class RegisterVItemRequest {
         private String vCategoryName;
         private String vSubCategoryName;
@@ -48,7 +51,9 @@ public class VItemDto {
     @Getter
     @Setter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class RegisterVItemDetail {
+
         private Long vItemId;
         private String detail;
 
@@ -62,10 +67,15 @@ public class VItemDto {
     @Getter
     @Setter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class UpdateVItemRequest {
+
         private Long vItemId;
+
         private String vCategoryName;
+
         private String vSubCategoryName;
+
         private String vDetail;
 
         public VItemCommand.UpdateVItemRequest toCommand() {
@@ -81,7 +91,9 @@ public class VItemDto {
     @Getter
     @Setter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class UpdateVItemDetailRequest {
+
         private Long vItemDetailId;
         private String detail;
 
