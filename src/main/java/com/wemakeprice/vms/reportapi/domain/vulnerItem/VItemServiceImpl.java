@@ -5,14 +5,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VItemServiceImpl implements VItemService{
     private final VItemStore vItemStore;
+    private final VItemDetailStore vItemDetailStore;
     private final VItemDetailSeriesFactory vItemDetailSeriesFactory;
+    private final VItemReader vItemReader;
 
+
+    /*
+    *  목록과 함께 대응방법 저장
+    * */
     @Transactional
     @Override
     public String registerVItem(VItemCommand.RegisterVItemRequest request) {
@@ -20,5 +28,33 @@ public class VItemServiceImpl implements VItemService{
         var item = vItemStore.store(initItem);
         vItemDetailSeriesFactory.store(request, item);
         return item.getVDetail();
+    }
+
+    @Override
+    public VItemInfo.Main retrieveVItem(Long vItemId) {
+        var vItem = vItemReader.getVItemBy(vItemId);
+        var vItemDetailList = vItemReader.getVItemDetail(vItem);
+        return new VItemInfo.Main(vItem, vItemDetailList);
+    }
+
+    @Override
+    public List<VItemInfo.Main> retrieveVItemList() {
+        var vItemList = vItemReader.getVItemList();
+        return vItemList.stream().map(vItem -> {
+            var vItemDetailList = vItemReader.getVItemDetail(vItem);
+            return new VItemInfo.Main(vItem, vItemDetailList);
+        }).collect(Collectors.toList());
+    }
+
+    /*
+    *   해당 목록에 대응방법만 추가 저장
+    * */
+    @Transactional
+    @Override
+    public VItemInfo.VItemDetailInfo registerVItemDetail(VItemCommand.RegisterVItemDetailRequest request, Long vItemId) {
+        var vItem = vItemReader.getVItemBy(vItemId);
+        var initVItemDetail = request.toEntity(vItem);
+        var vItemDetail = vItemDetailStore.store(initVItemDetail);
+        return new VItemInfo.VItemDetailInfo(vItemDetail);
     }
 }

@@ -2,7 +2,6 @@ package com.wemakeprice.vms.reportapi.domain.vulnerItem;
 
 import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
-import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -36,6 +36,13 @@ public class VItemDto {
     @Setter
     @ToString
     public static class RegisterVItemDetail {
+        private String vItemId;
         private String detail;
+
+        public VItemCommand.RegisterVItemDetailRequest toCommand() {
+            return VItemCommand.RegisterVItemDetailRequest.builder()
+                    .detail(detail)
+                    .build();
+        }
     }
 }

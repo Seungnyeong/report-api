@@ -5,10 +5,7 @@ import com.wemakeprice.vms.reportapi.common.response.CommonResponse;
 import com.wemakeprice.vms.reportapi.web.dto.VItemDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -21,7 +18,28 @@ public class VItemController {
     @PostMapping
     public CommonResponse registerVItem(@RequestBody VItemDto.RegisterVItemRequest request) {
         var command = request.toCommand();
-        var response = vItemFacade.registerVItem(command);
-        return CommonResponse.success(response);
+        var vItem = vItemFacade.registerVItem(command);
+        return CommonResponse.success(vItem);
     }
+
+    @GetMapping("/{vItemId}")
+    public CommonResponse retrieve(@PathVariable("vItemId") String id) {
+        var vItemInfo = vItemFacade.retrieveVItem(Long.parseLong(id));
+        return CommonResponse.success(vItemInfo);
+
+    }
+
+    @GetMapping()
+    public  CommonResponse retrieveAll() {
+        var vItemInfoList = vItemFacade.retrieveVItemList();
+        return CommonResponse.success(vItemInfoList);
+    }
+
+    @PostMapping("/detail")
+    public CommonResponse registerVItemDetail(@RequestBody VItemDto.RegisterVItemDetail request) {
+        var command = request.toCommand();
+        var vItemDetail = vItemFacade.registerVItemDetail(command, Long.parseLong(request.getVItemId()));
+        return CommonResponse.success(vItemDetail);
+    }
+
 }
