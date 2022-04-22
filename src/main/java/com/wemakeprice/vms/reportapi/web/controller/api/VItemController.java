@@ -23,8 +23,8 @@ public class VItemController {
     }
 
     @GetMapping("/{vItemId}")
-    public CommonResponse retrieve(@PathVariable("vItemId") String id) {
-        var vItemInfo = vItemFacade.retrieveVItem(Long.parseLong(id));
+    public CommonResponse retrieve(@PathVariable("vItemId") Long id) {
+        var vItemInfo = vItemFacade.retrieveVItem(id);
         return CommonResponse.success(vItemInfo);
 
     }
@@ -38,13 +38,19 @@ public class VItemController {
     @PostMapping("/detail")
     public CommonResponse registerVItemDetail(@RequestBody VItemDto.RegisterVItemDetail request) {
         var command = request.toCommand();
-        var vItemDetail = vItemFacade.registerVItemDetail(command, Long.parseLong(request.getVItemId()));
+        var vItemDetail = vItemFacade.registerVItemDetail(command, request.getVItemId());
         return CommonResponse.success(vItemDetail);
     }
 
     @DeleteMapping("/{vItemId}")
-    public CommonResponse deleteVItem(@PathVariable("vItemId") String id) {
-        var response = vItemFacade.deleteVItem(Long.parseLong(id));
+    public CommonResponse deleteVItem(@PathVariable("vItemId") Long id) {
+        var response = vItemFacade.deleteVItem((id));
+        return CommonResponse.success(response);
+    }
+
+    @DeleteMapping("/detail/{vItemDetailId}")
+    public CommonResponse deleteVItemDetail(@PathVariable("vItemDetailId") Long id) {
+        var response = vItemFacade.deleteVItemDetail(id);
         return CommonResponse.success(response);
     }
 

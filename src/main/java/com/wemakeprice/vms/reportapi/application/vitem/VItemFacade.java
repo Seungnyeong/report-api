@@ -16,7 +16,7 @@ import java.util.List;
 public class VItemFacade {
     private final VItemService vItemService;
 
-    public String registerVItem(VItemCommand.RegisterVItemRequest request) {
+    public VItemInfo.Main registerVItem(VItemCommand.RegisterVItemRequest request) {
         return vItemService.registerVItem(request);
     }
 
@@ -34,5 +34,9 @@ public class VItemFacade {
 
     public String deleteVItem(Long vItemId) {
         return vItemService.deleteVItem(vItemId);
+    }
+
+    public String deleteVItemDetail(Long vItemDetailId) {
+        return vItemService.deleteVItemDetail(vItemDetailId);
     }
 }

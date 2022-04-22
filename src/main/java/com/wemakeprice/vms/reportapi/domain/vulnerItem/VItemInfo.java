@@ -10,6 +10,7 @@ public class VItemInfo {
     @Getter
     @ToString
     public static class Main {
+        private final Long id;
         private final String vCategoryName;
         private final Integer vCategoryCode;
         private final String vSubCategoryName;
@@ -22,6 +23,7 @@ public class VItemInfo {
         private Integer ordering;
 
         public Main(VItem vItem, List<VItemDetailInfo> vItemDetailInfoList) {
+            this.id = vItem.getId();
             this.vCategoryName = vItem.getVCategoryName();
             this.vCategoryCode = vItem.getVCategoryCode();
             this.vSubCategoryName = vItem.getVSubCategoryName();
@@ -32,25 +34,16 @@ public class VItemInfo {
             this.vGrade = vItem.getVGrade();
             this.respondTag = vItem.getRespondTag();
         }
-
-        public Main(VItem vItem) {
-            this.vCategoryName = vItem.getVCategoryName();
-            this.vCategoryCode = vItem.getVCategoryCode();
-            this.vSubCategoryName = vItem.getVSubCategoryName();
-            this.vSubCategoryCode = vItem.getVSubCategoryCode();
-            this.vDetail = vItem.getVDetail();
-            this.caseTag = vItem.getCaseTag();
-            this.vGrade = vItem.getVGrade();
-            this.respondTag = vItem.getRespondTag();
-        }
     }
 
     @Getter
     @ToString
     public static class VItemDetailInfo {
+        private final Long id;
         private final String detail;
 
         public VItemDetailInfo(VItemDetail vItemDetail) {
+            this.id = vItemDetail.getId();
             this.detail = vItemDetail.getVDetail();
         }
 

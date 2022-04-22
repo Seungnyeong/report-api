@@ -16,20 +16,22 @@ public class VItemServiceImpl implements VItemService{
     private final VItemDetailStore vItemDetailStore;
     private final VItemDetailSeriesFactory vItemDetailSeriesFactory;
     private final VItemReader vItemReader;
-
+    private final VItemDetailReader vItemDetailReader;
 
     /*
     *  목록과 함께 대응방법 저장
     * */
     @Transactional
     @Override
-    public String registerVItem(VItemCommand.RegisterVItemRequest request) {
+    public VItemInfo.Main registerVItem(VItemCommand.RegisterVItemRequest request) {
         var initItem = request.toEntity();
-        var item = vItemStore.store(initItem);
-        vItemDetailSeriesFactory.store(request, item);
-        return item.getVDetail();
+        var vItem = vItemStore.store(initItem);
+        vItemDetailSeriesFactory.store(request, vItem);
+        var vItemDetailList = vItemReader.getVItemDetail(vItem);
+        return new VItemInfo.Main(vItem, vItemDetailList);
     }
 
+    @Transactional
     @Override
     public VItemInfo.Main retrieveVItem(Long vItemId) {
         var vItem = vItemReader.getVItemBy(vItemId);
@@ -63,5 +65,12 @@ public class VItemServiceImpl implements VItemService{
     public String deleteVItem(Long vItemId) {
         var vItem = vItemReader.getVItemBy(vItemId);
         return vItemStore.delete(vItem);
+    }
+
+    @Transactional
+    @Override
+    public String deleteVItemDetail(Long vItemDetailId) {
+        var vItemDetail = vItemDetailReader.getVItemDetail(vItemDetailId);
+        return vItemDetailStore.delete(vItemDetail);
     }
 }

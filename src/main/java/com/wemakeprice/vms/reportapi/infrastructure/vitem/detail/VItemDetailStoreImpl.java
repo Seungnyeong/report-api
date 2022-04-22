@@ -17,4 +17,10 @@ public class VItemDetailStoreImpl implements VItemDetailStore {
     public VItemDetail store(VItemDetail vItemDetail) {
         return vItemRepository.save(vItemDetail);
     }
+
+    @Override
+    public String delete(VItemDetail vItemDetail) {
+        vItemRepository.delete(vItemDetail);
+        return vItemDetail.getId().toString();
+    }
 }

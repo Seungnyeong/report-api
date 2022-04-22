@@ -17,7 +17,7 @@ public class VItemDto {
         private String vCategoryName;
         private String vSubCategoryName;
         private String vDetail;
-        private List<RegisterVItemDetail> vItemDetailList;
+        private List<RegisterVItemWithDetail> vItemDetailList;
 
         public VItemCommand.RegisterVItemRequest toCommand() {
             return VItemCommand.RegisterVItemRequest.builder()
@@ -35,8 +35,21 @@ public class VItemDto {
     @Getter
     @Setter
     @ToString
+    public static class RegisterVItemWithDetail {
+        private String detail;
+
+        public VItemCommand.RegisterVItemDetailRequest toCommand() {
+            return VItemCommand.RegisterVItemDetailRequest.builder()
+                    .detail(detail)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @ToString
     public static class RegisterVItemDetail {
-        private String vItemId;
+        private Long vItemId;
         private String detail;
 
         public VItemCommand.RegisterVItemDetailRequest toCommand() {
