@@ -25,7 +25,7 @@ public class VItemController {
     }
 
     @GetMapping("/{vItemId}")
-    public CommonResponse retrieve(@PathVariable("vItemId") Long id) {
+    public CommonResponse retrieve(@PathVariable("vItemId") @Valid Long id) {
         var vItemInfo = vItemFacade.retrieveVItem(id);
         return CommonResponse.success(vItemInfo);
 
@@ -38,7 +38,7 @@ public class VItemController {
     }
 
     @PostMapping("/detail")
-    public CommonResponse registerVItemDetail(@RequestBody VItemDto.RegisterVItemDetail request) {
+    public CommonResponse registerVItemDetail(@RequestBody @Valid VItemDto.RegisterVItemDetail request) {
         var command = request.toCommand();
         var vItemDetail = vItemFacade.registerVItemDetail(command, request.getVItemId());
         return CommonResponse.success(vItemDetail);
@@ -57,13 +57,13 @@ public class VItemController {
     }
 
     @PatchMapping
-    public CommonResponse updateVItem(@RequestBody VItemDto.UpdateVItemRequest request) {
+    public CommonResponse updateVItem(@RequestBody @Valid VItemDto.UpdateVItemRequest request) {
         var response = vItemFacade.updateVItem(request.toCommand());
         return CommonResponse.success(response);
     }
 
     @PatchMapping("/detail")
-    public CommonResponse updateVItemDetail(@RequestBody VItemDto.UpdateVItemDetailRequest request) {
+    public CommonResponse updateVItemDetail(@RequestBody @Valid VItemDto.UpdateVItemDetailRequest request) {
         var response = vItemFacade.updateVItemDetail(request.toCommand());
         return CommonResponse.success(response);
     }
