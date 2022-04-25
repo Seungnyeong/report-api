@@ -1,6 +1,7 @@
 package com.wemakeprice.vms.reportapi.domain.vitem;
 
 import com.google.common.collect.Lists;
+import com.wemakeprice.vms.reportapi.common.exception.InvalidParamException;
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
 import lombok.Builder;
 import lombok.Getter;
@@ -85,6 +86,20 @@ public class VItem extends AbstractEntity {
         if (!StringUtils.isEmpty(command.getVCategoryName())) this.vCategoryName = command.getVCategoryName();
         if (!StringUtils.isEmpty(command.getVSubCategoryName())) this.vSubCategoryName = command.getVSubCategoryName();
         if (!StringUtils.isEmpty(command.getVDetail())) this.vDetail = command.getVDetail();
-        if (command.getVGrade() != null) this.vGrade = command.getVGrade();
+    }
+
+    public void changeGradeToHigh () {
+        if (this.vGrade == VGrade.HIGH) throw new InvalidParamException("LOW or MEDIUM 으로 변경하세요");
+        this.vGrade = VGrade.HIGH;
+    }
+
+    public void changeGradeToLow() {
+        if (this.vGrade == VGrade.LOW) throw new InvalidParamException("HIGH or MEDIUM 으로 변경하세요");
+        this.vGrade = VGrade.LOW;
+    }
+
+    public void changeGradeToMedium() {
+        if (this.vGrade == VGrade.MEDIUM) throw new InvalidParamException("LOW or HIGH 으로 변경하세요");
+        this.vGrade = VGrade.MEDIUM;
     }
 }

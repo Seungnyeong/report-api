@@ -19,4 +19,8 @@ public interface VItemService {
     // Update
     VItemInfo.Main updateVItem(VItemCommand.UpdateVItemRequest command);
     VItemInfo.VItemDetailInfo updateVItemDetail(VItemCommand.UpdateVItemDetailRequest command);
+    VItemInfo.Main changeVItemGradeToHigh();
+    VItemInfo.Main changeVItemGradeToLow();
+    VItemInfo.Main changeVItemGradeToMedium();
+
 }

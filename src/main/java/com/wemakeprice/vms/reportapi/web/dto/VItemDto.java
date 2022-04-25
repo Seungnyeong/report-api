@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,14 +19,32 @@ public class VItemDto {
     @ToString
     @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class RegisterVItemRequest {
+
+        @NotNull(message = "vCategoryName 필수 입니다.")
+        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=3 입니다.")
         private String vCategoryName;
+
+        @NotNull(message = "vCategoryCode 필수 입니다.")
+        @Min(value = 1, message = "0보다 커야 합니다.")
+        @Max(value = 999 , message = "999 이하입니다.")
         private Integer vCategoryCode;
+
+        @NotNull(message = "vSubCategoryName 필수 입니다.")
+        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=100 입니다.")
         private String vSubCategoryName;
+
+        @NotNull(message = "vSubCategoryCode 필수 입니다.")
+        @Min(value = 1, message = "0보다 커야 합니다.")
+        @Max(value = 999 , message = "999 이하입니다.")
         private Integer vSubCategoryCode;
+
+        @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
         private String vDetail;
         private String caseTag;
         private String respondTag;
         private Integer ordering;
+
+        @NotNull(message = "vGrade 필수 입니다.")
         private VItem.VGrade vGrade;
         private List<RegisterVItemWithDetail> vItemDetailList;
 
@@ -52,6 +71,8 @@ public class VItemDto {
     @Setter
     @ToString
     public static class RegisterVItemWithDetail {
+
+        @NotEmpty(message = "detail 필수 입니다.")
         private String detail;
 
         public VItemCommand.RegisterVItemDetailRequest toCommand() {
@@ -67,7 +88,10 @@ public class VItemDto {
     @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class RegisterVItemDetail {
 
+        @NotNull(message = "vItemId 필수 입니다.")
         private Long vItemId;
+
+        @NotNull(message = "detail 필수 입니다.")
         private String detail;
 
         public VItemCommand.RegisterVItemDetailRequest toCommand() {
@@ -82,16 +106,34 @@ public class VItemDto {
     @ToString
     @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class UpdateVItemRequest {
-
+        @NotNull(message = "id는 필수값입니다.")
         private Long vItemId;
+
+        @NotNull(message = "vCategoryName 필수 입니다.")
+        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=3 입니다.")
         private String vCategoryName;
+
+        @NotNull(message = "vCategoryCode 필수 입니다.")
+        @Min(value = 1, message = "0보다 커야 합니다.")
+        @Max(value = 999 , message = "999 이하입니다.")
         private Integer vCategoryCode;
+
+        @NotNull(message = "vSubCategoryName 필수 입니다.")
+        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=100 입니다.")
         private String vSubCategoryName;
+
+        @NotNull(message = "vSubCategoryCode 필수 입니다.")
+        @Min(value = 1, message = "0보다 커야 합니다.")
+        @Max(value = 999 , message = "999 이하입니다.")
         private Integer vSubCategoryCode;
+
+        @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
         private String vDetail;
         private String caseTag;
         private String respondTag;
         private Integer ordering;
+
+        @NotNull(message = "vGrade 필수 입니다.")
         private VItem.VGrade vGrade;
 
         public VItemCommand.UpdateVItemRequest toCommand() {
@@ -116,7 +158,10 @@ public class VItemDto {
     @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class UpdateVItemDetailRequest {
 
+        @NotNull(message = "vItemId 필수 입니다.")
         private Long vItemDetailId;
+
+        @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
         private String detail;
 
         public VItemCommand.UpdateVItemDetailRequest toCommand() {

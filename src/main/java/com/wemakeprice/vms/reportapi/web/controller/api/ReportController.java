@@ -17,7 +17,9 @@ public class ReportController {
     @PostMapping
     public CommonResponse reportTest() {
         log.info("controller test");
-        return CommonResponse.success("Report Controller");
+
+
+        return CommonResponse.success("하위");
     }
 
 }

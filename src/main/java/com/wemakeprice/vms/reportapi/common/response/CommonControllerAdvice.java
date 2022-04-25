@@ -1,6 +1,5 @@
 package com.wemakeprice.vms.reportapi.common.response;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.common.exception.BaseException;
 import com.wemakeprice.vms.reportapi.common.interceptor.CommonHttpRequestInterceptor;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
 import java.util.List;
 
 @Slf4j

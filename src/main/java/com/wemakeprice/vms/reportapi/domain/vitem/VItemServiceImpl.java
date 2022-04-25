@@ -93,4 +93,22 @@ public class VItemServiceImpl implements VItemService{
         vItemDetail.updateDetail(command);
         return new VItemInfo.VItemDetailInfo(vItemDetail);
     }
+
+    @Transactional
+    @Override
+    public VItemInfo.Main changeVItemGradeToHigh() {
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public VItemInfo.Main changeVItemGradeToLow() {
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public VItemInfo.Main changeVItemGradeToMedium() {
+        return null;
+    }
 }

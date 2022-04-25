@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -16,7 +18,7 @@ public class VItemController {
     private final VItemFacade vItemFacade;
 
     @PostMapping
-    public CommonResponse registerVItem(@RequestBody VItemDto.RegisterVItemRequest request) {
+    public CommonResponse registerVItem(@RequestBody @Valid VItemDto.RegisterVItemRequest request) {
         var command = request.toCommand();
         var vItem = vItemFacade.registerVItem(command);
         return CommonResponse.success(vItem);
