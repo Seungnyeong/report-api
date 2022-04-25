@@ -1,13 +1,11 @@
 package com.wemakeprice.vms.reportapi.domain.vitem;
 
 import com.google.common.collect.Lists;
-import com.wemakeprice.vms.reportapi.common.exception.InvalidParamException;
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
-import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetail;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,17 +29,10 @@ public class VItem extends AbstractEntity {
     @Column(length = 3)
     private Integer vCategoryCode;
 
-    @Column(length = 100)
-    private String vSubCategoryName;
-
-    @Column(length = 3)
-    private Integer vSubCategoryCode;
 
     @Column(length = 1000)
     private String vDetail;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vItem" , cascade = CascadeType.ALL)
-    private List<VItemDetail> vItemDetailsList = Lists.newArrayList();
 
     @Column(length = 10)
     private String caseTag;
@@ -49,58 +40,35 @@ public class VItem extends AbstractEntity {
     @Column(length = 10)
     private String respondTag;
 
-    private VGrade vGrade;
     private Integer ordering;
 
-    @Getter
-    @RequiredArgsConstructor
-    public enum VGrade {
-        HIGH("상"),
-        MEDIUM("중"),
-        LOW("하");
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vItem" , cascade = CascadeType.ALL)
+    private List<VItemDetailGroup> vItemDetailGroupList = Lists.newArrayList();
 
-        private final String description;
-    }
+    private Long annualTableId;
+
 
     @Builder
     public VItem(String vCategoryName,
                  Integer vCategoryCode,
-                 String vSubCategoryName,
-                 Integer vSubCategoryCode,
                  String vDetail,
                  String caseTag,
                  String respondTag,
-                 VGrade vGrade,
                  Integer ordering) {
         this.vCategoryName = vCategoryName;
         this.vCategoryCode = vCategoryCode;
-        this.vSubCategoryName = vSubCategoryName;
-        this.vSubCategoryCode = vSubCategoryCode;
         this.vDetail = vDetail;
         this.caseTag = caseTag;
         this.respondTag = respondTag;
-        this.vGrade = vGrade;
         this.ordering = ordering;
     }
 
     public void updateVItem(VItemCommand.UpdateVItemRequest command) {
         if (!StringUtils.isEmpty(command.getVCategoryName())) this.vCategoryName = command.getVCategoryName();
-        if (!StringUtils.isEmpty(command.getVSubCategoryName())) this.vSubCategoryName = command.getVSubCategoryName();
+        if (!StringUtils.isEmpty(command.getCaseTag())) this.vCategoryName = command.getCaseTag();
+        if (!StringUtils.isEmpty(command.getRespondTag())) this.vCategoryName = command.getRespondTag();
         if (!StringUtils.isEmpty(command.getVDetail())) this.vDetail = command.getVDetail();
     }
 
-    public void changeGradeToHigh () {
-        if (this.vGrade == VGrade.HIGH) throw new InvalidParamException("LOW or MEDIUM 으로 변경하세요");
-        this.vGrade = VGrade.HIGH;
-    }
 
-    public void changeGradeToLow() {
-        if (this.vGrade == VGrade.LOW) throw new InvalidParamException("HIGH or MEDIUM 으로 변경하세요");
-        this.vGrade = VGrade.LOW;
-    }
-
-    public void changeGradeToMedium() {
-        if (this.vGrade == VGrade.MEDIUM) throw new InvalidParamException("LOW or HIGH 으로 변경하세요");
-        this.vGrade = VGrade.MEDIUM;
-    }
 }

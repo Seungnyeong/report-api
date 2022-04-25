@@ -1,6 +1,7 @@
 package com.wemakeprice.vms.reportapi.domain.vitem;
 
 import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetail;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,30 +15,59 @@ public class VItemCommand {
     @ToString
     public static class RegisterVItemRequest {
         private final String vCategoryName;
-        private final Integer vCategoryCode;
-        private final String vSubCategoryName;
-        private final Integer vSubCategoryCode;
+        private final Integer vCategoryCode;;
         private final String vDetail;
-        private final List<RegisterVItemDetailRequest> vItemDetailRequestList;
+        private final List<RegisterVItemGroupRequest> vItemGroupRequestList;
         private final String caseTag;
         private final String respondTag;
         private final Integer ordering;
-        private final VItem.VGrade vGrade;
 
         public VItem toEntity() {
             return VItem.builder()
                     .vCategoryName(vCategoryName)
                     .vCategoryCode(vCategoryCode)
-                    .vSubCategoryName(vSubCategoryName)
-                    .vSubCategoryCode(vCategoryCode)
+                    .ordering(ordering)
+                    .respondTag(respondTag)
                     .vDetail(vDetail)
                     .caseTag(caseTag)
-                    .respondTag(respondTag)
-                    .ordering(ordering)
-                    .vGrade(vGrade)
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @ToString
+    public static class RegisterVItemGroupRequest {
+        private final String vGroupName;
+        private final Integer vGroupCode;
+        private final List<RegisterVItemDetailRequest> vItemDetailRequestList;
+        private Integer ordering;
+
+        public VItemDetailGroup toEntity(VItem vItem) {
+            return VItemDetailGroup.builder()
+                    .vItem(vItem)
+                    .vGroupName(vGroupName)
+                    .vGroupCode(vGroupCode)
+                    .ordering(ordering)
+                    .build();
+        }
+    }
+
+
+    @Getter
+    @Builder
+    @ToString
+    public static class RegisterVItemDetailRequest {
+        private final String detail;
+
+        public VItemDetail toEntity(VItemDetailGroup vItemDetailGroup) {
+            return VItemDetail.builder()
+                    .vItemDetailGroup(vItemDetailGroup)
+                    .vDetail(detail)
+                    .build();
+        }
+    }
+
 
     @Getter
     @Builder
@@ -52,33 +82,15 @@ public class VItemCommand {
         private final String caseTag;
         private final String respondTag;
         private final Integer ordering;
-        private final VItem.VGrade vGrade;
 
         public VItem toEntity() {
             return VItem.builder()
                     .vCategoryName(vCategoryName)
                     .vCategoryCode(vCategoryCode)
-                    .vSubCategoryName(vSubCategoryName)
-                    .vSubCategoryCode(vSubCategoryCode)
                     .vDetail(vDetail)
                     .caseTag(caseTag)
                     .respondTag(respondTag)
                     .ordering(ordering)
-                    .vGrade(vGrade)
-                    .build();
-        }
-    }
-
-    @Getter
-    @Builder
-    @ToString
-    public static class RegisterVItemDetailRequest {
-        private final String detail;
-
-        public VItemDetail toEntity(VItem vItem) {
-            return VItemDetail.builder()
-                    .vItem(vItem)
-                    .vDetail(detail)
                     .build();
         }
     }

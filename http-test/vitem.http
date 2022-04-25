@@ -2,22 +2,117 @@ POST http://localhost:8888/api/v1/vitem
 Content-Type: application/json
 
 {
-  "case_tag": "123",
+  "case_tag": "",
   "ordering": 1,
-  "respond_tag": "string",
+  "respond_tag": "",
   "vcategory_code": 1,
-  "vcategory_name": "string",
-  "vdetail": "<script>alert('1')</script>",
+  "vcategory_name": "입력 값 검증 부재",
+  "vdetail": "입력 값 필터링처리 부재 또는 미흡으로 악성 스크립트 등록 후 브라우저에서 동작 가능 여부",
   "vgrade": "HIGH",
   "vitem_detail_list": [
     {
-      "detail": "string"
+      "detail": "- 엑셀파일을 통한 데이터 파싱 처리 시 String 형태로 저장되는 값에 대해 XSS/CSRF 공격구문에 대한 필터링을 적용 하여야 합니다."
     }
   ],
   "vsub_category_code": 1,
-  "vsub_category_name": "string"
+  "vsub_category_name": "입력 값 필터링처리 부재 또는 미흡으로 악성 스크립트 등록 후 브라우저에서 동작 가능 여부"
 }
 
 ###
 
-GET http://localhost:8888/api/v1/vitem/<script>alert('1')</script>/
+POST http://localhost:8888/api/v1/vitem/detail
+Content-Type: application/json
+
+{
+  "detail": "'- JSON형태의 입력 DATA 에 대한 검증을 위해 RequestWrapper 작성하여 Customfilter 에서 inputStream 에 대한 필터 처리 를 하거나 Jackson2ObjectMapperBuilderCustomizer를 이용 하여 JSON형태로 파싱되는 값들에 대해 공격 구문 필터링이 될 수 있도록 해주시기 바랍니다",
+  "vitem_id": 25
+}
+
+###
+
+POST http://localhost:8888/api/v1/vitem
+Content-Type: application/json
+
+{
+  "case_tag": "",
+  "ordering": 2,
+  "respond_tag": "",
+  "vcategory_code": 1,
+  "vcategory_name": "입력 값 검증 부재",
+  "vdetail": "입력 값 필터링 없이 직접 DB 쿼리 사용 여부",
+  "vgrade": "HIGH",
+  "vitem_detail_list": [
+    {
+      "detail": "'- MyBatis 사용 시 매개변수 값을 ${}가 아닌 #{}로 입력 받아 SQL Injection 공격을 방지해야 합니다. 만약 부득이하게 #{} 사용이 불가능 하다면 입력 받은 값에 대해 아래의 키워드를 필터링 하여야 합니다. SQL Injection 필터링문자 ‘ “ = < > ( ) sp_ xp_ select drop union -- # ; cmdshell"
+    },
+    {
+      "detail": "'- API내에 사용자 입력 값에 대해 SQL 인젝션 공격 구문 필터링이 부재하고 MyBatis 내 매개변수를 입력 받고 있어 SQL Injection 공격을 통한 DB 내 정보 조회가 가능합니다"
+    },
+    {
+      "detail": "사용자 입력 값을 쿼리 생성 시 사용할 경우 특수문자 필터링 적용 후 사용하거나 바인딩처리 방식으로 악의적인 쿼리가 실행되지 않도록 하여야 합니다 MyBatis 의 경우 mapper 파일 내 사용자 입력 값을 로 받아 preparedStatement 방식 으로 처리하여야 합니다"
+    }
+  ],
+  "vsub_category_code": 2,
+  "vsub_category_name": "SQL/Command Injection 공격 가능성"
+}
+
+
+###
+POST http://localhost:8888/api/v1/vitem
+Content-Type: application/json
+
+{
+  "case_tag": "",
+  "ordering": 2,
+  "respond_tag": "",
+  "vcategory_code": 1,
+  "vcategory_name": "입력 값 검증 부재",
+  "vdetail": "입력 값 필터링 없이 직접 DB 쿼리 사용 여부",
+  "vgrade": "HIGH",
+  "vitem_detail_list": [
+    {
+      "detail": "'- MyBatis 사용 시 매개변수 값을 ${}가 아닌 #{}로 입력 받아 SQL Injection 공격을 방지해야 합니다. 만약 부득이하게 #{} 사용이 불가능 하다면 입력 받은 값에 대해 아래의 키워드를 필터링 하여야 합니다. SQL Injection 필터링문자 ‘ “ = < > ( ) sp_ xp_ select drop union -- # ; cmdshell"
+    },
+    {
+      "detail": "'- API내에 사용자 입력 값에 대해 SQL 인젝션 공격 구문 필터링이 부재하고 MyBatis 내 매개변수를 입력 받고 있어 SQL Injection 공격을 통한 DB 내 정보 조회가 가능합니다"
+    },
+    {
+      "detail": "사용자 입력 값을 쿼리 생성 시 사용할 경우 특수문자 필터링 적용 후 사용하거나 바인딩처리 방식으로 악의적인 쿼리가 실행되지 않도록 하여야 합니다 MyBatis 의 경우 mapper 파일 내 사용자 입력 값을 로 받아 preparedStatement 방식 으로 처리하여야 합니다"
+    }
+  ],
+  "vsub_category_code": 2,
+  "vsub_category_name": "SQL/Command Injection 공격 가능성"
+}
+
+###
+
+POST http://localhost:8888/api/v1/vitem
+Content-Type: application/json
+
+{
+  "case_tag": "string",
+  "ordering": 1,
+  "respond_tag": "string",
+  "vcategory_code": 1,
+  "vcategory_name": "string",
+  "vdetail": "string",
+  "vgroup_code": 1,
+  "vgroup_name": "string",
+  "vitem_detail_group_list": [
+    {
+      "ordering": 1,
+      "vgroupCode": 1,
+      "vgroupName": "string",
+      "vitemDetailList": [
+        {
+          "detail": "string"
+        }
+      ]
+    }
+  ]
+}
+
+
+###
+
+GET http://localhost:8888/api/v1/vitem/13

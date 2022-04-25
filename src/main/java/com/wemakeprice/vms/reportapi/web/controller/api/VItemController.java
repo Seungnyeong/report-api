@@ -37,12 +37,12 @@ public class VItemController {
         return CommonResponse.success(vItemInfoList);
     }
 
-    @PostMapping("/detail")
-    public CommonResponse registerVItemDetail(@RequestBody @Valid VItemDto.RegisterVItemDetail request) {
-        var command = request.toCommand();
-        var vItemDetail = vItemFacade.registerVItemDetail(command, request.getVItemId());
-        return CommonResponse.success(vItemDetail);
-    }
+//    @PostMapping("/detail")
+//    public CommonResponse registerVItemDetail(@RequestBody @Valid VItemDto.RegisterVItemDetail request) {
+//        var command = request.toCommand();
+//        var vItemDetail = vItemFacade.registerVItemDetail(command, request.getVItemId());
+//        return CommonResponse.success(vItemDetail);
+//    }
 
     @DeleteMapping("/{vItemId}")
     public CommonResponse deleteVItem(@PathVariable("vItemId") Long id) {
@@ -50,11 +50,11 @@ public class VItemController {
         return CommonResponse.success(response);
     }
 
-    @DeleteMapping("/detail/{vItemDetailId}")
-    public CommonResponse deleteVItemDetail(@PathVariable("vItemDetailId") Long id) {
-        var response = vItemFacade.deleteVItemDetail(id);
-        return CommonResponse.success(response);
-    }
+//    @DeleteMapping("/detail/{vItemDetailId}")
+//    public CommonResponse deleteVItemDetail(@PathVariable("vItemDetailId") Long id) {
+//        var response = vItemFacade.deleteVItemDetail(id);
+//        return CommonResponse.success(response);
+//    }
 
     @PatchMapping
     public CommonResponse updateVItem(@RequestBody @Valid VItemDto.UpdateVItemRequest request) {
@@ -62,9 +62,9 @@ public class VItemController {
         return CommonResponse.success(response);
     }
 
-    @PatchMapping("/detail")
-    public CommonResponse updateVItemDetail(@RequestBody @Valid VItemDto.UpdateVItemDetailRequest request) {
-        var response = vItemFacade.updateVItemDetail(request.toCommand());
-        return CommonResponse.success(response);
-    }
+//    @PatchMapping("/detail")
+//    public CommonResponse updateVItemDetail(@RequestBody @Valid VItemDto.UpdateVItemDetailRequest request) {
+//        var response = vItemFacade.updateVItemDetail(request.toCommand());
+//        return CommonResponse.success(response);
+//    }
 }

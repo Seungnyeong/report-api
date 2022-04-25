@@ -24,11 +24,17 @@ public class VItemReaderImpl implements VItemReader {
     }
 
     @Override
-    public List<VItemInfo.VItemDetailInfo> getVItemDetail(VItem vItem) {
-        var vItemDetailList = vItem.getVItemDetailsList();
+    public List<VItemInfo.VItemDetailGroupInfo> getVItemDetailGroupSeries(VItem vItem) {
+        var vItemDetailGroupLIst = vItem.getVItemDetailGroupList();
+        return vItemDetailGroupLIst.stream()
+                .map(vItemDetailGroup -> {
+                    var vItemDetailList = vItemDetailGroup.getVItemDetailsList();
+                    var vItemDetailInfoList = vItemDetailList.stream()
+                            .map(VItemInfo.VItemDetailInfo::new)
+                            .collect(Collectors.toList());
 
-        return vItemDetailList.stream()
-                .map(VItemInfo.VItemDetailInfo::new).collect(Collectors.toList());
+                    return new VItemInfo.VItemDetailGroupInfo(vItemDetailGroup, vItemDetailInfoList);
+                }).collect(Collectors.toList());
     }
 
     @Override

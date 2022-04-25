@@ -52,8 +52,5 @@ public class HTMLCharacterEscapes extends CharacterEscapes {
     @Override
     public SerializableString getEscapeSequence(int ch) {
         return new SerializedString(translator.translate(Character.toString((char) ch)));
-
-        // 참고 - 커스터마이징이 필요없다면 아래와 같이 Apache Commons Lang3에서 제공하는 메서드를 써도 된다.
-        // return new SerializedString(StringEscapeUtils.escapeHtml4(Character.toString((char) ch)));
     }
 }

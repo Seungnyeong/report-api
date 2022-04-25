@@ -2,6 +2,7 @@ package com.wemakeprice.vms.reportapi.domain.vitem.detail;
 
 import com.wemakeprice.vms.reportapi.domain.vitem.VItem;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemCommand;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +26,12 @@ public class VItemDetail {
     private String vDetail;
 
     @ManyToOne
-    @JoinColumn(name = "v_item_id")
-    private VItem vItem;
+    @JoinColumn(name = "v_item_detail_group_id")
+    private VItemDetailGroup vItemDetailGroup;
 
     @Builder
-    public VItemDetail(VItem vItem, String vDetail) {
-        this.vItem = vItem;
+    public VItemDetail(VItemDetailGroup vItemDetailGroup, String vDetail) {
+        this.vItemDetailGroup = vItemDetailGroup;
         this.vDetail = vDetail;
     }
 
