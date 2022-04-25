@@ -2,6 +2,7 @@ package com.wemakeprice.vms.reportapi.domain.vitem;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetail;
 import lombok.Getter;
 import lombok.ToString;
 import java.util.List;

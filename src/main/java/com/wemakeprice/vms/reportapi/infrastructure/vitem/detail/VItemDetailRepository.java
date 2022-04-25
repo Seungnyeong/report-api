@@ -1,6 +1,6 @@
 package com.wemakeprice.vms.reportapi.infrastructure.vitem.detail;
 
-import com.wemakeprice.vms.reportapi.domain.vitem.VItemDetail;
+import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,5 +1,7 @@
-package com.wemakeprice.vms.reportapi.domain.vitem;
+package com.wemakeprice.vms.reportapi.domain.vitem.detail;
 
+import com.wemakeprice.vms.reportapi.domain.vitem.VItem;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemCommand;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +34,7 @@ public class VItemDetail {
         this.vDetail = vDetail;
     }
 
-    void updateDetail(VItemCommand.UpdateVItemDetailRequest request) {
+    public void updateDetail(VItemCommand.UpdateVItemDetailRequest request) {
         if(!StringUtils.isEmpty(request.getDetail())) this.vDetail = request.getDetail();
     }
 }

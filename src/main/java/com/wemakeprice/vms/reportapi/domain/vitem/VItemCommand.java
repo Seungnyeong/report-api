@@ -1,5 +1,6 @@
 package com.wemakeprice.vms.reportapi.domain.vitem;
 
+import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetail;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

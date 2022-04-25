@@ -1,4 +1,4 @@
-package com.wemakeprice.vms.reportapi.domain.vitem;
+package com.wemakeprice.vms.reportapi.domain.vitem.detail;
 
 public interface VItemDetailStore {
     VItemDetail store(VItemDetail vItemDetail);

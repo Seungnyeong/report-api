@@ -129,6 +129,8 @@ public class VItemDto {
 
         @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
         private String vDetail;
+
+        @Size(min = 1, max = 10, message = "최소 Size= 1, 최대 Size=100 입니다.")
         private String caseTag;
         private String respondTag;
         private Integer ordering;

@@ -1,6 +1,9 @@
 package com.wemakeprice.vms.reportapi.infrastructure.vitem.detail;
 
 import com.wemakeprice.vms.reportapi.domain.vitem.*;
+import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetail;
+import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetailSeriesFactory;
+import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetailStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

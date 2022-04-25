@@ -1,0 +1,23 @@
+POST http://localhost:8888/api/v1/vitem
+Content-Type: application/json
+
+{
+  "case_tag": "123",
+  "ordering": 1,
+  "respond_tag": "string",
+  "vcategory_code": 1,
+  "vcategory_name": "string",
+  "vdetail": "<script>alert('1')</script>",
+  "vgrade": "HIGH",
+  "vitem_detail_list": [
+    {
+      "detail": "string"
+    }
+  ],
+  "vsub_category_code": 1,
+  "vsub_category_name": "string"
+}
+
+###
+
+GET http://localhost:8888/api/v1/vitem/<script>alert('1')</script>/
