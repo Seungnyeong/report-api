@@ -29,15 +29,6 @@ public class VItemDto {
         @Max(value = 999 , message = "999 이하입니다.")
         private Integer vCategoryCode;
 
-        @NotNull(message = "vSubCategoryName 필수 입니다.")
-        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=100 입니다.")
-        private String vGroupName;
-
-        @NotNull(message = "vSubCategoryCode 필수 입니다.")
-        @Min(value = 1, message = "0보다 커야 합니다.")
-        @Max(value = 999 , message = "999 이하입니다.")
-        private Integer vGroupCode;
-
         @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
         private String vDetail;
         private String caseTag;
@@ -55,8 +46,8 @@ public class VItemDto {
                     .respondTag(respondTag)
                     .ordering(ordering)
                     .vItemGroupRequestList(vItemDetailGroupList.stream().map(registerVItemDetailGroup -> VItemCommand.RegisterVItemGroupRequest.builder()
-                            .vGroupName(vGroupName)
-                            .vGroupCode(vGroupCode)
+                            .vGroupName(registerVItemDetailGroup.vGroupName)
+                            .vGroupCode(registerVItemDetailGroup.vGroupCode)
                             .ordering(ordering)
                             .vItemDetailRequestList(registerVItemDetailGroup.vItemDetailList.stream().map(registerVItemWithDetail -> VItemCommand.RegisterVItemDetailRequest.builder()
                                     .detail(registerVItemWithDetail.getDetail())
