@@ -115,4 +115,4 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8888/api/v1/vitem/13
+GET http://localhost:8888/api/v1/vitem/28

@@ -60,15 +60,15 @@ public class VItem extends AbstractEntity {
         this.vDetail = vDetail;
         this.caseTag = caseTag;
         this.respondTag = respondTag;
-        this.ordering = ordering;
+        this.ordering = 1;
     }
 
     public void updateVItem(VItemCommand.UpdateVItemRequest command) {
         if (!StringUtils.isEmpty(command.getVCategoryName())) this.vCategoryName = command.getVCategoryName();
-        if (!StringUtils.isEmpty(command.getCaseTag())) this.vCategoryName = command.getCaseTag();
-        if (!StringUtils.isEmpty(command.getRespondTag())) this.vCategoryName = command.getRespondTag();
+        if (command.getVCategoryCode() != null) this.vCategoryCode = command.getVCategoryCode();
+        if (command.getOrdering() != null) this.ordering = command.getOrdering();
+        if (!StringUtils.isEmpty(command.getCaseTag())) this.caseTag = command.getCaseTag();
+        if (!StringUtils.isEmpty(command.getRespondTag())) this.respondTag = command.getRespondTag();
         if (!StringUtils.isEmpty(command.getVDetail())) this.vDetail = command.getVDetail();
     }
-
-
 }

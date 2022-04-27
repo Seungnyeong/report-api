@@ -6,6 +6,7 @@ import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import java.util.List;
 
 public interface VItemDetailGroupReader {
-    VItemInfo.VItemDetailInfo getVItemBy(Long vItemDetailGroupId);
+    VItemDetailGroup getVItemBy(Long vItemDetailGroupId);
     List<VItemInfo.VItemDetailInfo> getVItemDetailSeries(VItemDetailGroup vItemDetailGroup);
+    List<VItemDetailGroup> getVItemDetailGroupByVItem(VItem vItem);
 }

@@ -2,11 +2,11 @@ package com.wemakeprice.vms.reportapi.domain.vitem.detail;
 
 import com.wemakeprice.vms.reportapi.domain.vitem.VItem;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
 
 import java.util.List;
 
 public interface VItemDetailReader {
     VItemDetail getVItemDetail(Long vItemDetailId);
-    List<VItemInfo.VItemDetailInfo> getVItemDetail(VItem vItem);
-
+    List<VItemDetail> getAllDetailsGroupBy(VItemDetailGroup vItemDetailGroup);
 }

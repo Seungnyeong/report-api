@@ -40,8 +40,8 @@ public class VItemCommand {
     public static class RegisterVItemGroupRequest {
         private final String vGroupName;
         private final Integer vGroupCode;
+        private final Integer ordering;
         private final List<RegisterVItemDetailRequest> vItemDetailRequestList;
-        private Integer ordering;
 
         public VItemDetailGroup toEntity(VItem vItem) {
             return VItemDetailGroup.builder()
@@ -76,8 +76,6 @@ public class VItemCommand {
         private final Long id;
         private final String vCategoryName;
         private final Integer vCategoryCode;
-        private final String vSubCategoryName;
-        private final Integer vSubCategoryCode;
         private final String vDetail;
         private final String caseTag;
         private final String respondTag;

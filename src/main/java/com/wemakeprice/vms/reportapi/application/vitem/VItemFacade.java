@@ -3,6 +3,8 @@ package com.wemakeprice.vms.reportapi.application.vitem;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemCommand;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemService;
+import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetailService;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VItemFacade {
     private final VItemService vItemService;
+    private final VItemDetailGroupService vItemDetailGroupService;
 
     public VItemInfo.Main registerVItem(VItemCommand.RegisterVItemRequest command) {
         return vItemService.registerVItem(command);
@@ -23,10 +26,6 @@ public class VItemFacade {
         return vItemService.retrieveVItem(vItemId);
     }
 
-//    public VItemInfo.VItemDetailInfo registerVItemDetail(VItemCommand.RegisterVItemDetailRequest request, Long vItemId) {
-//        return vItemService.registerVItemDetail(request, vItemId);
-//    }
-
     public List<VItemInfo.Main> retrieveVItemList() {
         return vItemService.retrieveVItemList();
     }
@@ -35,15 +34,7 @@ public class VItemFacade {
         return vItemService.deleteVItem(vItemId);
     }
 
-//    public String deleteVItemDetail(Long vItemDetailId) {
-//        return vItemService.deleteVItemDetail(vItemDetailId);
-//    }
-
     public VItemInfo.Main updateVItem(VItemCommand.UpdateVItemRequest request) {
         return vItemService.updateVItem(request);
     }
-
-//    public VItemInfo.VItemDetailInfo updateVItemDetail(VItemCommand.UpdateVItemDetailRequest request) {
-//        return vItemService.updateVItemDetail(request);
-//    }
 }

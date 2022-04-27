@@ -3,13 +3,14 @@ package com.wemakeprice.vms.reportapi.domain.vitem.detailGroup;
 import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.common.exception.InvalidParamException;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItem;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemCommand;
 import com.wemakeprice.vms.reportapi.domain.vitem.detail.VItemDetail;
-import io.swagger.models.auth.In;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -75,4 +76,9 @@ public class VItemDetailGroup {
         this.vGroupGrade = VGroupGrade.MEDIUM;
     }
 
+    public void updateDetailGroup(VItemDetailGroupCommand.UpdateVItemDetailGroupRequest command) {
+        if(!StringUtils.isEmpty(command.getVGroupName())) this.vGroupName = command.getVGroupName();
+        if(command.getVGroupCode() != null) this.vGroupCode = command.getVGroupCode();
+        if(command.getOrdering() != null) this.ordering = command.getOrdering();
+    }
 }

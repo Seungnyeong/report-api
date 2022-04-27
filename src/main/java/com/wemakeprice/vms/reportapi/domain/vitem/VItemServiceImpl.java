@@ -23,9 +23,8 @@ public class VItemServiceImpl implements VItemService{
     public VItemInfo.Main registerVItem(VItemCommand.RegisterVItemRequest command) {
         var initItem = command.toEntity();
         var vItem = vItemStore.store(initItem);
-        vItemDetailSeriesFactory.store(command, vItem);
-        var vItemDetailGroupList = vItemReader.getVItemDetailGroupSeries(vItem);
-        return new VItemInfo.Main(vItem, vItemDetailGroupList);
+        var vItemDetailGroupList = vItemDetailSeriesFactory.store(command, vItem);
+        return new VItemInfo.Main(vItem,vItemDetailGroupList);
     }
 
     @Transactional

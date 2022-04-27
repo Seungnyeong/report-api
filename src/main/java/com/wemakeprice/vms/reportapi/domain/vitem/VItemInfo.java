@@ -43,14 +43,15 @@ public class VItemInfo {
         private final VItemDetailGroup.VGroupGrade vGroupGrade;
         private final String vGroupName;
         private final Integer vGroupCode;
+        private final Integer ordering;
         private final List<VItemDetailInfo> vItemDetailList;
-        private Integer ordering;
 
         public VItemDetailGroupInfo(VItemDetailGroup vItemDetailGroup, List<VItemDetailInfo> vItemDetailList) {
             this.id = vItemDetailGroup.getId();
             this.vGroupGrade = vItemDetailGroup.getVGroupGrade();
             this.vGroupName = vItemDetailGroup.getVGroupName();
             this.vGroupCode = vItemDetailGroup.getVGroupCode();
+            this.ordering = vItemDetailGroup.getOrdering();
             this.vItemDetailList = vItemDetailList;
         }
 

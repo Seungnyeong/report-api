@@ -3,6 +3,7 @@ package com.wemakeprice.vms.reportapi.web.dto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemCommand;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroupCommand;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -81,10 +82,28 @@ public class VItemDto {
             return VItemCommand.RegisterVItemGroupRequest.builder()
                     .vGroupCode(vGroupCode)
                     .vGroupName(vGroupName)
-                    .ordering(ordering)
                     .vItemDetailRequestList(vItemDetailList.stream().map(registerVItemDetail -> VItemCommand.RegisterVItemDetailRequest.builder()
                             .detail(registerVItemDetail.detail)
                             .build()).collect(Collectors.toList()))
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class UpdateVItemDetailGroupRequest {
+        private Long vItemDetailGroupId;
+        private String vGroupName;
+        private Integer vGroupCode;
+        private Integer ordering;
+
+        public VItemDetailGroupCommand.UpdateVItemDetailGroupRequest toCommand() {
+            return VItemDetailGroupCommand.UpdateVItemDetailGroupRequest.builder()
+                    .id(vItemDetailGroupId)
+                    .vGroupCode(vGroupCode)
+                    .vGroupName(vGroupName)
+                    .ordering(ordering)
                     .build();
         }
     }
@@ -109,9 +128,6 @@ public class VItemDto {
     @ToString
     @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class RegisterVItemDetail {
-
-        @NotNull(message = "vItemId 필수 입니다.")
-        private Long vItemId;
 
         @NotNull(message = "detail 필수 입니다.")
         private String detail;
@@ -140,15 +156,6 @@ public class VItemDto {
         @Max(value = 999 , message = "999 이하입니다.")
         private Integer vCategoryCode;
 
-        @NotNull(message = "vSubCategoryName 필수 입니다.")
-        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=100 입니다.")
-        private String vSubCategoryName;
-
-        @NotNull(message = "vSubCategoryCode 필수 입니다.")
-        @Min(value = 1, message = "0보다 커야 합니다.")
-        @Max(value = 999 , message = "999 이하입니다.")
-        private Integer vSubCategoryCode;
-
         @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
         private String vDetail;
 
@@ -162,8 +169,6 @@ public class VItemDto {
                     .id(vItemId)
                     .vCategoryName(vCategoryName)
                     .vCategoryCode(vCategoryCode)
-                    .vSubCategoryName(vSubCategoryName)
-                    .vSubCategoryCode(vSubCategoryCode)
                     .vDetail(vDetail)
                     .caseTag(caseTag)
                     .respondTag(respondTag)

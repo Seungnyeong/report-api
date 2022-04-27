@@ -23,7 +23,7 @@ public class VItemSeriesFactoryImpl implements VItemSeriesFactory {
     private final VItemDetailStore vItemDetailStore;
 
     @Override
-    public List<VItemDetailGroup> store(VItemCommand.RegisterVItemRequest command, VItem vItem) {
+    public List<VItemInfo.VItemDetailGroupInfo> store(VItemCommand.RegisterVItemRequest command, VItem vItem) {
         var vItemOptionGroupRequestList = command.getVItemGroupRequestList();
         if (CollectionUtils.isEmpty(vItemOptionGroupRequestList)) return Collections.emptyList();
         return vItemOptionGroupRequestList.stream()
@@ -31,12 +31,12 @@ public class VItemSeriesFactoryImpl implements VItemSeriesFactory {
                     var initVItemDetailGroup = requestVItemDetailGroup.toEntity(vItem);
                     var vItemDetailGroup = vItemDetailGroupStore.store(initVItemDetailGroup);
 
-                    requestVItemDetailGroup.getVItemDetailRequestList().forEach(requestVItemDetail -> {
+                    var vItemDetailInfoList = requestVItemDetailGroup.getVItemDetailRequestList().stream().map(requestVItemDetail -> {
                         var initVItemDetail = requestVItemDetail.toEntity(vItemDetailGroup);
                         vItemDetailStore.store(initVItemDetail);
-                    });
-
-                    return vItemDetailGroup;
+                        return new VItemInfo.VItemDetailInfo(initVItemDetail);
+                    }).collect(Collectors.toList());
+                    return new VItemInfo.VItemDetailGroupInfo(vItemDetailGroup, vItemDetailInfoList);
                 }).collect(Collectors.toList());
     }
 }
