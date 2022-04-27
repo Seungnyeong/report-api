@@ -21,7 +21,7 @@ public class VItemDto {
     public static class RegisterVItemRequest {
 
         @NotNull(message = "vCategoryName 필수 입니다.")
-        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=3 입니다.")
+        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=100 입니다.")
         private String vCategoryName;
 
         @NotNull(message = "vCategoryCode 필수 입니다.")
@@ -29,9 +29,13 @@ public class VItemDto {
         @Max(value = 999 , message = "999 이하입니다.")
         private Integer vCategoryCode;
 
-        @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
+        @Size(min = 0, max = 1000, message = "vDetail은 0에서 1000자 사이입니다.")
         private String vDetail;
+
+        @Size(min = 0, max = 100, message = "caseTag는 0에서 1000자 사이입니다.")
         private String caseTag;
+
+        @Size(min = 0, max = 100, message = "responseTag는 0에서 1000자 사이입니다.")
         private String respondTag;
         private Integer ordering;
 
@@ -62,8 +66,16 @@ public class VItemDto {
     @Setter
     @ToString
     public static class RegisterVItemDetailGroup {
+
+        @NotNull(message = "vCategoryName 필수 입니다.")
+        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=100 입니다.")
         private String vGroupName;
+
+        @NotNull(message = "vCategoryCode 필수 입니다.")
+        @Min(value = 1, message = "0보다 커야 합니다.")
+        @Max(value = 999 , message = "999 이하입니다.")
         private Integer vGroupCode;
+
         private Integer ordering;
 
         private List<RegisterVItemWithDetail> vItemDetailList;
@@ -84,9 +96,16 @@ public class VItemDto {
     @Setter
     @ToString
     public static class UpdateVItemDetailGroupRequest {
+        @NotNull(message = "vItemDetailGroupId 필수 입니다.")
         private Long vItemDetailGroupId;
+
+        @Size(min = 1, max = 100, message = "최소 Size= 1, 최대 Size=100 입니다.")
         private String vGroupName;
+
+        @Min(value = 1, message = "0보다 커야 합니다.")
+        @Max(value = 999 , message = "999 이하입니다.")
         private Integer vGroupCode;
+
         private Integer ordering;
 
         public VItemDetailGroupCommand.UpdateVItemDetailGroupRequest toCommand() {
@@ -174,7 +193,7 @@ public class VItemDto {
     @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class UpdateVItemDetailRequest {
 
-        @NotNull(message = "vItemId 필수 입니다.")
+        @NotNull(message = "vItemDetailId는 필수 입니다.")
         private Long vItemDetailId;
 
         @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
