@@ -1,0 +1,100 @@
+def fullFiledName = "wvms-report-api.tar.gz",
+    appDir = "/data/app/report-api";
+
+pipeline {
+    agent {
+        node {
+            label 'master'
+        }
+    }
+    stages {
+        stage('Pull Source From Stash') {
+            steps {
+                git(url: 'https://stash.wemakeprice.com/scm/secutech/vms-report-api.git', branch: 'master', credentialsId: "seungnyeong")
+            }
+        }
+
+        stage('Build Project') {
+            tools {
+                    jdk "jdk11"
+            }
+            steps {
+                withGradle {
+                    sh 'chmod +x gradlew'
+                    sh './gradlew clean build -x test'
+                }
+            }
+        }
+
+        stage("Archive Projcet") {
+            steps {
+                script {
+                    def archiveDir = !fileExists("target"),
+                        applicationZip = "target/${fullFiledName}",
+                        applicationDir =["build/libs/report-api-1.0.jar", "scripts/run.sh" , "scripts/stop.sh"].join(" ");
+
+
+                    if(archiveDir) {
+                        sh "mkdir target"
+                    }
+
+
+                    sh "tar -czf ${applicationZip} ${applicationDir}"
+
+                    archiveArtifacts artifacts: "${applicationZip}", excludes: null, onlyIfSuccessful: true
+
+                }
+            }
+        }
+
+
+        stage('Send Artifactor') {
+            agent {
+                node {
+                    label "dev_wvms_master"
+                }
+            }
+            steps {
+                copyArtifacts filter: "target/${fullFiledName}", fingerprintArtifacts: true, projectName: 'vms-report-api', target : "/data/app/report-api", selector: specific("${BUILD_NUMBER}");
+            }
+        }
+
+        stage('Extract Artifactor') {
+            agent {
+                node {
+                    label "dev_wvms_master"
+                }
+            }
+            steps {
+                script {
+                    sh "tar -zxf ${appDir}/target/${fullFiledName} -C ${appDir}"
+                }
+            }
+        }
+
+        stage('Kill Process') {
+            agent {
+                node {
+                    label "dev_wvms_master"
+                }
+            }
+            steps {
+                sh "chmod 775 ${appDir}/scripts/stop.sh"
+                sh "${appDir}/scripts/stop.sh"
+            }
+        }
+
+
+       stage("Start Boot Run") {
+           agent {
+               node {
+                   label "dev_wvms_master"
+               }
+           }
+           steps {
+                sh "chmod 775 ${appDir}/scripts/run.sh"
+                sh "JENKINS_NODE_COOKIE=dontKillMe ${appDir}/scripts/run.sh"
+           }
+       }
+    }
+}
