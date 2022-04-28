@@ -25,7 +25,7 @@ public class VItemDetailGroupController {
     }
 
     @DeleteMapping("/{vItemDetailGroupId}")
-    public CommonResponse deleteVitemDetailGroup(@PathVariable("vItemDetailGroupId") Long id) {
+    public CommonResponse deleteVItemDetailGroup(@PathVariable("vItemDetailGroupId") Long id) {
         var response = vItemDetailGroupFacade.deleteVItemDetailGroup(id);
         return CommonResponse.success(response);
     }
@@ -36,7 +36,7 @@ public class VItemDetailGroupController {
         return CommonResponse.success(String.format("%s 으로 변경 되었습니다.", type));
     }
 
-    @PatchMapping("")
+    @PatchMapping()
     public CommonResponse updateVItemDetailGroup(@RequestBody @Valid VItemDto.UpdateVItemDetailGroupRequest request) {
         var response = vItemDetailGroupFacade.updateVItemDetailGroup(request.toCommand());
         return CommonResponse.success(response);

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.wemakeprice.vms'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 sourceCompatibility = '11'
 
 configurations {
@@ -17,6 +17,7 @@ configurations {
 repositories {
     mavenCentral()
 }
+
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -42,6 +43,6 @@ dependencies {
     annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+test {
+    exclude "**/*"
 }
