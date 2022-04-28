@@ -30,6 +30,7 @@ public class SwaggerConfig {
                 .description("WKMS 리포트 API 입니다.")
                 .version("1.0")
                 .license("CERT팀")
+                .licenseUrl("https://confluence.wemakeprice.com/pages/viewpage.action?pageId=212396469")
                 .build();
     }
 }
