@@ -27,7 +27,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("WVMS Report API")
-                .description("WKMS 리포트 API 입니다.")
+                .description("WVMS-REPORT-API")
                 .version("1.0")
                 .license("CERT팀")
                 .licenseUrl("https://confluence.wemakeprice.com/pages/viewpage.action?pageId=212396469")
