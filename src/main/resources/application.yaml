@@ -9,8 +9,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: secret
-  pid :
-    file : report-api.pid
+#  pid :
+#    file : report-api.pid
 
 #  datasource:
 #    url: jdbc:h2:./db/vms;MODE=MYSQL;database_to_upper=false
