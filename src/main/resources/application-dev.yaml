@@ -18,7 +18,7 @@ spring:
 
 
 logging:
-  config: classpath:logback-dev.xml
+  config: classpath:logback.xml
 
 wkms:
   key: dev-vms-report-api
