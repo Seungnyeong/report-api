@@ -29,6 +29,7 @@ public class SwaggerConfig {
                 .title("WVMS Report API")
                 .description("WKMS 리포트 API 입니다.")
                 .version("1.0")
+                .license("CERT팀")
                 .build();
     }
 }
