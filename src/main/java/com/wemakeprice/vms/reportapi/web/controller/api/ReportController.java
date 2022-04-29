@@ -1,6 +1,7 @@
 package com.wemakeprice.vms.reportapi.web.controller.api;
 
 import com.wemakeprice.vms.reportapi.common.response.CommonResponse;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/report")
 @Slf4j
+@Api(tags = "보고서 생성")
 public class ReportController {
 
     @ApiOperation(value = "레포트 생성", notes = "개발전")
