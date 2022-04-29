@@ -16,7 +16,7 @@ spring:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.connection.provider_disables_autocommit: false
   pid:
-    file: report-api.pid
+    file: /data/app/report-api/report-api.pid
 
 logging:
   config: classpath:logback.xml
