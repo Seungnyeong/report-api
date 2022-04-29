@@ -72,16 +72,19 @@ public class VItemInfo {
     public static class VItemDetailInfo {
         private final Long id;
         private final String detail;
+        private final List<String> respond;
 
         public VItemDetailInfo(VItemDetail vItemDetail) {
             this.id = vItemDetail.getId();
             this.detail = vItemDetail.getVDetail();
+            this.respond = vItemDetail.getRespond();
         }
 
         public VItemDetail toEntity(VItemDetailGroup vItemDetailGroup) {
             return VItemDetail.builder()
                     .vDetail(detail)
                     .vItemDetailGroup(vItemDetailGroup)
+                    .respond(respond)
                     .build();
         }
     }

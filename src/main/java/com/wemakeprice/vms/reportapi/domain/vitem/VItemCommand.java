@@ -99,10 +99,12 @@ public class VItemCommand {
     public static class UpdateVItemDetailRequest {
         private final Long id;
         private final String detail;
+        private final List<String> respond;
 
         public VItemDetail toEntity() {
             return VItemDetail.builder()
                     .vDetail(detail)
+                    .respond(respond)
                     .build();
         }
     }

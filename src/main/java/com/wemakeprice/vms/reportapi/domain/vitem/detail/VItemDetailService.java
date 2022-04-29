@@ -10,4 +10,5 @@ public interface VItemDetailService {
     VItemInfo.VItemDetailInfo updateVItemDetail(VItemCommand.UpdateVItemDetailRequest command);
     VItemInfo.VItemDetailInfo registerVItemDetail(VItemCommand.RegisterVItemDetailRequest command, Long vItemDetailId);
     List<VItemInfo.VItemDetailInfo> retrieveAllDetail(Long vItemDetailId);
+    VItemInfo.VItemDetailInfo removeVItemDetailRespond(Long vItemDetailId, int index);
 }

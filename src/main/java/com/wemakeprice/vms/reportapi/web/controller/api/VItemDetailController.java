@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +23,7 @@ public class VItemDetailController {
     }
 
     @PostMapping("/{vItemDetailGroupId}")
-    public CommonResponse registerVItemGroup(@RequestBody @Valid VItemDto.RegisterVItemDetail request, @PathVariable("vItemDetailGroupId") Long vItemDetailGroupId) {
+    public CommonResponse registerVItemGroup(@RequestBody VItemDto.RegisterVItemDetail request, @PathVariable("vItemDetailGroupId") Long vItemDetailGroupId) {
         var response = vItemDetailFacade.registerVItemDetail(request.toCommand(), vItemDetailGroupId);
         return CommonResponse.success(response);
     }
@@ -36,8 +34,14 @@ public class VItemDetailController {
         return CommonResponse.success(response);
     }
 
+    @DeleteMapping("/{vItemDetailId}/respond")
+    public CommonResponse deleteVItemDetailRespond(@PathVariable("vItemDetailId") Long vItemDetailId, @RequestParam int index) {
+        var response = vItemDetailFacade.removeVItemDetailRespond(vItemDetailId, index);
+        return CommonResponse.success(response);
+    }
+
     @PatchMapping
-    public CommonResponse updateVItemDetail(@RequestBody @Valid VItemDto.UpdateVItemDetailRequest request) {
+    public CommonResponse updateVItemDetail(@RequestBody  VItemDto.UpdateVItemDetailRequest request) {
         var response = vItemDetailFacade.updateVItemDetail(request.toCommand());
         return CommonResponse.success(response);
 

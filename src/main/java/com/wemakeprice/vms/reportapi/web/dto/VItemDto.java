@@ -199,10 +199,13 @@ public class VItemDto {
         @Size(min = 0, max = 1000, message = "0에서 1000자 사이입니다.")
         private String detail;
 
+        private List<String> respond;
+
         public VItemCommand.UpdateVItemDetailRequest toCommand() {
             return VItemCommand.UpdateVItemDetailRequest.builder()
                     .id(vItemDetailId)
                     .detail(detail)
+                    .respond(respond)
                     .build();
         }
     }

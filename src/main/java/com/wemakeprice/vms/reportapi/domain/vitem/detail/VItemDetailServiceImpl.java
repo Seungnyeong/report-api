@@ -30,6 +30,14 @@ public class VItemDetailServiceImpl implements VItemDetailService {
 
     @Transactional
     @Override
+    public VItemInfo.VItemDetailInfo removeVItemDetailRespond(Long vItemDetailId, int index) {
+        var vItemDetail = vItemDetailReader.getVItemDetail(vItemDetailId);
+        vItemDetail.removeResponse(index);
+        return new VItemInfo.VItemDetailInfo(vItemDetail);
+    }
+
+    @Transactional
+    @Override
     public VItemInfo.VItemDetailInfo registerVItemDetail(VItemCommand.RegisterVItemDetailRequest command, Long vItemDetailGroupId) {
         var vItemGroupDetail = vItemDetailGroupReader.getVItemBy(vItemDetailGroupId);
         var initVItemDetail = command.toEntity(vItemGroupDetail);

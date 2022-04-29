@@ -31,4 +31,8 @@ public class VItemDetailFacade {
     public VItemInfo.VItemDetailInfo updateVItemDetail(VItemCommand.UpdateVItemDetailRequest request ) {
         return vItemDetailService.updateVItemDetail(request);
     }
+
+    public VItemInfo.VItemDetailInfo removeVItemDetailRespond(Long vItemDetailId, int index) {
+        return vItemDetailService.removeVItemDetailRespond(vItemDetailId, index);
+    }
 }

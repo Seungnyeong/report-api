@@ -19,7 +19,7 @@ public class VItemDetailGroupController {
     private final VItemDetailGroupFacade vItemDetailGroupFacade;
 
     @PostMapping("/{vItemId}")
-    public CommonResponse registerVItemGroup(@RequestBody @Valid VItemDto.RegisterVItemDetailGroup request, @PathVariable("vItemId") Long id) {
+    public CommonResponse registerVItemGroup(@RequestBody VItemDto.RegisterVItemDetailGroup request, @PathVariable("vItemId") Long id) {
         var response = vItemDetailGroupFacade.registerVItemDetailGroup(request.toCommand(), id);
         return CommonResponse.success(response);
     }
@@ -37,7 +37,7 @@ public class VItemDetailGroupController {
     }
 
     @PatchMapping()
-    public CommonResponse updateVItemDetailGroup(@RequestBody @Valid VItemDto.UpdateVItemDetailGroupRequest request) {
+    public CommonResponse updateVItemDetailGroup(@RequestBody VItemDto.UpdateVItemDetailGroupRequest request) {
         var response = vItemDetailGroupFacade.updateVItemDetailGroup(request.toCommand());
         return CommonResponse.success(response);
     }

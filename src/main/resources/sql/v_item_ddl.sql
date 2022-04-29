@@ -37,3 +37,11 @@ CREATE TABLE v_item_detail
 
 ALTER TABLE v_item_detail
     ADD CONSTRAINT FK_V_ITEM_DETAIL_ON_V_ITEM_DETAIL_GROUP FOREIGN KEY (v_item_detail_group_id) REFERENCES v_item_detail_group (id);
+
+create table v_detail_respond
+(
+    v_item_detail_id bigint       not null,
+    respond          varchar(255) null,
+    constraint FKki9dt75mq9f9qng2jjhe42vga
+        foreign key (v_item_detail_id) references v_item_detail (id)
+);
