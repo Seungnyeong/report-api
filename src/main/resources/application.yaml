@@ -1,6 +1,7 @@
 server:
   port: 8888
-
+  servlet:
+    context-path : /report
 spring:
   profiles:
     - local
@@ -38,3 +39,6 @@ spring:
 
 logging:
   config: classpath:logback.xml
+
+cross:
+  origin-url : http://localhost:3000
