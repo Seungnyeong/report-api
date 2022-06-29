@@ -1,0 +1,30 @@
+server:
+  port: 8887
+
+spring:
+  profiles:
+    - stg
+  datasource:
+    url: jdbc:mysql://172.19.30.164:3306/wvms?serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name:  com.mysql.cj.jdbc.Driver
+  jpa:
+    database: MYSQL
+    hibernate:
+      ddl-auto: validate
+      show-sql : true
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
+      hibernate.connection.provider_disables_autocommit: false
+  pid:
+    file: report-api.pid
+
+logging:
+  config: classpath:logback.xml
+
+wkms:
+  key: stg-vms-report-api
+  token : 0e09c9378689fb0d20fee503f26db5d00861892e
+  url : keyinfo-nd-stg.wemakeprice.kr
+
+cross:
+  origin-url : http://172.19.30.164:8887
