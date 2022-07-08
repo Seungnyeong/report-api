@@ -1,6 +1,7 @@
 package com.wemakeprice.vms.reportapi.common.filter;
 
 import com.wemakeprice.vms.reportapi.common.utils.UserAuthentication;
+import com.wemakeprice.vms.reportapi.domain.users.User;
 import com.wemakeprice.vms.reportapi.domain.users.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,13 +26,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
             if (StringUtils.isNotEmpty(jwt)) {
-                /*TODO
-                * 여기서 디비 조회 auth token 을 조회 해서 user id 을 가져온후
-                * 해당 아이디 값을 세션에 넣어주는 방식이 제일 베스트 일 것 같긴하다.
-                * */
-                Long userId = userService.retrieveAuthToken(jwt).getUser().getId();
-                UserAuthentication authentication = new UserAuthentication(String.valueOf(userId), null, null);
+
+                User user = userService.retrieveAuthToken(jwt).getUser().toEntity();
+                UserAuthentication authentication = new UserAuthentication(user, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
             } else {
                 if (StringUtils.isEmpty(jwt)) {
                     request.setAttribute("unauthorization", "401 인증키 없음.");
