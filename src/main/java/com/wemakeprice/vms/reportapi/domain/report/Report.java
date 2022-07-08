@@ -3,16 +3,18 @@ package com.wemakeprice.vms.reportapi.domain.report;
 
 import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
+import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
+import com.wemakeprice.vms.reportapi.domain.users.User;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
-//@Entity
-//@NoArgsConstructor
-//@Table(name = "reports")
-//@Getter
+@Entity
+@NoArgsConstructor
+@Table(name = "reports")
+@Getter
 public class Report extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,13 +22,16 @@ public class Report extends AbstractEntity {
 
     @Column(nullable = false)
     private String title;
-    private Long userId;
 
-    @Column(nullable = false, length = 20)
+    @OneToOne
+    @JoinColumn(name = "id")
+    private User user;
+
+    @Column(nullable = false, length = 20, unique = true)
     private String reportControlNumber;
 
-    @Column(nullable = false, length = 20)
-    private String jiraTicketName;
+    @Column(nullable = false, length = 20, unique = true)
+    private String jiraTicketNumber;
 
     @Enumerated(EnumType.STRING)
     private Vulnerability reportVPossibility;
@@ -49,18 +54,19 @@ public class Report extends AbstractEntity {
     @Column(length = 1000)
     private String reportFileName;
 
-    @Column(nullable = false)
-    private Long tableId;
+    @OneToOne
+    @JoinColumn(name = "id")
+    private DiagnosisTable diagnosisTable;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "report" , cascade = CascadeType.PERSIST)
     private List<ReportOptionGroup> reportOptionGroupsList = Lists.newArrayList();
 
     @Builder
-    public Report(Long tableId, Long userId, String jiraTicketName, String reportFileName) {
-        this.userId = userId;
-        this.tableId = tableId;
+    public Report(DiagnosisTable diagnosisTable, User user, String jiraTicketNumber, String reportFileName) {
+        this.user = user;
+        this.diagnosisTable = diagnosisTable;
         this.reportVersion = 1;
-        this.jiraTicketName = jiraTicketName;
+        this.jiraTicketNumber = jiraTicketNumber;
         this.reportFileName = reportFileName;
     }
 

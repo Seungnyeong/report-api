@@ -1,14 +1,24 @@
 package com.wemakeprice.vms.reportapi.config;
 
+import com.wemakeprice.vms.reportapi.common.filter.JwtAuthenticationFilter;
+import com.wemakeprice.vms.reportapi.common.utils.JwtAuthenticationEntryPoint;
+import com.wemakeprice.vms.reportapi.domain.users.UserService;
+import com.wemakeprice.vms.reportapi.infrastructure.users.AuthTokenRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final UserService userService;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -20,15 +30,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                .cors().and()
+                .csrf().disable()
+                .exceptionHandling()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(userService), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**","/",
                         "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/index.html", "/swagger-ui.html","/webjars/**", "/swagger/**",   // swagger
-                        "/favicon.ico", "/h2-console/*")
+                        "/favicon.ico", "/h2-console/*" , "/report/" , "/csrf/")
                 .permitAll()
                 .antMatchers("/api/v1/**")
-                .permitAll()
-                .anyRequest().authenticated();
+                .authenticated()
+                ;
 
         http.headers().frameOptions().disable();
     }

@@ -12,11 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import javax.persistence.*;
 import java.util.List;
 
-//@Slf4j
-//@Entity
-//@Table(name = "report_option")
-//@NoArgsConstructor
-//@Getter
+@Slf4j
+@Entity
+@Table(name = "report_option")
+@NoArgsConstructor
+@Getter
 public class ReportOption extends AbstractEntity {
 
     @Id
@@ -39,11 +39,11 @@ public class ReportOption extends AbstractEntity {
     @JoinColumn(name = "report_option_group_id")
     private ReportOptionGroup reportOptionGroup;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reportOption" , cascade = CascadeType.PERSIST)
-//    private List<ReportOptionMethod> reportOptionMethodList = Lists.newArrayList();
-//
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reportOption" , cascade = CascadeType.PERSIST)
-//    private List<ReportOptionImage> reportOptionImageList = Lists.newArrayList();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reportOption" , cascade = CascadeType.PERSIST)
+    private List<ReportOptionMethod> reportOptionMethodList = Lists.newArrayList();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reportOption" , cascade = CascadeType.PERSIST)
+    private List<ReportOptionImage> reportOptionImageList = Lists.newArrayList();
 
     private Integer ordering;
 }

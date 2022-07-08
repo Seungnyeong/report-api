@@ -9,11 +9,11 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 
 
-//@Entity
-//@Slf4j
-//@Getter
-//@NoArgsConstructor
-//@Table(name = "report_option_method")
+@Entity
+@Slf4j
+@Getter
+@NoArgsConstructor
+@Table(name = "report_option_method")
 public class ReportOptionMethod {
 
     @Id

@@ -8,15 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
-//@Entity
-//@Slf4j
-//@Getter
-//@NoArgsConstructor
-//@Table(name = "report_option_images")
+@Entity
+@Slf4j
+@Getter
+@NoArgsConstructor
+@Table(name = "report_option_images")
 public class ReportOptionImage extends AbstractEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(length = 1000)
@@ -35,7 +35,15 @@ public class ReportOptionImage extends AbstractEntity {
     @Column(length = 1000)
     private String caption;
 
-//    @ManyToOne
-//    @JoinColumn(name = "report_option_id")
-//    private ReportOption reportOptionId;
+    @ManyToOne
+    @JoinColumn(name = "report_option_id", insertable = false, updatable = false)
+    private ReportOption reportOptionId;
+
+    @ManyToOne
+    @JoinColumn(name = "report_option_id", insertable = false, updatable = false)
+    private ReportOption reportOption;
+
+    public void setReportOption(ReportOption reportOption) {
+        this.reportOption = reportOption;
+    }
 }

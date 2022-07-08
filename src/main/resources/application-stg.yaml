@@ -18,9 +18,6 @@ spring:
   pid:
     file: report-api.pid
 
-logging:
-  config: classpath:logback.xml
-
 wkms:
   key: stg-vms-report-api
   token : 0e09c9378689fb0d20fee503f26db5d00861892e
