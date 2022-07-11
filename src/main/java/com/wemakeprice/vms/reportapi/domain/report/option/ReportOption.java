@@ -3,8 +3,11 @@ package com.wemakeprice.vms.reportapi.domain.report.option;
 import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
 import com.wemakeprice.vms.reportapi.domain.report.Image.ReportOptionImage;
+import com.wemakeprice.vms.reportapi.domain.report.Report;
 import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethod;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,4 +49,19 @@ public class ReportOption extends AbstractEntity {
     private List<ReportOptionImage> reportOptionImageList = Lists.newArrayList();
 
     private Integer ordering;
+
+    @Builder
+    public ReportOption(ReportOptionGroup reportOptionGroup,
+                        String vName,
+                        Integer reportVCount,
+                        String reportVIssue,
+                        String reportVResponse
+
+    ) {
+        this.reportOptionGroup = reportOptionGroup;
+        this.vName = vName;
+        this.reportVCount = reportVCount;
+        this.reportVIssue = reportVIssue;
+        this.reportVResponse = reportVResponse;
+    }
 }

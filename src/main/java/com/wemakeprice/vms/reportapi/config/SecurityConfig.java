@@ -1,9 +1,7 @@
 package com.wemakeprice.vms.reportapi.config;
 
 import com.wemakeprice.vms.reportapi.common.filter.JwtAuthenticationFilter;
-import com.wemakeprice.vms.reportapi.common.utils.JwtAuthenticationEntryPoint;
 import com.wemakeprice.vms.reportapi.domain.users.UserService;
-import com.wemakeprice.vms.reportapi.infrastructure.users.AuthTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

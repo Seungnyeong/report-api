@@ -1,4 +1,4 @@
-package com.wemakeprice.vms.reportapi.common.utils;
+package com.wemakeprice.vms.reportapi.common.utils.auth;
 
 import com.wemakeprice.vms.reportapi.domain.users.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

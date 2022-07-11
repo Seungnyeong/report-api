@@ -2,22 +2,31 @@ package com.wemakeprice.vms.reportapi.domain.report;
 
 
 import com.google.common.collect.Lists;
+import com.wemakeprice.vms.reportapi.common.exception.AuthorizationException;
+import com.wemakeprice.vms.reportapi.common.exception.InvalidParamException;
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
 import com.wemakeprice.vms.reportapi.domain.users.User;
 import lombok.*;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
+
+import static com.wemakeprice.vms.reportapi.common.utils.common.ReportCommon.getTempPassword;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "reports")
 @Getter
 public class Report extends AbstractEntity {
+
+    private static Integer controlNumber = 1;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
@@ -39,20 +48,23 @@ public class Report extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private Grade reportVGrade;
 
-    @Column(length = 1000)
+    @Column(length = 1000, nullable = true)
     private String reportFilePath;
 
     @Column(length = 100)
     private String reportPassword;
 
-    @Column(length = 1000 , nullable = false)
+    @Column(length = 3, nullable = true)
     private String fileExtension;
 
     @Column(length = 10 )
     private int reportVersion;
 
-    @Column(length = 1000)
+    @Column(length = 1000 , nullable = true)
     private String reportFileName;
+
+    @Column(length = 1000)
+    private String generalReview;
 
     @OneToOne
     @JoinColumn(name = "id")
@@ -62,12 +74,35 @@ public class Report extends AbstractEntity {
     private List<ReportOptionGroup> reportOptionGroupsList = Lists.newArrayList();
 
     @Builder
-    public Report(DiagnosisTable diagnosisTable, User user, String jiraTicketNumber, String reportFileName) {
-        this.user = user;
+    public Report(DiagnosisTable diagnosisTable,
+                  String jiraTicketNumber,
+                  String reportFileName,
+                  String generalReview,
+                  String title,
+                  Report.Vulnerability reportVPossibility,
+                  Report.Grade reportVGrade
+
+
+    ) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user == null) throw new AuthorizationException();
+        if (diagnosisTable == null) throw new InvalidParamException("진단 테이블은 필수 값입니다.");
+        if (reportVPossibility == null) throw new InvalidParamException("침해 가능성을 선택해 주세요.");
+        if (reportVGrade == null) throw new InvalidParamException("취약점 등급을 선택해주세요");
+
+        this.title = title;
         this.diagnosisTable = diagnosisTable;
         this.reportVersion = 1;
         this.jiraTicketNumber = jiraTicketNumber;
         this.reportFileName = reportFileName;
+        this.reportControlNumber = generateControlNumber();
+        this.reportPassword = getTempPassword(10);
+        this.generalReview = generalReview;
+        this.jiraTicketNumber = jiraTicketNumber;
+        this.reportVPossibility = reportVPossibility;
+        this.reportVGrade = reportVGrade;
+        this.user = user;
+
     }
 
     @Getter
@@ -88,5 +123,15 @@ public class Report extends AbstractEntity {
         THIRD("3급");
 
         private final String description;
+    }
+
+    public static String generateControlNumber() {
+        /*
+        * 금일 년도 가져와서, auto increase + 1
+        * */
+        controlNumber++;
+        LocalDate now = LocalDate.now();
+        String year = String.valueOf(now.getYear());
+        return year + "-" + controlNumber.toString();
     }
 }

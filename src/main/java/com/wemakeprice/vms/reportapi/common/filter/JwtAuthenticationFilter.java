@@ -1,6 +1,7 @@
 package com.wemakeprice.vms.reportapi.common.filter;
 
-import com.wemakeprice.vms.reportapi.common.utils.UserAuthentication;
+import com.wemakeprice.vms.reportapi.common.response.ErrorCode;
+import com.wemakeprice.vms.reportapi.common.utils.auth.UserAuthentication;
 import com.wemakeprice.vms.reportapi.domain.users.User;
 import com.wemakeprice.vms.reportapi.domain.users.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             } else {
                 if (StringUtils.isEmpty(jwt)) {
-                    request.setAttribute("unauthorization", "401 인증키 없음.");
+                    request.setAttribute("unauthorization", ErrorCode.COMMON_AUTH_ERROR);
                 }
             }
         } catch (Exception e) {

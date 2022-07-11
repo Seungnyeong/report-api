@@ -45,9 +45,6 @@ public class VItem extends AbstractEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vItem" , cascade = CascadeType.ALL)
     private List<VItemDetailGroup> vItemDetailGroupList = Lists.newArrayList();
 
-    private Long annualTableId;
-
-
     @Builder
     public VItem(String vCategoryName,
                  Integer vCategoryCode,

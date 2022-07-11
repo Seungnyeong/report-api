@@ -1,4 +1,4 @@
-package com.wemakeprice.vms.reportapi.common.utils;
+package com.wemakeprice.vms.reportapi.common.utils.auth;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;

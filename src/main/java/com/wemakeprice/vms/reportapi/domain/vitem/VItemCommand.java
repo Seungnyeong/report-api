@@ -15,7 +15,7 @@ public class VItemCommand {
     @ToString
     public static class RegisterVItemRequest {
         private final String vCategoryName;
-        private final Integer vCategoryCode;;
+        private final Integer vCategoryCode;
         private final String vDetail;
         private final List<RegisterVItemGroupRequest> vItemGroupRequestList;
         private final String caseTag;

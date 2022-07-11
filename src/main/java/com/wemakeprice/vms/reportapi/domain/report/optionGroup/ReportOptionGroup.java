@@ -6,7 +6,9 @@ import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
 import com.wemakeprice.vms.reportapi.domain.report.Report;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
 import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
@@ -15,6 +17,7 @@ import java.util.List;
 @Slf4j
 @Table(name = "report_option_group")
 @Entity
+@NoArgsConstructor
 @Getter
 public class ReportOptionGroup extends AbstractEntity {
 
@@ -35,4 +38,9 @@ public class ReportOptionGroup extends AbstractEntity {
     @JoinColumn(name = "v_item_detail_group_id")
     private VItemDetailGroup vItemDetailGroup;
 
+    @Builder
+    public ReportOptionGroup(Report report, VItemDetailGroup vItemDetailGroup) {
+        this.report = report;
+        this.vItemDetailGroup = vItemDetailGroup;
+    }
 }

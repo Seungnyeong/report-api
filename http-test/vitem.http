@@ -1,7 +1,8 @@
 ### 1. XSS/CSRF 공격 가능성에 대한 데이터
 
-POST http://10.107.11.63:8887/api/v1/vitem
+POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
+Authorization: Token 969d8f064c7e8223391ed5b1d9173625a5691236
 
 {
   "case_tag": "xss",
@@ -69,8 +70,9 @@ Content-Type: application/json
 
 ### 2. 취약한 파일처리
 
-POST http://10.107.11.63:8887/api/v1/vitem
+POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
+Authorization: Token 969d8f064c7e8223391ed5b1d9173625a5691236
 
 {
   "case_tag": "file",
@@ -108,7 +110,7 @@ Content-Type: application/json
 
 ### 3. 취약한 접근통제 및 인증 설정
 
-POST http://10.107.11.63:8887/api/v1/vitem
+POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
 
 {
@@ -173,8 +175,9 @@ Content-Type: application/json
 
 ### 4. 주요 정보 저장/전송 처리 미흡
 
-POST http://10.107.11.63:8887/api/v1/vitem
+POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
+Authorization: Token 969d8f064c7e8223391ed5b1d9173625a5691236
 
 {
   "case_tag": "info",
@@ -212,7 +215,7 @@ Content-Type: application/json
 
 ### 5. 취약한 암호화 방식 사용 및 적용 관리
 
-POST http://10.107.11.63:8887/api/v1/vitem
+POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
 
 {
@@ -258,8 +261,9 @@ Content-Type: application/json
 
 ### 6. 부족한 오류 처리
 
-POST http://10.107.11.63:8887/api/v1/vitem
+POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
+Authorization: Token 969d8f064c7e8223391ed5b1d9173625a5691236
 
 {
   "case_tag": "error",
@@ -298,8 +302,9 @@ Content-Type: application/json
 
 ### 7. 취약점 보안 가능 및 설정
 
-POST http://10.107.11.63:8887/api/v1/vitem
+POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
+Authorization: Token 969d8f064c7e8223391ed5b1d9173625a5691236
 
 {
   "case_tag": "settings",
@@ -427,8 +432,9 @@ Content-Type: application/json
 
 
 ### 8. 기타 취약점
-POST http://10.107.11.63:8887/api/v1/vitem
+POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
+Authorization: Token 969d8f064c7e8223391ed5b1d9173625a5691236
 
 {
   "case_tag": "etc",
