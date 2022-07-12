@@ -9,10 +9,13 @@ import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
 import com.wemakeprice.vms.reportapi.domain.users.User;
 import lombok.*;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.wemakeprice.vms.reportapi.common.utils.common.ReportCommon.getTempPassword;
@@ -126,12 +129,11 @@ public class Report extends AbstractEntity {
     }
 
     public static String generateControlNumber() {
-        /*
-        * 금일 년도 가져와서, auto increase + 1
-        * */
-        controlNumber++;
-        LocalDate now = LocalDate.now();
-        String year = String.valueOf(now.getYear());
-        return year + "-" + controlNumber.toString();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Calendar dateTime = Calendar.getInstance();
+        String uniqueId = sdf.format(dateTime.getTime());
+        uniqueId = uniqueId+"-"+ RandomStringUtils.randomAlphanumeric(4);
+        return uniqueId;
     }
 }

@@ -6,10 +6,9 @@ import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
 import com.wemakeprice.vms.reportapi.domain.users.User;
-import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import lombok.Getter;
 import lombok.ToString;
-
 import java.util.List;
 
 public class ReportInfo {
@@ -53,16 +52,16 @@ public class ReportInfo {
     @ToString
     public static class ReportOptionGroupInfo {
         private final Long id;
-        private final VItemDetailGroup vItemDetailGroup;
+        private final VItemInfo.VItemDetailGroupInfo vItemDetailGroupInfo;
         private final List<ReportOptionInfo> reportOptionInfoList;
 
         public ReportOptionGroupInfo(
                 ReportOptionGroup reportOptionGroup,
-                VItemDetailGroup vItemDetailGroup,
-                                     List<ReportOptionInfo> reportOptionInfoList
+                VItemInfo.VItemDetailGroupInfo vItemDetailGroupInfo,
+                List<ReportOptionInfo> reportOptionInfoList
         ) {
             this.id = reportOptionGroup.getId();
-            this.vItemDetailGroup = vItemDetailGroup;
+            this.vItemDetailGroupInfo = vItemDetailGroupInfo;
             this.reportOptionInfoList = reportOptionInfoList;
         }
     }

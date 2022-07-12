@@ -55,7 +55,8 @@ public class ReportOption extends AbstractEntity {
                         String vName,
                         Integer reportVCount,
                         String reportVIssue,
-                        String reportVResponse
+                        String reportVResponse,
+                        Integer ordering
 
     ) {
         this.reportOptionGroup = reportOptionGroup;
@@ -63,5 +64,6 @@ public class ReportOption extends AbstractEntity {
         this.reportVCount = reportVCount;
         this.reportVIssue = reportVIssue;
         this.reportVResponse = reportVResponse;
+        this.ordering = ordering;
     }
 }

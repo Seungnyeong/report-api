@@ -71,4 +71,10 @@ public class VItemDetailGroupServiceImpl implements VItemDetailGroupService {
     public List<VItemInfo.VItemDetailGroupInfo> retrieveDetailGroupByVItemId(Long vItemId) {
         return null;
     }
+
+    @Transactional
+    @Override
+    public VItemDetailGroup getOneVItemDetailGroup(Long vItemDetailGroupId) {
+        return vItemDetailGroupReader.getVItemBy(vItemDetailGroupId);
+    }
 }

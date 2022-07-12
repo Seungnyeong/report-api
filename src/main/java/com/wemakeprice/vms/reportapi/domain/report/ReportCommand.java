@@ -42,6 +42,7 @@ public class ReportCommand {
     @ToString
     public static class GenerateReportGroupRequest {
 
+        Long vItemDetailGroupId;
         List<GenerateReportOptionGroupRequest> generateReportOptionGroupRequests;
 
         public ReportOptionGroup toEntity(Report report, VItemDetailGroup vItemDetailGroup) {
@@ -60,6 +61,7 @@ public class ReportCommand {
         private final Integer reportVCount;
         private final String reportVIssue;
         private final String reportVResponse;
+        private final Integer ordering;
 
         public ReportOption toEntity(ReportOptionGroup reportOptionGroup) {
             return ReportOption.builder()
@@ -67,6 +69,7 @@ public class ReportCommand {
                     .vName(vName)
                     .reportVCount(reportVCount)
                     .reportVResponse(reportVResponse)
+                    .ordering(ordering)
                     .build();
         }
     }

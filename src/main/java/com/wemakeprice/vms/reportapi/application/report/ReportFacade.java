@@ -4,6 +4,7 @@ import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTableService;
 import com.wemakeprice.vms.reportapi.domain.report.ReportCommand;
 import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import com.wemakeprice.vms.reportapi.domain.report.ReportService;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

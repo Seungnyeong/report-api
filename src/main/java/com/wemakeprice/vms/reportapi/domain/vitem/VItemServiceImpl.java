@@ -35,6 +35,7 @@ public class VItemServiceImpl implements VItemService{
         return new VItemInfo.Main(vItem, vItemDetailGroupList);
     }
 
+    @Transactional
     @Override
     public List<VItemInfo.Main> retrieveVItemList() {
         var vItemList = vItemReader.getVItemList();

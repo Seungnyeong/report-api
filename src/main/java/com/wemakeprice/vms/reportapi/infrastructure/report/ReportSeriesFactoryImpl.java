@@ -6,7 +6,8 @@ import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import com.wemakeprice.vms.reportapi.domain.report.ReportSeriesFactory;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOptionStore;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroupStore;
-import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,7 @@ public class ReportSeriesFactoryImpl implements ReportSeriesFactory {
 
     private final ReportOptionStore reportOptionStore;
     private final ReportOptionGroupStore reportOptionGroupStore;
+    private final VItemDetailGroupService vItemDetailGroupService;
 
     @Override
     public List<ReportInfo.ReportOptionGroupInfo> store(ReportCommand.GenerateReportRequest command, Report report) {
@@ -30,16 +32,17 @@ public class ReportSeriesFactoryImpl implements ReportSeriesFactory {
         if (CollectionUtils.isEmpty(reportOptionGroupList)) return Collections.emptyList();
         return reportOptionGroupList.stream()
                 .map(reportOptionGroup -> {
-                    var initReportOptionGroup = reportOptionGroup.toEntity(report, new VItemDetailGroup());
+                    var vItemDetailGroup = vItemDetailGroupService.getOneVItemDetailGroup(reportOptionGroup.getVItemDetailGroupId());
+                    var initReportOptionGroup = reportOptionGroup.toEntity(report, vItemDetailGroup);
                     var reportOptionGroupEntity = reportOptionGroupStore.store(initReportOptionGroup);
-
                     var reportOptionInfoList = reportOptionGroup.getGenerateReportOptionGroupRequests().stream()
                             .map(optionInfo -> {
                                 var initOption = optionInfo.toEntity(reportOptionGroupEntity);
                                 reportOptionStore.save(initOption);
                                 return new ReportInfo.ReportOptionInfo(initOption);
                             }).collect(Collectors.toList());
-                    return new ReportInfo.ReportOptionGroupInfo(reportOptionGroupEntity, new VItemDetailGroup(), reportOptionInfoList);
+                    return new ReportInfo.ReportOptionGroupInfo(reportOptionGroupEntity, new VItemInfo.VItemDetailGroupInfo(vItemDetailGroup,
+                            vItemDetailGroup.getVItemDetailsList().stream().map(VItemInfo.VItemDetailInfo::new).collect(Collectors.toList())), reportOptionInfoList);
                 }).collect(Collectors.toList());
     }
 }

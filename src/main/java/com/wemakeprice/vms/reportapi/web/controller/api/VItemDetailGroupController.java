@@ -22,7 +22,7 @@ public class VItemDetailGroupController {
     private final VItemDetailGroupFacade vItemDetailGroupFacade;
 
     @PostMapping("/{vItemId}")
-    @ApiOperation(value = "진단 가이드 중분류 아이템 검색", notes = "진단 가이드 중분류 아이템 검색")
+    @ApiOperation(value = "진단 가이드 중분류 아이템 검색", notes = "진단 가이드 중분류 아이템 등록")
     public CommonResponse registerVItemGroup(@RequestBody VItemDto.RegisterVItemDetailGroup request, @PathVariable("vItemId") Long id) {
         var response = vItemDetailGroupFacade.registerVItemDetailGroup(request.toCommand(), id);
         return CommonResponse.success(response);

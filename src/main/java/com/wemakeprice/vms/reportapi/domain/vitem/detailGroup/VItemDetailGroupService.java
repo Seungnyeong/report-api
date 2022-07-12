@@ -11,6 +11,7 @@ public interface VItemDetailGroupService {
     String deleteVItemGroup(Long vItemDetailGroupId);
     VItemInfo.VItemDetailGroupInfo updateVItemGroup(VItemDetailGroupCommand.UpdateVItemDetailGroupRequest command);
     List<VItemInfo.VItemDetailGroupInfo> retrieveDetailGroupByVItemId(Long vItemId);
+    VItemDetailGroup getOneVItemDetailGroup(Long vItemDetailGroupId);
 
     void changeGradeToHigh(Long vItemDetailGroupId);
     void changeGradeToMedium(Long vItemDetailGroupId);

@@ -76,7 +76,8 @@ public class ReportController {
     @ApiOperation(value = "레포트 파일 생성", notes = "개발전")
     @PostMapping
     public CommonResponse reportTest(@RequestBody @Valid ReportDto.GenerateReportRequest request) {
-        var response = reportFacade.generateReport(request.toCommand());
+        var command = request.toCommand();
+        var response = reportFacade.generateReport(command);
         return CommonResponse.success(response);
     }
 
