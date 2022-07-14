@@ -23,5 +23,8 @@ wkms:
   token : 0e09c9378689fb0d20fee503f26db5d00861892e
   url : keyinfo-nd-stg.wemakeprice.kr
 
+file:
+  upload-dir : /data/app/files
+
 cross:
   origin-url : http://172.19.30.164:8887

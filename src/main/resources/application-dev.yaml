@@ -23,5 +23,8 @@ wkms:
   token : 10412b099832011162af7f2c497552f1dc87c8d0
   url : keyinfo-nd-dev.wemakeprice.kr
 
+file:
+  upload-dir : /data/app/files
+
 cross:
   origin-url : http://10.107.11.63:8887

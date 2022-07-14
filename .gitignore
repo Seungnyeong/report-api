@@ -41,3 +41,4 @@ db
 application.pid
 
 src/main/resources/report_template/*
+files

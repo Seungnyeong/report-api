@@ -70,7 +70,7 @@ public class Report extends AbstractEntity {
     private String generalReview;
 
     @OneToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "diagnosis_table_id", referencedColumnName = "id")
     private DiagnosisTable diagnosisTable;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "report" , cascade = CascadeType.PERSIST)
@@ -84,8 +84,6 @@ public class Report extends AbstractEntity {
                   String title,
                   Report.Vulnerability reportVPossibility,
                   Report.Grade reportVGrade
-
-
     ) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user == null) throw new AuthorizationException();
@@ -128,8 +126,7 @@ public class Report extends AbstractEntity {
         private final String description;
     }
 
-    public static String generateControlNumber() {
-
+    private static String generateControlNumber() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         Calendar dateTime = Calendar.getInstance();
         String uniqueId = sdf.format(dateTime.getTime());

@@ -3,15 +3,19 @@ package com.wemakeprice.vms.reportapi.domain.report;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
+import com.wemakeprice.vms.reportapi.domain.report.image.ReportOptionImage;
+import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethod;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
 import com.wemakeprice.vms.reportapi.domain.users.User;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
-public class ReportInfo {
+public class ReportInfo  {
 
     @Getter
     @ToString
@@ -30,6 +34,7 @@ public class ReportInfo {
         private final String fileExtension;
         private final String reportFilePath;
         private final List<ReportOptionGroupInfo> reportOptionGroupsList;
+        private final LocalDateTime created;
 
         public Main(Report report, List<ReportOptionGroupInfo> reportOptionGroupInfoList) {
             this.id = report.getId();
@@ -44,6 +49,7 @@ public class ReportInfo {
             this.diagnosisTable = report.getDiagnosisTable();
             this.fileExtension = report.getFileExtension();
             this.reportFilePath = report.getReportFilePath();
+            this.created = report.getCreatedDate();
             this.reportOptionGroupsList = reportOptionGroupInfoList;
         }
     }
@@ -91,6 +97,46 @@ public class ReportInfo {
                     .reportVCount(reportVCount)
                     .reportVIssue(reportVIssue)
                     .build();
+        }
+    }
+
+    @Getter
+    @ToString
+    public static class ReportOptionImageInfo {
+        private final Long id;
+        private final String fileUrl;
+        private final String imageName;
+        private final String extension;
+        private final Integer ordering;
+        private final String description;
+        private final String caption;
+
+        public ReportOptionImageInfo(ReportOptionImage reportOptionImage, String url) {
+            this.id = reportOptionImage.getId();
+            this.fileUrl = url;
+            this.imageName = reportOptionImage.getImageName();
+            this.extension = reportOptionImage.getExtension();
+            this.ordering = reportOptionImage.getOrdering();
+            this.description = reportOptionImage.getDescription();
+            this.caption = reportOptionImage.getCaption();
+        }
+    }
+
+    @Getter
+    @ToString
+    public static class ReportOptionMethodInfo {
+        private final Long id;
+        private final String methodName;
+        private final String methodPackage;
+        private final String methodDescription;
+        private final Integer ordering;
+
+        public ReportOptionMethodInfo(ReportOptionMethod reportOptionMethod) {
+            this.id = reportOptionMethod.getId();
+            this.methodName = reportOptionMethod.getMethodName();
+            this.methodPackage = reportOptionMethod.getMethodPackage();
+            this.methodDescription = reportOptionMethod.getMethodDescription();
+            this.ordering = reportOptionMethod.getOrdering();
         }
     }
 }

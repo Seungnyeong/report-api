@@ -11,8 +11,9 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService{
 
-    private final ReportReader.ReportStore reportStore;
+    private final ReportStore reportStore;
     private final ReportSeriesFactory reportSeriesFactory;
+    private final ReportReader reportReader;
 
     @Transactional
     @Override
@@ -21,5 +22,12 @@ public class ReportServiceImpl implements ReportService{
         var report = reportStore.store(initReport);
         var reportOptionGroup = reportSeriesFactory.store(command, report);
         return new ReportInfo.Main(report, reportOptionGroup);
+    }
+
+    @Transactional
+    @Override
+    public ReportInfo.Main retrieveReport(DiagnosisTable diagnosisTable) {
+        var report = reportReader.findByDiagnosisTable(diagnosisTable);
+        return new ReportInfo.Main(report, null);
     }
 }

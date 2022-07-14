@@ -28,11 +28,20 @@ spring:
     database: MYSQL
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       show-sql : true
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.connection.provider_disables_autocommit: false
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-request-size: 10MB
+      max-file-size: 12MB
+
+file:
+  upload-dir : /Users/sn/workspace/vms-report-api/files
 
 
 logging:

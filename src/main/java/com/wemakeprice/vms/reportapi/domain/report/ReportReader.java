@@ -1,7 +1,8 @@
 package com.wemakeprice.vms.reportapi.domain.report;
 
+import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
+
 public interface ReportReader {
-    interface ReportStore {
-        Report store(Report report);
-    }
+    Report findById(Long reportId);
+    Report findByDiagnosisTable(DiagnosisTable diagnosisTable);
 }

@@ -40,7 +40,7 @@ public class ReportDto {
                                                 .vName(options.v_name)
                                                 .reportVCount(options.report_v_count)
                                                 .reportVResponse(options.report_v_response)
-                                                .reportVIssue(options.report_issue)
+                                                .reportVIssue(options.report_v_issue)
                                                 .ordering(options.ordering)
                                         .build()
                                 ).collect(Collectors.toList()))
@@ -64,7 +64,7 @@ public class ReportDto {
                     .generateReportOptionGroupRequests(report_option_list.stream().map(options -> ReportCommand.GenerateReportOptionGroupRequest.builder()
                             .vName(options.v_name)
                             .reportVCount(options.report_v_count)
-                            .reportVIssue(options.report_issue)
+                            .reportVIssue(options.report_v_issue)
                             .reportVResponse(options.report_v_response)
                             .ordering(options.ordering)
                             .build()).collect(Collectors.toList()))
@@ -78,7 +78,7 @@ public class ReportDto {
     public static class RegisterReportOption {
         private String v_name;
         private Integer report_v_count;
-        private String report_issue;
+        private String report_v_issue;
         private String report_v_response;
         private Integer ordering;
 
@@ -86,7 +86,7 @@ public class ReportDto {
             return ReportCommand.GenerateReportOptionGroupRequest.builder()
                     .vName(v_name)
                     .reportVCount(report_v_count)
-                    .reportVIssue(report_issue)
+                    .reportVIssue(report_v_issue)
                     .reportVResponse(report_v_response)
                     .ordering(ordering)
                     .build();

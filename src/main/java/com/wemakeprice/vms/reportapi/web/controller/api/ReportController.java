@@ -73,9 +73,16 @@ public class ReportController {
 //        return CommonResponse.success(test);
 //    }
 
+    @ApiOperation(value = "레포트 객체 가져오기", notes = "개발전")
+    @GetMapping
+    public CommonResponse retrieveReport(@RequestParam Long DiagnosisTableId) {
+        var response = reportFacade.retrieveReport(DiagnosisTableId);
+        return CommonResponse.success(response);
+    }
+
     @ApiOperation(value = "레포트 파일 생성", notes = "개발전")
     @PostMapping
-    public CommonResponse reportTest(@RequestBody @Valid ReportDto.GenerateReportRequest request) {
+    public CommonResponse createReport(@RequestBody @Valid ReportDto.GenerateReportRequest request) {
         var command = request.toCommand();
         var response = reportFacade.generateReport(command);
         return CommonResponse.success(response);

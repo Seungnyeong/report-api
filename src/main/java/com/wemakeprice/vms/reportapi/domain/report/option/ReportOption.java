@@ -2,11 +2,9 @@ package com.wemakeprice.vms.reportapi.domain.report.option;
 
 import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
-import com.wemakeprice.vms.reportapi.domain.report.Image.ReportOptionImage;
-import com.wemakeprice.vms.reportapi.domain.report.Report;
+import com.wemakeprice.vms.reportapi.domain.report.image.ReportOptionImage;
 import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethod;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
-import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

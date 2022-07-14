@@ -20,4 +20,9 @@ public class ReportFacade {
         var diagnosisTable = diagnosisTableService.getDiagnosisTable(command.getDiagnosisTableId());
         return reportService.generateReport(command, diagnosisTable);
     }
+
+    public ReportInfo.Main retrieveReport(Long diagnosisTableId) {
+        var diagnosisTable = diagnosisTableService.getDiagnosisTable(diagnosisTableId);
+        return reportService.retrieveReport(diagnosisTable);
+    }
 }

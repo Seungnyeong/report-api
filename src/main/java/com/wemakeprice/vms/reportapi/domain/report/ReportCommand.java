@@ -1,13 +1,14 @@
 package com.wemakeprice.vms.reportapi.domain.report;
 
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
+import com.wemakeprice.vms.reportapi.domain.report.image.FileResponse;
+import com.wemakeprice.vms.reportapi.domain.report.image.ReportOptionImage;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
 import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-
 import java.util.List;
 
 public class ReportCommand {
@@ -73,4 +74,30 @@ public class ReportCommand {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @ToString
+    public static class GenerateReportOptionImageRequest {
+        private final String imageName;
+        private final String extension;
+        private final Integer ordering;
+        private final String description;
+        private final String caption;
+        private final Long report_option_id;
+
+        public ReportOptionImage toEntity(Report report, ReportOption reportOption, FileResponse file) {
+            return ReportOptionImage.builder()
+                    .reportOptionImageFilePath(file.getFilePath())
+                    .report(report)
+                    .reportOption(reportOption)
+                    .imageName(file.getFileName())
+                    .extension(file.getExtension())
+                    .ordering(ordering)
+                    .description(description)
+                    .caption(caption)
+                    .build();
+        }
+    }
+
 }

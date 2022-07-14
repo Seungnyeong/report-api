@@ -1,6 +1,6 @@
 POST http://localhost:8888/report/api/v1/report
 Content-Type: application/json
-Authorization: Token 969d8f064c7e8223391ed5b1d9173625a5691236
+Authorization: Token 166d24d7319efdf798be7c0ca90a5c1ae0bedaf4
 
 {
   "diagnosis_table_id": 151,
@@ -55,3 +55,10 @@ Authorization: Token 969d8f064c7e8223391ed5b1d9173625a5691236
   "report_v_possibility": "HIGH",
   "title": "onestop-api 취약점 입니다."
 }
+
+
+
+###
+
+POST http://localhost:8888/report/api/v1/report/file
+Authorization: Token 166d24d7319efdf798be7c0ca90a5c1ae0bedaf4

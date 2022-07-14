@@ -1,12 +1,15 @@
-package com.wemakeprice.vms.reportapi.domain.report.Image;
+package com.wemakeprice.vms.reportapi.domain.report.image;
 
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
+import com.wemakeprice.vms.reportapi.domain.report.Report;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.nio.file.Path;
 
 @Entity
 @Slf4j
@@ -36,14 +39,25 @@ public class ReportOptionImage extends AbstractEntity {
     private String caption;
 
     @ManyToOne
-    @JoinColumn(name = "report_option_id", insertable = false, updatable = false)
-    private ReportOption reportOptionId;
-
-    @ManyToOne
-    @JoinColumn(name = "report_option_id", insertable = false, updatable = false)
+    @JoinColumn(name = "report_option_id")
     private ReportOption reportOption;
 
-    public void setReportOption(ReportOption reportOption) {
+    @ManyToOne
+    @JoinColumn(name = "report_id")
+    private Report report;
+
+    @Builder
+    public ReportOptionImage(Report report, ReportOption reportOption,
+                             Path reportOptionImageFilePath, String imageName, String extension,
+                             String caption, String description, Integer ordering
+    ) {
+        this.report = report;
         this.reportOption = reportOption;
+        this.reportOptionImageFilePath = reportOptionImageFilePath.toString();
+        this.imageName = imageName;
+        this.extension = extension;
+        this.caption = caption;
+        this.description = description;
+        this.ordering = ordering;
     }
 }
