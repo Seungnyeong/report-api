@@ -83,9 +83,11 @@ public class ReportInfo  {
         private final String reportVIssue;
         private final String reportVResponse;
         private final List<ReportOptionMethodInfo> reportOptionMethodInfoList;
+        private final List<ReportOptionImageInfo> reportOptionImageInfoList;
 
         public ReportOptionInfo(ReportOption reportOption,
-                                List<ReportOptionMethodInfo> reportOptionMethodInfoList
+                                List<ReportOptionMethodInfo> reportOptionMethodInfoList,
+                                List<ReportOptionImageInfo> reportOptionImageInfoList
                                 ) {
             this.id = reportOption.getId();
             this.vName = reportOption.getVName();
@@ -93,6 +95,7 @@ public class ReportInfo  {
             this.reportVIssue = reportOption.getReportVIssue();
             this.reportVResponse = reportOption.getReportVResponse();
             this.reportOptionMethodInfoList = reportOptionMethodInfoList;
+            this.reportOptionImageInfoList = reportOptionImageInfoList;
         }
 
     }

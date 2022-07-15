@@ -5,7 +5,9 @@ import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
 import com.wemakeprice.vms.reportapi.domain.report.Report;
 import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import com.wemakeprice.vms.reportapi.domain.report.ReportReader;
+import com.wemakeprice.vms.reportapi.domain.report.image.ReportOptionImageReader;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
+import com.wemakeprice.vms.reportapi.infrastructure.report.image.ReportOptionImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReportReaderImpl implements ReportReader {
     private final ReportRepository reportRepository;
+    private final ReportOptionImageReader reportOptionImageReader;
 
     @Override
     public Report findById(Long reportId) {
@@ -39,7 +42,8 @@ public class ReportReaderImpl implements ReportReader {
                             .map(reportOption -> {
                                 var reportMethodList = reportOption.getReportOptionMethodList();
                                 var reportMethodInfoList = reportMethodList.stream().map(ReportInfo.ReportOptionMethodInfo::new).collect(Collectors.toList());
-                                return new ReportInfo.ReportOptionInfo(reportOption, reportMethodInfoList);
+                                var reportImageInfoList = reportOptionImageReader.finByReportOption(reportOption);
+                                return new ReportInfo.ReportOptionInfo(reportOption, reportMethodInfoList, reportImageInfoList);
                             })
                             .collect(Collectors.toList());
                     return new ReportInfo.ReportOptionGroupInfo(reportOptionGroup, new VItemInfo.VItemDetailGroupInfo(vItemDetailGroup, null), reportOptionInfoList);

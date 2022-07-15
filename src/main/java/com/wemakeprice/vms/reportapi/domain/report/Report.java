@@ -35,8 +35,8 @@ public class Report extends AbstractEntity {
     @Column(nullable = false)
     private String title;
 
-    @OneToOne
-    @JoinColumn(name = "id")
+    @ManyToOne
+    @JoinColumn(name = "users_id")
     private User user;
 
     @Column(nullable = false, length = 20, unique = true)

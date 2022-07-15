@@ -1,64 +1,43 @@
+
+### 리포트 생성 (이미지 업로드 제외)
 POST http://localhost:8888/report/api/v1/report
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 966d45aef9f67b7db4cd8fee545a1f71a4015887
 
 {
-  "diagnosis_table_id": 151,
-  "general_review": "이것저것 많이 걸렷던데??",
-  "jira_ticket_number": "JIRA-9003",
+  "diagnosis_table_id": 204,
+  "general_review": "총평 작성란",
+  "jira_ticket_number": "TICKET-1006",
   "report_option_group_list": [
     {
       "report_option_list": [
         {
-          "ordering": 0,
-          "report_issue": "XSS및 CSRF 가능성이 농후해용",
-          "report_v_count": 0,
-          "report_v_response": "입력 값 필터링 처리 부재 또는 미흡으로 악성 스크립트 등록 후 브라우저에서 동작 가능 여부",
+          "ordering": 1,
+          "report_option_method_list": [
+            {
+              "method_description": "config()",
+              "method_name": "환경설정 함수",
+              "method_package": "com.wemakeprice.com",
+              "ordering": 1
+            }
+          ],
+          "report_v_issue": "이슈를 작성합니다.",
+          "report_v_count": 10,
+          "report_v_response": "잘 대응해야겠죠?",
           "v_name": "XSS 관련"
         }
       ],
       "v_item_detail_group_id": 1
-    },
-    {
-      "report_option_list": [
-        {
-          "ordering": 0,
-          "report_issue": "악성코드 파일 검증 미흡",
-          "report_v_count": 0,
-          "report_v_response": "대응방안2222222",
-          "v_name": "악성 파일 업로드에 대한 가능성"
-        },
-        {
-          "ordering": 0,
-          "report_issue": "악성 파일에 대한 실행 가능성이 있습니다.",
-          "report_v_count": 0,
-          "report_v_response": "확장자에 대한 검증이 필요합니다. 해당 파일에서",
-          "v_name": "악성파일 업로드 입니다."
-        }
-      ],
-      "v_item_detail_group_id": 5
-    },
-    {
-      "report_option_list": [
-        {
-          "ordering": 0,
-          "report_issue": "해당 파일에 불필요한 개인정보가 들어있습니다.",
-          "report_v_count": 0,
-          "report_v_response": "WKMS를 이용하세요",
-          "v_name": "소스코드 내 취약점이 저장되어 있습니다."
-        }
-      ],
-      "v_item_detail_group_id": 7
     }
   ],
   "report_v_grade": "FIRST",
   "report_v_possibility": "HIGH",
-  "title": "onestop-api 취약점 입니다."
+  "title": "테스트 리포트"
 }
 
 
 
-###
+### 리포트 조회
 
-POST http://localhost:8888/report/api/v1/report/file
-Authorization: Token 166d24d7319efdf798be7c0ca90a5c1ae0bedaf4
+GET http://localhost:8888/report/api/v1/report?DiagnosisTableId=204
+Authorization: Token 966d45aef9f67b7db4cd8fee545a1f71a4015887

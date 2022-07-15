@@ -47,7 +47,7 @@ public class ReportSeriesFactoryImpl implements ReportSeriesFactory {
                                     var reportOptionMethod = reportOptionMethodStore.save(initOptionMethod);
                                     return new ReportInfo.ReportOptionMethodInfo(reportOptionMethod);
                                 }).collect(Collectors.toList());
-                                return new ReportInfo.ReportOptionInfo(initOption, reportOptionMethodInfoList);
+                                return new ReportInfo.ReportOptionInfo(initOption, reportOptionMethodInfoList, null);
                             }).collect(Collectors.toList());
                     return new ReportInfo.ReportOptionGroupInfo(reportOptionGroupEntity, new VItemInfo.VItemDetailGroupInfo(vItemDetailGroup,
                             vItemDetailGroup.getVItemDetailsList().stream().map(VItemInfo.VItemDetailInfo::new).collect(Collectors.toList())), reportOptionInfoList);
