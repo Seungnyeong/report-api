@@ -3,6 +3,7 @@ package com.wemakeprice.vms.reportapi.domain.report;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
 import com.wemakeprice.vms.reportapi.domain.report.image.FileResponse;
 import com.wemakeprice.vms.reportapi.domain.report.image.ReportOptionImage;
+import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethod;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroup;
 import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
@@ -44,7 +45,7 @@ public class ReportCommand {
     public static class GenerateReportGroupRequest {
 
         Long vItemDetailGroupId;
-        List<GenerateReportOptionGroupRequest> generateReportOptionGroupRequests;
+        List<GenerateReportOptionGroupRequest> generateReportOptionGroupRequestList;
 
         public ReportOptionGroup toEntity(Report report, VItemDetailGroup vItemDetailGroup) {
             return ReportOptionGroup.builder()
@@ -63,14 +64,36 @@ public class ReportCommand {
         private final String reportVIssue;
         private final String reportVResponse;
         private final Integer ordering;
+        private final List<GenerateReportOptionMethodRequest> generateReportOptionMethodRequestList;
 
         public ReportOption toEntity(ReportOptionGroup reportOptionGroup) {
             return ReportOption.builder()
-                    .reportOptionGroup(reportOptionGroup)
                     .vName(vName)
                     .reportVCount(reportVCount)
+                    .reportVIssue(reportVIssue)
                     .reportVResponse(reportVResponse)
                     .ordering(ordering)
+                    .reportOptionGroup(reportOptionGroup)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @ToString
+    public static class GenerateReportOptionMethodRequest {
+        private final String methodName;
+        private final String methodPackage;
+        private final String methodDescription;
+        private final Integer ordering;
+
+        public ReportOptionMethod toEntity(ReportOption ReportOption) {
+            return ReportOptionMethod.builder()
+                    .methodName(methodName)
+                    .methodPackage(methodPackage)
+                    .methodDescription(methodDescription)
+                    .ordering(ordering)
+                    .reportOption(ReportOption)
                     .build();
         }
     }

@@ -2,7 +2,7 @@
 
 POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 9436cbc2738188b1474cc5ca9d25328cb0857af2
 
 {
   "case_tag": "xss",
@@ -72,7 +72,7 @@ Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
 
 POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 9436cbc2738188b1474cc5ca9d25328cb0857af2
 
 {
   "case_tag": "file",
@@ -112,7 +112,7 @@ Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
 
 POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 9436cbc2738188b1474cc5ca9d25328cb0857af2
 
 {
   "case_tag": "auth",
@@ -178,7 +178,7 @@ Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
 
 POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 9436cbc2738188b1474cc5ca9d25328cb0857af2
 
 {
   "case_tag": "info",
@@ -218,7 +218,7 @@ Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
 
 POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 9436cbc2738188b1474cc5ca9d25328cb0857af2
 
 {
   "case_tag": "crypto",
@@ -265,7 +265,7 @@ Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
 
 POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 9436cbc2738188b1474cc5ca9d25328cb0857af2
 
 {
   "case_tag": "error",
@@ -306,7 +306,7 @@ Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
 
 POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 9436cbc2738188b1474cc5ca9d25328cb0857af2
 
 {
   "case_tag": "settings",
@@ -436,7 +436,7 @@ Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
 ### 8. 기타 취약점
 POST http://localhost:8888/report/api/v1/vitem
 Content-Type: application/json
-Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
+Authorization: Token 9436cbc2738188b1474cc5ca9d25328cb0857af2
 
 {
   "case_tag": "etc",

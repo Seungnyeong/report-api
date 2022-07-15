@@ -1,6 +1,7 @@
 package com.wemakeprice.vms.reportapi.domain.report.method;
 
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,5 +35,20 @@ public class ReportOptionMethod {
     @ManyToOne
     @JoinColumn(name = "report_option_id")
     private ReportOption reportOption;
+
+    @Builder
+    public ReportOptionMethod(
+            String methodName,
+            String methodPackage,
+            String methodDescription,
+            Integer ordering,
+            ReportOption reportOption
+    ) {
+        this.methodName = methodName;
+        this.methodPackage = methodPackage;
+        this.methodDescription = methodDescription;
+        this.ordering = ordering;
+        this.reportOption = reportOption;
+    }
 
 }

@@ -4,6 +4,8 @@ import com.wemakeprice.vms.reportapi.domain.report.Report;
 import com.wemakeprice.vms.reportapi.domain.report.ReportCommand;
 import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import com.wemakeprice.vms.reportapi.domain.report.ReportSeriesFactory;
+import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethod;
+import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethodStore;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOptionStore;
 import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroupStore;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class ReportSeriesFactoryImpl implements ReportSeriesFactory {
 
     private final ReportOptionStore reportOptionStore;
+    private final ReportOptionMethodStore reportOptionMethodStore;
     private final ReportOptionGroupStore reportOptionGroupStore;
     private final VItemDetailGroupService vItemDetailGroupService;
 
@@ -35,11 +38,16 @@ public class ReportSeriesFactoryImpl implements ReportSeriesFactory {
                     var vItemDetailGroup = vItemDetailGroupService.getOneVItemDetailGroup(reportOptionGroup.getVItemDetailGroupId());
                     var initReportOptionGroup = reportOptionGroup.toEntity(report, vItemDetailGroup);
                     var reportOptionGroupEntity = reportOptionGroupStore.store(initReportOptionGroup);
-                    var reportOptionInfoList = reportOptionGroup.getGenerateReportOptionGroupRequests().stream()
+                    var reportOptionInfoList = reportOptionGroup.getGenerateReportOptionGroupRequestList().stream()
                             .map(optionInfo -> {
                                 var initOption = optionInfo.toEntity(reportOptionGroupEntity);
-                                reportOptionStore.save(initOption);
-                                return new ReportInfo.ReportOptionInfo(initOption);
+                                var reportOption = reportOptionStore.save(initOption);
+                                var reportOptionMethodInfoList = optionInfo.getGenerateReportOptionMethodRequestList().stream().map(optionMethodInfo -> {
+                                    var initOptionMethod = optionMethodInfo.toEntity(reportOption);
+                                    var reportOptionMethod = reportOptionMethodStore.save(initOptionMethod);
+                                    return new ReportInfo.ReportOptionMethodInfo(reportOptionMethod);
+                                }).collect(Collectors.toList());
+                                return new ReportInfo.ReportOptionInfo(initOption, reportOptionMethodInfoList);
                             }).collect(Collectors.toList());
                     return new ReportInfo.ReportOptionGroupInfo(reportOptionGroupEntity, new VItemInfo.VItemDetailGroupInfo(vItemDetailGroup,
                             vItemDetailGroup.getVItemDetailsList().stream().map(VItemInfo.VItemDetailInfo::new).collect(Collectors.toList())), reportOptionInfoList);

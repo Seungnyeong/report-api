@@ -56,6 +56,7 @@ public class ReportInfo  {
 
     @Getter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class ReportOptionGroupInfo {
         private final Long id;
         private final VItemInfo.VItemDetailGroupInfo vItemDetailGroupInfo;
@@ -74,34 +75,31 @@ public class ReportInfo  {
 
     @Getter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class ReportOptionInfo {
         private final Long id;
         private final String vName;
         private final Integer reportVCount;
         private final String reportVIssue;
         private final String reportVResponse;
+        private final List<ReportOptionMethodInfo> reportOptionMethodInfoList;
 
-        public ReportOptionInfo(ReportOption reportOption) {
+        public ReportOptionInfo(ReportOption reportOption,
+                                List<ReportOptionMethodInfo> reportOptionMethodInfoList
+                                ) {
             this.id = reportOption.getId();
             this.vName = reportOption.getVName();
             this.reportVCount = reportOption.getReportVCount();
             this.reportVIssue = reportOption.getReportVIssue();
             this.reportVResponse = reportOption.getReportVResponse();
+            this.reportOptionMethodInfoList = reportOptionMethodInfoList;
         }
 
-        public ReportOption toEntity(ReportOptionGroup reportOptionGroup) {
-            return ReportOption.builder()
-                    .vName(vName)
-                    .reportVResponse(reportVResponse)
-                    .reportOptionGroup(reportOptionGroup)
-                    .reportVCount(reportVCount)
-                    .reportVIssue(reportVIssue)
-                    .build();
-        }
     }
 
     @Getter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class ReportOptionImageInfo {
         private final Long id;
         private final String fileUrl;
@@ -124,6 +122,7 @@ public class ReportInfo  {
 
     @Getter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class ReportOptionMethodInfo {
         private final Long id;
         private final String methodName;

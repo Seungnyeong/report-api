@@ -28,6 +28,7 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public ReportInfo.Main retrieveReport(DiagnosisTable diagnosisTable) {
         var report = reportReader.findByDiagnosisTable(diagnosisTable);
-        return new ReportInfo.Main(report, null);
+        var reportOptionGroup = reportReader.reportOptionGroupList(report);
+        return new ReportInfo.Main(report, reportOptionGroup);
     }
 }

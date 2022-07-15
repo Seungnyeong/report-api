@@ -35,13 +35,20 @@ public class ReportDto {
                     .reportOptionGroupRequestList(report_option_group_list.stream().map(optionGroup ->
                         ReportCommand.GenerateReportGroupRequest.builder()
                                 .vItemDetailGroupId(optionGroup.v_item_detail_group_id)
-                                .generateReportOptionGroupRequests(optionGroup.report_option_list.stream().map(
+                                .generateReportOptionGroupRequestList(optionGroup.report_option_list.stream().map(
                                         options -> ReportCommand.GenerateReportOptionGroupRequest.builder()
                                                 .vName(options.v_name)
                                                 .reportVCount(options.report_v_count)
                                                 .reportVResponse(options.report_v_response)
                                                 .reportVIssue(options.report_v_issue)
                                                 .ordering(options.ordering)
+                                                .generateReportOptionMethodRequestList(options.report_option_method_list.stream()
+                                                    .map(method -> ReportCommand.GenerateReportOptionMethodRequest.builder()
+                                                        .methodPackage(method.method_package)
+                                                        .methodName(method.method_name)
+                                                        .methodDescription(method.method_description)
+                                                        .ordering(method.ordering)
+                                                .build()).collect(Collectors.toList()))
                                         .build()
                                 ).collect(Collectors.toList()))
                                 .build()
@@ -61,11 +68,19 @@ public class ReportDto {
         public ReportCommand.GenerateReportGroupRequest toCommand() {
             return ReportCommand.GenerateReportGroupRequest.builder()
                     .vItemDetailGroupId(v_item_detail_group_id)
-                    .generateReportOptionGroupRequests(report_option_list.stream().map(options -> ReportCommand.GenerateReportOptionGroupRequest.builder()
+                    .generateReportOptionGroupRequestList(report_option_list.stream()
+                            .map(options -> ReportCommand.GenerateReportOptionGroupRequest.builder()
                             .vName(options.v_name)
                             .reportVCount(options.report_v_count)
                             .reportVIssue(options.report_v_issue)
                             .reportVResponse(options.report_v_response)
+                            .generateReportOptionMethodRequestList(options.report_option_method_list.stream()
+                                    .map(method -> ReportCommand.GenerateReportOptionMethodRequest.builder()
+                                        .methodPackage(method.method_package)
+                                        .methodName(method.method_name)
+                                        .methodDescription(method.method_description)
+                                        .ordering(method.ordering)
+                                    .build()).collect(Collectors.toList()))
                             .ordering(options.ordering)
                             .build()).collect(Collectors.toList()))
                     .build();
@@ -81,6 +96,7 @@ public class ReportDto {
         private String report_v_issue;
         private String report_v_response;
         private Integer ordering;
+        private List<RegisterReportOptionMethod> report_option_method_list;
 
         public ReportCommand.GenerateReportOptionGroupRequest toCommand() {
             return ReportCommand.GenerateReportOptionGroupRequest.builder()
@@ -88,6 +104,30 @@ public class ReportDto {
                     .reportVCount(report_v_count)
                     .reportVIssue(report_v_issue)
                     .reportVResponse(report_v_response)
+                    .generateReportOptionMethodRequestList(report_option_method_list.stream().map(method -> ReportCommand.GenerateReportOptionMethodRequest.builder()
+                            .methodPackage(method.method_package)
+                            .methodName(method.method_name)
+                            .methodDescription(method.method_description)
+                            .ordering(method.ordering)
+                            .build()).collect(Collectors.toList()))
+                    .ordering(ordering)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Setter
+    @ToString static class RegisterReportOptionMethod {
+        private String method_name;
+        private String method_package;
+        private String method_description;
+        private Integer ordering;
+
+        public ReportCommand.GenerateReportOptionMethodRequest toCommand() {
+            return ReportCommand.GenerateReportOptionMethodRequest.builder()
+                    .methodName(method_name)
+                    .methodPackage(method_package)
+                    .methodDescription(method_description)
                     .ordering(ordering)
                     .build();
         }

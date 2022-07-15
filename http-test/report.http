@@ -1,6 +1,6 @@
 POST http://localhost:8888/report/api/v1/report
 Content-Type: application/json
-Authorization: Token 166d24d7319efdf798be7c0ca90a5c1ae0bedaf4
+Authorization: Token e6780b5d64c50fdda79f12fcadebf02e3dbb9ec2
 
 {
   "diagnosis_table_id": 151,
