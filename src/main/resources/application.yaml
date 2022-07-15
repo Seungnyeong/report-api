@@ -10,20 +10,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root-pass
-#  pid :
-#    file : report-api.pid
-
-#  datasource:
-#    url: jdbc:h2:./db/vms;MODE=MYSQL;database_to_upper=false
-#    driverClassName: org.h2.Driver
-#    username: sa
-#    password:
-#    initialization-mode: always
-#  h2:
-#    console:
-#      enabled: true
-#      path: /h2-console/
-
+  pid :
+    file : report-api.pid
+  h2:
+    console:
+      enabled: false
   jpa:
     database: MYSQL
     generate-ddl: true
@@ -33,6 +24,7 @@ spring:
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.connection.provider_disables_autocommit: false
+    open-in-view: false
   servlet:
     multipart:
       enabled: true
@@ -42,7 +34,8 @@ spring:
 
 file:
   upload-dir : /Users/sn/workspace/vms-report-api/files
-
+  report-template-dir : none
+  report-reuslt-dir : none
 
 logging:
   config: classpath:logback.xml
