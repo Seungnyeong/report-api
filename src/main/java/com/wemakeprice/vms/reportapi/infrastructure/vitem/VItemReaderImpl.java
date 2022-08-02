@@ -24,7 +24,7 @@ public class VItemReaderImpl implements VItemReader {
     }
 
     @Override
-    public List<VItemInfo.VItemDetailGroupInfo> getVItemDetailGroupSeries(VItem vItem) {
+    public List<VItemInfo.VItemDetailGroupInfo>  getVItemDetailGroupSeries(VItem vItem) {
         var vItemDetailGroupList = vItem.getVItemDetailGroupList();
         return vItemDetailGroupList.stream()
                 .map(vItemDetailGroup -> {

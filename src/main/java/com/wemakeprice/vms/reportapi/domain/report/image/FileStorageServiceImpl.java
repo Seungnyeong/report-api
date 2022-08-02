@@ -1,9 +1,6 @@
 package com.wemakeprice.vms.reportapi.domain.report.image;
 
 import com.wemakeprice.vms.reportapi.config.FileStorageConfig;
-import com.wemakeprice.vms.reportapi.domain.report.Report;
-import com.wemakeprice.vms.reportapi.domain.report.ReportCommand;
-import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;

@@ -36,6 +36,15 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     // https://mvnrepository.com/artifact/org.docx4j/docx4j
     implementation 'org.docx4j:docx4j:6.1.2'
+    //implementation 'org.apache.poi:poi:4.1.2'
+    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+    //implementation 'org.apache.poi:poi-ooxml:4.1.2'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation 'commons-io:commons-io:2.6'
+
+
+
 
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"

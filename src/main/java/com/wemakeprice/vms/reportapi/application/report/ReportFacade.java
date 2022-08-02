@@ -8,11 +8,11 @@ import com.wemakeprice.vms.reportapi.domain.report.ReportService;
 import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -32,9 +32,9 @@ public class ReportFacade {
         return reportService.retrieveReport(diagnosisTable);
     }
 
-    public void printReport(Long diagnosisTableId) throws JAXBException, FileNotFoundException, Docx4JException {
+    public void printReport(Long diagnosisTableId) throws Exception {
         var diagnosisTable = diagnosisTableService.getDiagnosisTable(diagnosisTableId);
         var report = reportService.retrieveReport(diagnosisTable);
-        docxService.createHeaderTemplate(report);
+        docxService.createReport(report);
     }
 }

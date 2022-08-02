@@ -33,7 +33,7 @@ public class VItemDetail {
     @JoinColumn(name = "v_item_detail_group_id")
     private VItemDetailGroup vItemDetailGroup;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "v_detail_respond",
             joinColumns = @JoinColumn(name = "v_item_detail_id"))
     private List<String> respond = Lists.newArrayList();

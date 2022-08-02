@@ -111,6 +111,7 @@ public class ReportInfo  {
         private final Integer ordering;
         private final String description;
         private final String caption;
+        private final String filePath;
 
         public ReportOptionImageInfo(ReportOptionImage reportOptionImage, String url) {
             this.id = reportOptionImage.getId();
@@ -120,6 +121,7 @@ public class ReportInfo  {
             this.ordering = reportOptionImage.getOrdering();
             this.description = reportOptionImage.getDescription();
             this.caption = reportOptionImage.getCaption();
+            this.filePath = reportOptionImage.getReportOptionImageFilePath();
         }
     }
 

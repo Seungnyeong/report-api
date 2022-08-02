@@ -7,12 +7,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class ReportController {
 
     @ApiOperation(value = "레포트 파일 생성", notes = "개발전")
     @GetMapping("/print/{diagnosis_table_id}")
-    public CommonResponse reportTest(@PathVariable Long diagnosis_table_id) throws Docx4JException, JAXBException, FileNotFoundException {
+    public CommonResponse reportTest(@PathVariable Long diagnosis_table_id) throws Exception {
         reportFacade.printReport(diagnosis_table_id);
         return CommonResponse.success("보고서 생성 성공");
     }
