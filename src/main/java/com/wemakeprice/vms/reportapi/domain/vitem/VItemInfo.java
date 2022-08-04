@@ -9,7 +9,6 @@ import lombok.ToString;
 import java.util.List;
 
 public class VItemInfo {
-
     @Getter
     @ToString
     @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)

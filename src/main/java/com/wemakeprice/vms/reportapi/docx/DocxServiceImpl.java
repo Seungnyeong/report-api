@@ -1,22 +1,27 @@
 package com.wemakeprice.vms.reportapi.docx;
 
 import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
+import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.docx4j.Docx4J;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
+import org.docx4j.openpackaging.parts.WordprocessingML.DocumentSettingsPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
-import org.docx4j.openpackaging.parts.WordprocessingML.StyleDefinitionsPart;
 import org.docx4j.wml.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBElement;
 import java.io.*;
-import java.nio.file.Files;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,18 +33,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DocxServiceImpl implements DocxService {
 
+    private final ObjectFactory factory = new ObjectFactory();
+    private final VItemService vItemService;
+
     @Override
-    public void createReport(ReportInfo.Main reportInfo) throws IOException, Docx4JException {
+    public void createReport(ReportInfo.Main reportInfo) throws Exception {
 
         ClassPathResource resource = new ClassPathResource("report_template/header.docx");
-
-        boolean save = false;
         var main = getTemplate("/Users/sn/workspace/vms-report-api/src/main/resources/"+resource.getPath());
-
-        StyleDefinitionsPart sdp = main.getMainDocumentPart().getStyleDefinitionsPart();
-        Styles templateStyle = sdp.getJaxbElement();
-
-
 
         List<Object> texts = getAllElementFromObject(main.getMainDocumentPart(), Text.class);
         searchAndReplace(texts, new HashMap<>(){
@@ -50,55 +51,160 @@ public class DocxServiceImpl implements DocxService {
                 this.put("${grade}", reportInfo.getReportVGrade().toString());
                 this.put("${possibility}", reportInfo.getReportVPossibility().toString());
                 this.put("${review}", reportInfo.getGeneralReview());
-                this.put("${10}", "취약");
             }
         });
 
+        var tbl = createMainTbl(main, vItemService.retrieveVItemList(), reportInfo.getReportOptionGroupsList());
+        main.getMainDocumentPart().addObject(tbl);
 
-        reportInfo.getReportOptionGroupsList().forEach(reportOptionGroupInfo -> {
-            try {
-                var detail =  createDetail(reportOptionGroupInfo);
-                getBody(main).getContent().addAll(detail);
-            } catch (Exception ignored) {
+        Br br = factory.createBr();
+        br.setType(org.docx4j.wml.STBrType.PAGE);
+        main.getMainDocumentPart().addObject(br);
 
-            }
-        });
+        int length = reportInfo.getReportOptionGroupsList().size();
+        for (int i = 0; i < reportInfo.getReportOptionGroupsList().size(); i++) {
+            createDetail(reportInfo.getReportOptionGroupsList().get(i), main, i, length);
+        }
 
-        writeDocxToStream(main, "/Users/sn/workspace/vms-report-api/src/main/resources/abc.docx");
+        main.save(new File("/Users/sn/workspace/vms-report-api/src/main/resources/abc3.docx"));
     }
 
 
-    private List<Object> createDetail(ReportInfo.ReportOptionGroupInfo reportOptionGroupInfo) throws Exception {
-        ClassPathResource resource = new ClassPathResource(("report_template/detail.docx"));
-        var template = getTemplate("/Users/sn/workspace/vms-report-api/src/main/resources/"+resource.getPath());
+    private Tbl createMainTbl(WordprocessingMLPackage mlPackage, List<VItemInfo.Main> data, List<ReportInfo.ReportOptionGroupInfo> reportOptionGroupInfos) {
 
-        MainDocumentPart mainDocumentPart = template.getMainDocumentPart();
-        ObjectFactory factory = new ObjectFactory();
-        List<Object> texts = getAllElementFromObject(mainDocumentPart, Text.class);
+        Tbl table = factory.createTbl();
+        createTblTh(table, mlPackage);
+        addBorders(table);
+        for (VItemInfo.Main item : data) {
+            int groupInfoLength = item.getVItemDetailInfoGroupList().size();
+            for (int k = 0; k < groupInfoLength; k++) {
+                Tc tableCell = factory.createTc();
+                TcPr tableCellProperties = new TcPr();
+                TcPrInner.VMerge merge = new TcPrInner.VMerge();
+                tableCell.getContent().add(
+                        mlPackage.getMainDocumentPart().
+                                createParagraphOfText(item.getVCategoryName()));
+                if (groupInfoLength - 1 == k) {
+                    merge.setVal("restart");
+                } else {
+                    merge.setVal(null);
+                }
+                tableCellProperties.setVMerge(merge);
+                tableCell.setTcPr(tableCellProperties);
+                Tr tableRow1 = factory.createTr();
+                tableRow1.getContent().add(tableCell);
+                addTableCell(tableRow1, item.getVItemDetailInfoGroupList().get(k).getVGroupName(), mlPackage);
+                addTableCell(tableRow1, item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().name(), mlPackage);
+                boolean find = false;
+                for (ReportInfo.ReportOptionGroupInfo groupInfo : reportOptionGroupInfos) {
+                    if(groupInfo.getVItemDetailGroupInfo().getId() == item.getVItemDetailInfoGroupList().get(k).getId()) {
+                        addTableCell(tableRow1, "취약", mlPackage);
+                        find = true;
+                        break;
+                    }
+                }
+                if(!find) {
+                    addTableCell(tableRow1, "", mlPackage);
+                }
 
-        searchAndReplace(texts, new HashMap<>(){
-            {
-                this.put("${ordering}", String.valueOf(reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering()));
-                this.put("${groupname}", String.valueOf(reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupName()));
+                table.getContent().add(tableRow1);
             }
-        });
+        }
+        return table;
+    }
 
-        mainDocumentPart.addStyledParagraphOfText("a0", "문제점");
+    private void createTblTh(Tbl tbl, WordprocessingMLPackage mlPackage) {
+        Tr tr = factory.createTr();
+        addTableCell(tr, "분류", mlPackage);
+        addTableCell(tr, "세부 진단 항목", mlPackage);
+        addTableCell(tr, "취약점 등급", mlPackage);
+        addTableCell(tr, "점검 결과", mlPackage);
+        tbl.getContent().add(tr);
+    }
+
+    /**
+     *  We create a table cell and then a table cell properties object.
+     *  We also create a vertical merge object. If the merge value is not null,
+     *  we set it on the object. Then we add the merge object to the table cell
+     *  properties and add the properties to the table cell. Finally we set the
+     *  content in the table cell and add the cell to the row.
+     *
+     *  If the merge value is 'restart', a new row is started. If it is null, we
+     *  continue with the previous row, thus merging the cells.
+     */
+    private void addMergedCell(Tr row, String content, String vMergeVal, WordprocessingMLPackage mlPackage) {
+        Tc tableCell = factory.createTc();
+        TcPr tableCellProperties = new TcPr();
+
+        TcPrInner.VMerge merge = new TcPrInner.VMerge();
+        if(vMergeVal != null){
+            merge.setVal(vMergeVal);
+        }
+        tableCellProperties.setVMerge(merge);
+
+        tableCell.setTcPr(tableCellProperties);
+        if(content != null) {
+            tableCell.getContent().add(
+                    mlPackage.getMainDocumentPart().
+                            createParagraphOfText(content));
+        }
+
+        row.getContent().add(tableCell);
+    }
+
+    /**
+     * In this method we add a table cell to the given row with the given
+     *  paragraph as content.
+     */
+    private void addTableCell(Tr tr, String content, WordprocessingMLPackage mlPackage) {
+        Tc tc1 = factory.createTc();
+        tc1.getContent().add(
+                mlPackage.getMainDocumentPart().createParagraphOfText(
+                        content));
+        tr.getContent().add(tc1);
+    }
+
+    /**
+     *  In this method we'll add the borders to the table.
+     */
+    private void addBorders(Tbl table) {
+        table.setTblPr(new TblPr());
+        CTBorder border = new CTBorder();
+        border.setColor("auto");
+        border.setSz(new BigInteger("4"));
+        border.setSpace(new BigInteger("0"));
+        border.setVal(STBorder.SINGLE);
+
+        TblBorders borders = new TblBorders();
+        borders.setBottom(border);
+        borders.setLeft(border);
+        borders.setRight(border);
+        borders.setTop(border);
+        borders.setInsideH(border);
+        borders.setInsideV(border);
+        table.getTblPr().setTblBorders(borders);
+    }
+
+
+    private void createDetail(ReportInfo.ReportOptionGroupInfo reportOptionGroupInfo, WordprocessingMLPackage mlPackage, int i, int length) {
+
+        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0",  String.format("%d-%d. %s",
+                reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering(),
+                reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupCode(),
+                reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupName())
+        );
+
+        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "문제점");
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-            mainDocumentPart.addStyledParagraphOfText("af8", reportOptionInfo.getReportVIssue());
-
+            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionInfo.getReportVIssue());
             reportOptionInfo.getReportOptionImageInfoList().forEach(reportOptionImageInfo -> {
 
-                File file = new File(reportOptionImageInfo.getFilePath());
-
-
                 try {
-                    byte[] fileContent = Files.readAllBytes(file.toPath());
-                    BinaryPartAbstractImage imagepart = BinaryPartAbstractImage.createImagePart(template, fileContent);
-                    Inline inline = imagepart.createImageInline(  "Baeldung Image (filename hint)", "Alt Text", 1, 2, false);
-                    P Imageparagraph = addImageToParagraph(inline);
-                    mainDocumentPart.getContent().add(Imageparagraph);
-                    mainDocumentPart.addStyledParagraphOfText("12", reportOptionImageInfo.getCaption());
+                        int id = (int) (Math.random() * 10000);
+                        BinaryPartAbstractImage imgPart = BinaryPartAbstractImage.createImagePart(mlPackage, new File(reportOptionImageInfo.getFilePath()));
+                        Inline inline = imgPart.createImageInline(  "Baeldung Image (filename hint)", "Alt Text", id, id * 2, false);
+                        var p = addImageToParagraph(inline, reportOptionImageInfo.getCaption());
+                        mlPackage.getMainDocumentPart().addObject(p);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -106,36 +212,46 @@ public class DocxServiceImpl implements DocxService {
 
         });
 
-        mainDocumentPart.addStyledParagraphOfText("a0", "대응방안");
+        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "대응방안");
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-            mainDocumentPart.addStyledParagraphOfText("3", reportOptionInfo.getReportVResponse());
+            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionInfo.getReportVResponse());
 
         });
 
-        mainDocumentPart.addStyledParagraphOfText("a0", "관련함수");
+        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "관련함수");
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
             reportOptionInfo.getReportOptionMethodInfoList().forEach(reportOptionMethodInfo -> {
-                mainDocumentPart.addStyledParagraphOfText("af2", reportOptionMethodInfo.getMethodName());
-                mainDocumentPart.addStyledParagraphOfText("af2", reportOptionMethodInfo.getMethodPackage());
-                mainDocumentPart.addStyledParagraphOfText("af2", reportOptionMethodInfo.getMethodDescription());
+                mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodName());
+                mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodPackage());
+                mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodDescription());
             });
         });
 
-        Br br = factory.createBr();
-        br.setType(org.docx4j.wml.STBrType.PAGE);
-
-        mainDocumentPart.addObject(br);
-        return getBody(template).getContent();
+        if (i != length - 1) {
+            Br br = factory.createBr();
+            br.setType(org.docx4j.wml.STBrType.PAGE);
+            mlPackage.getMainDocumentPart().addObject(br);
+        }
     }
 
-    private static P addImageToParagraph(Inline inline) {
-        ObjectFactory factory = new ObjectFactory();
+    private P addImageToParagraph(Inline inline, String caption) {
+        PPr paragraphProperties = factory.createPPr();
+        Jc justification = factory.createJc();
+        justification.setVal(JcEnumeration.CENTER);
+        paragraphProperties.setJc(justification);
         P p = factory.createP();
         R r = factory.createR();
-        p.getContent().add(r);
         Drawing drawing = factory.createDrawing();
-        r.getContent().add(drawing);
         drawing.getAnchorOrInline().add(inline);
+        Text text = factory.createText();
+        var textWrapped = factory
+                .createRT(text);
+        r.getContent().add(textWrapped);
+        text.setValue(String.format("[그림%d].%s", 1, caption));
+        text.setSpace("preserve");
+        r.getContent().add(drawing);
+        p.getContent().add(paragraphProperties);
+        p.getContent().add(r);
         return p;
     }
 
@@ -282,30 +398,5 @@ public class DocxServiceImpl implements DocxService {
 
         }
         return result;
-    }
-
-    private void replacePlaceholder(WordprocessingMLPackage template,
-                                    String name, String placeholder) {
-        List<Object> texts = getAllElementFromObject(
-                template.getMainDocumentPart(), Text.class);
-
-        for (Object text : texts) {
-            Text textElement = (Text) text;
-            if (textElement.getValue().equals(placeholder)) {
-                textElement.setValue(name);
-            }
-        }
-    }
-
-    private void writeDocxToStream(WordprocessingMLPackage template,
-                                   String target) throws IOException, Docx4JException {
-        File f = new File(target);
-        template.save(f);
-    }
-
-    private Body getBody( WordprocessingMLPackage wordMLPackage ) {
-        MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
-        org.docx4j.wml.Document wmlDocumentEl = (org.docx4j.wml.Document)documentPart.getJaxbElement();
-        return  wmlDocumentEl.getBody();
     }
 }
