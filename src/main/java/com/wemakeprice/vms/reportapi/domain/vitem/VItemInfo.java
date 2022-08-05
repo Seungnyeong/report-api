@@ -15,7 +15,7 @@ public class VItemInfo {
     public static class Main {
         private final Long id;
         private final String vCategoryName;
-        private final Integer vCategoryCode;;
+        private final Integer vCategoryCode;
         private final String vDetail;
         private final String caseTag;
         private final String respondTag;

@@ -31,7 +31,7 @@ public class VItemDetailGroup {
     private Integer ordering;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vItemDetailGroup" , cascade = CascadeType.ALL)
-    private List<VItemDetail> vItemDetailsList = Lists.newArrayList();
+    private final List<VItemDetail> vItemDetailsList = Lists.newArrayList();
 
     @ManyToOne
     @JoinColumn(name = "v_item_id")

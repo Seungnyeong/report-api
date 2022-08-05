@@ -30,7 +30,7 @@ public class ReportOptionGroup extends AbstractEntity {
     private Report report;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reportOptionGroup", cascade = CascadeType.PERSIST)
-    private List<ReportOption> reportOptionsList = Lists.newArrayList();
+    private final List<ReportOption> reportOptionsList = Lists.newArrayList();
 
     private Integer ordering;
 

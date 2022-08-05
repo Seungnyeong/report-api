@@ -71,7 +71,7 @@ public class Report extends AbstractEntity {
     private DiagnosisTable diagnosisTable;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "report" , cascade = CascadeType.PERSIST)
-    private List<ReportOptionGroup> reportOptionGroupsList = Lists.newArrayList();
+    private final List<ReportOptionGroup> reportOptionGroupsList = Lists.newArrayList();
 
     @Builder
     public Report(DiagnosisTable diagnosisTable,

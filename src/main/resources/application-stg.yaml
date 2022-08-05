@@ -26,6 +26,7 @@ wkms:
   crypto-key-token: bc6c14b37637067cd8fd5671a5d2dcb18cbb82ce
 file:
   upload-dir : /data/app/files
-
+  report-template-dir: report_template/header.docx
+  report-result-dir: /Users/sn/workspace/vms-report-api/files/report
 cross:
   origin-url : http://172.19.30.164:8887

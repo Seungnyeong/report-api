@@ -113,7 +113,7 @@ public class DocxServiceImpl implements DocxService {
                 addTableCell(tableRow1, item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().name(), mlPackage);
                 boolean find = false;
                 for (ReportInfo.ReportOptionGroupInfo groupInfo : reportOptionGroupInfos) {
-                    if(groupInfo.getVItemDetailGroupInfo().getId() == item.getVItemDetailInfoGroupList().get(k).getId()) {
+                    if(Objects.equals(groupInfo.getVItemDetailGroupInfo().getId(), item.getVItemDetailInfoGroupList().get(k).getId())) {
                         addTableCell(tableRow1, "취약", mlPackage);
                         find = true;
                         break;
@@ -229,19 +229,14 @@ public class DocxServiceImpl implements DocxService {
         });
 
         mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "대응방안");
-        reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionInfo.getReportVResponse());
-
-        });
+        reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionInfo.getReportVResponse()));
 
         mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "관련함수");
-        reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-            reportOptionInfo.getReportOptionMethodInfoList().forEach(reportOptionMethodInfo -> {
-                mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodName());
-                mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodPackage());
-                mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodDescription());
-            });
-        });
+        reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> reportOptionInfo.getReportOptionMethodInfoList().forEach(reportOptionMethodInfo -> {
+            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodName());
+            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodPackage());
+            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodDescription());
+        }));
 
         if (i != length - 1) {
             Br br = factory.createBr();
@@ -292,7 +287,7 @@ public class DocxServiceImpl implements DocxService {
         for(int i = 0; i<texts.size(); i++){
             Object text = texts.get(i);
             Text textElement = (Text) text;
-            String newVal = "";
+            StringBuilder newVal = new StringBuilder();
             String v = textElement.getValue();
 //          System.out.println("text: "+v);
             StringBuilder textSofar = new StringBuilder();
@@ -328,8 +323,7 @@ public class DocxServiceImpl implements DocxService {
                             mode=PASS;
                             sb.append(c);
                             els.add(sb.toString());
-                            newVal +=textSofar.toString()
-                                    +(null==values.get(sb.toString())?sb.toString():values.get(sb.toString()));
+                            newVal.append(textSofar).append(null == values.get(sb.toString()) ? sb.toString() : values.get(sb.toString()));
                             textSofar = new StringBuilder();
                             currentNullifyProps[2]=i;
                             currentNullifyProps[3]=col+extra;
@@ -351,8 +345,8 @@ public class DocxServiceImpl implements DocxService {
                     }
                 }
             }
-            newVal +=textSofar.toString();
-            textElement.setValue(newVal);
+            newVal.append(textSofar.toString());
+            textElement.setValue(newVal.toString());
         }
 
         // remove original expressions

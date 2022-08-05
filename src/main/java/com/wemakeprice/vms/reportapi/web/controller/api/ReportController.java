@@ -12,11 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import javax.xml.bind.JAXBException;
 import java.io.*;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @RestController
@@ -25,7 +22,9 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @Api(tags = "보고서")
 public class ReportController {
-
+    //TODO Report Update API 제작
+    //TODO Report File Upload 함께 구현
+    //TODO 사용자 비밀번호 인증 관련하여 필요함 ( 지라 꺼 쓰면 될듯 )
     private final ReportFacade reportFacade;
 
     @ApiOperation(value = "레포트 파일 생성/다운로드", notes = "레포트 파일 생성 및 다운로드")
@@ -59,7 +58,6 @@ public class ReportController {
     @ApiOperation(value = "레포트 파일 암호 조회", notes = "레포트 암호")
     @GetMapping("/password/{report_id}")
     public CommonResponse getReportFilePassword(@PathVariable Long report_id, @RequestBody String password) {
-        //TODO 사용자 비밀번호 인증 관련하여 필요함 ( 지라 꺼 쓰면 될듯 )
         var response = reportFacade.getDecReportPassword(report_id);
         return CommonResponse.success(response);
     }

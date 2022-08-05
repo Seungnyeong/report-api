@@ -9,6 +9,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
@@ -101,8 +102,8 @@ public class WmpCryptoUtils {
         Assert.notNull(plainString, "The plainString must not be null!");
         Assert.notNull(infoKey, "The infoKey must not be null!");
         try {
-            byte[] key = infoKey.getBytes(CharEncoding.UTF_8);
-            byte[] text = plainString.getBytes(CharEncoding.UTF_8);
+            byte[] key = infoKey.getBytes(StandardCharsets.UTF_8);
+            byte[] text = plainString.getBytes(StandardCharsets.UTF_8);
 
             Cipher dcipher = Cipher.getInstance("AES/ECB/NoPadding");
             dcipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
@@ -135,7 +136,7 @@ public class WmpCryptoUtils {
         Assert.notNull(encryptString, "The encryptString must not be null!");
         Assert.notNull(infoKey, "The infoKey must not be null!");
         try {
-            byte[] key = infoKey.getBytes(CharEncoding.UTF_8);
+            byte[] key = infoKey.getBytes(StandardCharsets.UTF_8);
 
             Cipher dcipher = Cipher.getInstance("AES/ECB/NoPadding");
             dcipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"));
@@ -214,8 +215,8 @@ public class WmpCryptoUtils {
         }
 
         try {
-            byte[] key = infoKey.getBytes("utf-8");
-            byte[] iv = infoIv.getBytes("utf-8");
+            byte[] key = infoKey.getBytes(StandardCharsets.UTF_8);
+            byte[] iv = infoIv.getBytes(StandardCharsets.UTF_8);
 
             Cipher dcipher = Cipher.getInstance("AES/CBC/NoPadding");
             dcipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new IvParameterSpec(iv));
@@ -265,7 +266,7 @@ public class WmpCryptoUtils {
             // 암호화
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
-            byte[] encryptBytes = cipher.doFinal(plainString.getBytes(CharEncoding.UTF_8));
+            byte[] encryptBytes = cipher.doFinal(plainString.getBytes(StandardCharsets.UTF_8));
 
             String encryptResultString = null;
             if (!isAttachIv) {
@@ -343,9 +344,11 @@ public class WmpCryptoUtils {
         int size = 16;
         int padLength = size - source.length() % size;
         if (padLength != 16) {
+            StringBuilder sourceBuilder = new StringBuilder(source);
             for (int i = 0; i < padLength; i++) {
-                source += paddingChar;
+                sourceBuilder.append(paddingChar);
             }
+            source = sourceBuilder.toString();
         }
         return source;
     }

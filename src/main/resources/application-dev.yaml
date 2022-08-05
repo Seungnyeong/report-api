@@ -11,7 +11,7 @@ spring:
     database: MYSQL
     hibernate:
       ddl-auto: validate
-      show-sql : true
+      show-sql : false
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.connection.provider_disables_autocommit: false
@@ -26,9 +26,9 @@ wkms:
   crypto-key-token: f3d5a14b87e15abc3e52d7f9bbdd9ca69b37920d
 
 file:
-  upload-dir : /data/app/files
-  report-template-dir: none
-  report-result-dir: /Users/sn/workspace/vms-report-api/files/report
+  upload-dir : /data/app/files/image
+  report-template-dir: report_template/header.docx
+  report-result-dir: /data/app/files/report
 
 cross:
   origin-url : http://10.107.11.63:8887

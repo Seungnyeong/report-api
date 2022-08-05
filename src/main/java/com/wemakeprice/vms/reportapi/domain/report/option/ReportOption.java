@@ -41,10 +41,10 @@ public class ReportOption extends AbstractEntity {
     private ReportOptionGroup reportOptionGroup;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reportOption" , cascade = CascadeType.PERSIST)
-    private List<ReportOptionMethod> reportOptionMethodList = Lists.newArrayList();
+    private final List<ReportOptionMethod> reportOptionMethodList = Lists.newArrayList();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reportOption" , cascade = CascadeType.PERSIST)
-    private List<ReportOptionImage> reportOptionImageList = Lists.newArrayList();
+    private final List<ReportOptionImage> reportOptionImageList = Lists.newArrayList();
 
     private Integer ordering;
 

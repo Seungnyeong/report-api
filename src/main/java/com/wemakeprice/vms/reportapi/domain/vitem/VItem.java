@@ -43,7 +43,7 @@ public class VItem extends AbstractEntity {
     private Integer ordering;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vItem" , cascade = CascadeType.ALL)
-    private List<VItemDetailGroup> vItemDetailGroupList = Lists.newArrayList();
+    private final List<VItemDetailGroup> vItemDetailGroupList = Lists.newArrayList();
 
     @Builder
     public VItem(String vCategoryName,
