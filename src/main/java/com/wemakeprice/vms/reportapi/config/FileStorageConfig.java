@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "file")
 public class FileStorageConfig {
     private String uploadDir;
-    private String reportTemplateDir;
+    private String reportTemplateFile;
     private String reportResultDir;
 
     public String getUploadDir() {
@@ -18,12 +18,12 @@ public class FileStorageConfig {
         this.uploadDir = uploadDir;
     }
 
-    public String getReportTemplateDir() {
-        return reportTemplateDir;
+    public String getReportTemplateFile() {
+        return reportTemplateFile;
     }
 
-    public void setReportTemplateDir(String reportTemplateDir) {
-        this.reportTemplateDir = reportTemplateDir;
+    public void setReportTemplateFile(String reportTemplateFile) {
+        this.reportTemplateFile = reportTemplateFile;
     }
 
     public String getReportResultDir() {

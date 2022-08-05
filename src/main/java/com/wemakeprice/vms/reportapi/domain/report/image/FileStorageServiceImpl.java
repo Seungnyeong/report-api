@@ -26,7 +26,6 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class FileStorageServiceImpl implements FileStorageService {
     private final Path fileStorageLocation;
 

@@ -23,28 +23,24 @@ public class ReportInfo  {
     public static class Main {
         private final Long id;
         private final String title;
-        private final User user;
         private final String reportControlNumber;
         private final String jiraTicketNumber;
         private final Report.Vulnerability reportVPossibility;
         private final Report.Grade reportVGrade;
-        private final String reportPassword;
         private final String generalReview;
         private final DiagnosisTable diagnosisTable;
         private final String fileExtension;
         private final String reportFilePath;
-        private final List<ReportOptionGroupInfo> reportOptionGroupsList;
         private final LocalDateTime created;
+        private final List<ReportOptionGroupInfo> reportOptionGroupsList;
 
         public Main(Report report, List<ReportOptionGroupInfo> reportOptionGroupInfoList) {
             this.id = report.getId();
             this.title = report.getTitle();
-            this.user = report.getUser();
             this.reportControlNumber = report.getReportControlNumber();
             this.jiraTicketNumber = report.getJiraTicketNumber();
             this.reportVPossibility = report.getReportVPossibility();
             this.reportVGrade = report.getReportVGrade();
-            this.reportPassword = report.getReportPassword();
             this.generalReview = report.getGeneralReview();
             this.diagnosisTable = report.getDiagnosisTable();
             this.fileExtension = report.getFileExtension();
@@ -52,14 +48,29 @@ public class ReportInfo  {
             this.created = report.getCreatedDate();
             this.reportOptionGroupsList = reportOptionGroupInfoList;
         }
+
+        public Main(Report report) {
+            this.id = report.getId();
+            this.title = report.getTitle();
+            this.reportControlNumber = report.getReportControlNumber();
+            this.jiraTicketNumber = report.getJiraTicketNumber();
+            this.reportVPossibility = report.getReportVPossibility();
+            this.reportVGrade = report.getReportVGrade();
+            this.generalReview = report.getGeneralReview();
+            this.diagnosisTable = report.getDiagnosisTable();
+            this.fileExtension = report.getFileExtension();
+            this.reportFilePath = report.getReportFilePath();
+            this.created = report.getCreatedDate();
+            this.reportOptionGroupsList = null;
+        }
     }
 
-    @Getter
-    @ToString
-    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class ReportOptionGroupInfo {
-        private final Long id;
-        private final VItemInfo.VItemDetailGroupInfo vItemDetailGroupInfo;
+        @Getter
+        @ToString
+        @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
+        public static class ReportOptionGroupInfo {
+            private final Long id;
+            private final VItemInfo.VItemDetailGroupInfo vItemDetailGroupInfo;
         private final List<ReportOptionInfo> reportOptionInfoList;
 
         public ReportOptionGroupInfo(
@@ -141,6 +152,17 @@ public class ReportInfo  {
             this.methodPackage = reportOptionMethod.getMethodPackage();
             this.methodDescription = reportOptionMethod.getMethodDescription();
             this.ordering = reportOptionMethod.getOrdering();
+        }
+    }
+
+    @Getter
+    @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class ReportPassword {
+        private final String password;
+
+        public ReportPassword(String password) {
+            this.password = password;
         }
     }
 }

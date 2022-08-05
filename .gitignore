@@ -38,7 +38,5 @@ out/
 logs
 db
 
-application.pid
-
-src/main/resources/report_template/*
+report-api.pid
 files

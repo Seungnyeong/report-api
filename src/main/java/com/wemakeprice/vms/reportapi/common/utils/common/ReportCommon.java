@@ -1,5 +1,14 @@
 package com.wemakeprice.vms.reportapi.common.utils.common;
 
+import com.wemakeprice.vms.reportapi.common.utils.crypto.WmpCryptoUtils;
+
+import javax.crypto.spec.SecretKeySpec;
+
+import java.nio.charset.StandardCharsets;
+
+import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.KEY;
+import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.IV;
+
 public class ReportCommon {
 
     public static String getTempPassword(int length) {
@@ -16,6 +25,7 @@ public class ReportCommon {
             sb.append(charArr[index]);
         }
 
-        return sb.toString();
+        SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), "AES");
+        return WmpCryptoUtils.encrypt(sb.toString(), keySpec, IV.substring(0,16).getBytes(StandardCharsets.UTF_8));
     }
 }

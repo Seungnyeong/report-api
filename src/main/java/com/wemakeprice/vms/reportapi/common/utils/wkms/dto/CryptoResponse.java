@@ -7,7 +7,6 @@ import java.util.List;
 
 @Getter
 @Setter
-public class WkmsResponse {
-    private List<WkmsData> data;
+public class CryptoResponse<T> {
+    private List<T> data;
 }
-

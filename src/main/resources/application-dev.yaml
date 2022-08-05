@@ -22,9 +22,13 @@ wkms:
   key: dev-vms-report-api
   token : 10412b099832011162af7f2c497552f1dc87c8d0
   url : keyinfo-nd-dev.wemakeprice.kr
+  crypto-key: wmp_common_cryptokey
+  crypto-key-token: f3d5a14b87e15abc3e52d7f9bbdd9ca69b37920d
 
 file:
   upload-dir : /data/app/files
+  report-template-dir: none
+  report-result-dir: /Users/sn/workspace/vms-report-api/files/report
 
 cross:
   origin-url : http://10.107.11.63:8887

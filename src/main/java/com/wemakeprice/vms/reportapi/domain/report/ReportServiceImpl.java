@@ -1,10 +1,18 @@
 package com.wemakeprice.vms.reportapi.domain.report;
 
+import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.KEY;
+import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.IV;
+
+import com.wemakeprice.vms.reportapi.common.utils.crypto.WmpCryptoUtils;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 @Service
 @Slf4j
@@ -30,5 +38,31 @@ public class ReportServiceImpl implements ReportService{
         var report = reportReader.findByDiagnosisTable(diagnosisTable);
         var reportOptionGroup = reportReader.reportOptionGroupList(report);
         return new ReportInfo.Main(report, reportOptionGroup);
+    }
+
+    @Transactional
+    @Override
+    public String updateReportFilePath(Path path, Long reportId) {
+        var report = reportReader.findById(reportId);
+        var filePath = path.toAbsolutePath().toString();
+        report.updateFilePath(filePath);
+        return filePath;
+    }
+
+    @Transactional
+    @Override
+    public ReportInfo.ReportPassword getReportPassword(Long reportId) {
+        var report = reportReader.findById(reportId);
+        var encPassword = report.getReportPassword();
+        SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), "AES");
+        var decPassword = WmpCryptoUtils.decrypt(encPassword, keySpec, IV.substring(0,16).getBytes(StandardCharsets.UTF_8));
+        return new ReportInfo.ReportPassword(decPassword);
+    }
+
+    @Transactional
+    @Override
+    public ReportInfo.Main getReportMeta(Long reportId) {
+        var report = reportReader.findById(reportId);
+        return new ReportInfo.Main(report);
     }
 }

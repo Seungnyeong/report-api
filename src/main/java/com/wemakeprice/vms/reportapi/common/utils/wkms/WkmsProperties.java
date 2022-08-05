@@ -13,4 +13,6 @@ public class WkmsProperties {
     private String key;
     private String token;
     private String url;
+    private String cryptoKey;
+    private String cryptoKeyToken;
 }

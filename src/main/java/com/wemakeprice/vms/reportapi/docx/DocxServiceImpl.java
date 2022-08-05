@@ -1,46 +1,60 @@
 package com.wemakeprice.vms.reportapi.docx;
 
+import com.wemakeprice.vms.reportapi.config.FileStorageConfig;
 import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.docx4j.Docx4J;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
-import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
-import org.docx4j.openpackaging.parts.WordprocessingML.DocumentSettingsPart;
-import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBElement;
 import java.io.*;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class DocxServiceImpl implements DocxService {
 
     private final ObjectFactory factory = new ObjectFactory();
     private final VItemService vItemService;
+    private final Path reportStorageLocation;
+    private static final String DOC_TYPE = "docx";
+    private final String TEMPLATE_FILE;
+
+    @Autowired
+    public DocxServiceImpl(FileStorageConfig fileStorageConfig, VItemService vItemService) throws FileNotFoundException {
+        this.vItemService = vItemService;
+        this.TEMPLATE_FILE = fileStorageConfig.getReportTemplateFile();
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM");
+        this.reportStorageLocation = Paths.get(fileStorageConfig.getReportResultDir() + String.format("/%s", now.format(formatter)))
+                .toAbsolutePath().normalize();
+        try {
+            Files.createDirectories(reportStorageLocation);
+        } catch (Exception ex) {
+            throw new FileNotFoundException();
+        }
+    }
 
     @Override
-    public void createReport(ReportInfo.Main reportInfo) throws Exception {
+    public Path createReport(ReportInfo.Main reportInfo) throws Exception {
 
-        ClassPathResource resource = new ClassPathResource("report_template/header.docx");
-        var main = getTemplate("/Users/sn/workspace/vms-report-api/src/main/resources/"+resource.getPath());
+        ClassPathResource resource = new ClassPathResource(TEMPLATE_FILE);
+        var main = getTemplate(resource.getURI().getPath());
 
         List<Object> texts = getAllElementFromObject(main.getMainDocumentPart(), Text.class);
         searchAndReplace(texts, new HashMap<>(){
@@ -65,8 +79,10 @@ public class DocxServiceImpl implements DocxService {
         for (int i = 0; i < reportInfo.getReportOptionGroupsList().size(); i++) {
             createDetail(reportInfo.getReportOptionGroupsList().get(i), main, i, length);
         }
-
-        main.save(new File("/Users/sn/workspace/vms-report-api/src/main/resources/abc3.docx"));
+        UUID uuid = UUID.randomUUID();
+        Path targetLocation = this.reportStorageLocation.resolve(uuid + "." + DOC_TYPE);
+        main.save(new File(targetLocation.toAbsolutePath().toString()));
+        return targetLocation.toAbsolutePath();
     }
 
 
