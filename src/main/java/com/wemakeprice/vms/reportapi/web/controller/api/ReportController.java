@@ -2,6 +2,10 @@ package com.wemakeprice.vms.reportapi.web.controller.api;
 
 import com.wemakeprice.vms.reportapi.application.report.ReportFacade;
 import com.wemakeprice.vms.reportapi.common.response.CommonResponse;
+import com.wemakeprice.vms.reportapi.common.response.ErrorCode;
+import com.wemakeprice.vms.reportapi.domain.users.User;
+import com.wemakeprice.vms.reportapi.jira.JiraApiService;
+import com.wemakeprice.vms.reportapi.jira.JiraLoginCommand;
 import com.wemakeprice.vms.reportapi.web.dto.ReportDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +15,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.*;
@@ -24,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 public class ReportController {
     //TODO 사용자 비밀번호 인증 관련하여 필요함 ( 지라 꺼 쓰면 될듯 )
     private final ReportFacade reportFacade;
+    private final JiraApiService jiraApiService;
 
     @ApiOperation(value = "레포트 파일 생성/다운로드", notes = "레포트 파일 생성 및 다운로드")
     @GetMapping(value = "/print/{diagnosis_table_id}")
@@ -54,10 +60,22 @@ public class ReportController {
     }
 
     @ApiOperation(value = "레포트 파일 암호 조회", notes = "레포트 암호")
-    @GetMapping("/password/{report_id}")
-    public CommonResponse getReportFilePassword(@PathVariable Long report_id, @RequestBody String password) {
-        var response = reportFacade.getDecReportPassword(report_id);
-        return CommonResponse.success(response);
+    @PostMapping("/password")
+    public CommonResponse getReportFilePassword(@RequestBody ReportDto.ReportPasswordRequest request) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var command = JiraLoginCommand.builder()
+                .username(user.getUsername())
+                .password(request.getPassword())
+                .build();
+
+        var isAuth = jiraApiService.isAuthUser(command);
+
+        if (isAuth) {
+            var response = reportFacade.getDecReportPassword(request.getReport_id());
+            return CommonResponse.success(response);
+        }
+
+        return CommonResponse.fail(ErrorCode.COMMON_AUTH_ERROR);
     }
 
     @ApiOperation(value = "레포트 파일 메타 조회", notes = "레포트 메타")

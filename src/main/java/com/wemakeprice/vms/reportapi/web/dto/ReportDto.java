@@ -200,4 +200,12 @@ public class ReportDto {
                     .build();
         }
     }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class ReportPasswordRequest {
+        private Long report_id;
+        private String password;
+    }
 }
