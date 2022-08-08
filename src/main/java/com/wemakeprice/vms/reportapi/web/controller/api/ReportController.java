@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @Api(tags = "보고서")
 public class ReportController {
-    //TODO 사용자 비밀번호 인증 관련하여 필요함 ( 지라 꺼 쓰면 될듯 )
+
     private final ReportFacade reportFacade;
     private final JiraApiService jiraApiService;
 
