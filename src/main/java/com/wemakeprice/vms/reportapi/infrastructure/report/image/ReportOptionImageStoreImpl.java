@@ -17,4 +17,9 @@ public class ReportOptionImageStoreImpl implements ReportOptionImageStore {
     public ReportOptionImage store(ReportOptionImage reportOptionImage) {
         return reportOptionImageRepository.save(reportOptionImage);
     }
+
+    @Override
+    public void delete(ReportOptionImage reportOptionImage) {
+        reportOptionImageRepository.delete(reportOptionImage);
+    }
 }

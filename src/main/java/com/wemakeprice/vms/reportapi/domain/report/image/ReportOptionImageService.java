@@ -9,5 +9,5 @@ import java.io.IOException;
 
 public interface ReportOptionImageService {
     ReportInfo.ReportOptionImageInfo store(ReportCommand.GenerateReportOptionImageRequest command, Long reportId, MultipartFile file) throws IOException;
-
+    void deleteImage(Long reportOptionImageId, Long ReportId);
 }

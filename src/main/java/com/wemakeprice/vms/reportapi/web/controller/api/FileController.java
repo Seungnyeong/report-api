@@ -49,7 +49,14 @@ public class FileController {
     @ResponseBody
     public CommonResponse<Resource> fileDownload(@PathVariable Long fileId) throws FileNotFoundException {
 
-        var file = imageFacade.serveFile(fileId);
+        var file = imageFacade.serve(fileId);
         return CommonResponse.success(file);
+    }
+
+    @ApiOperation(value = "레포트 파일 이미지 삭제", notes = "레포트 파일 이미지 삭제")
+    @DeleteMapping("/{report_id}/{report_option_image_id}")
+    public CommonResponse deleteReportOptionImage(@PathVariable Long report_option_image_id , @PathVariable Long report_id ) {
+        imageFacade.delete(report_option_image_id, report_id);
+        return CommonResponse.success("삭제 성공");
     }
 }

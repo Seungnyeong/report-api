@@ -11,4 +11,7 @@ public interface ReportService {
     ReportInfo.ReportPassword getReportPassword(Long reportId);
     String updateReportFilePath(Path path, Long reportId);
     ReportInfo.Main getReportMeta(Long reportId);
+    void updateReportMain(ReportCommand.GenerateReportRequest command);
+    void updateReportOption(ReportCommand.GenerateReportOptionGroupRequest command);
+    void updateReportMethodOption(ReportCommand.GenerateReportOptionMethodRequest command);
 }

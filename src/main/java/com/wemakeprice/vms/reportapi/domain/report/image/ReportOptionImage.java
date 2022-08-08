@@ -2,11 +2,14 @@ package com.wemakeprice.vms.reportapi.domain.report.image;
 
 import com.wemakeprice.vms.reportapi.domain.AbstractEntity;
 import com.wemakeprice.vms.reportapi.domain.report.Report;
+import com.wemakeprice.vms.reportapi.domain.report.ReportCommand;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.docx4j.org.apache.poi.util.StringUtil;
 
 import javax.persistence.*;
 import java.nio.file.Path;

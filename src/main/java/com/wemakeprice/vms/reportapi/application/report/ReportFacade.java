@@ -48,4 +48,17 @@ public class ReportFacade {
     public ReportInfo.Main getReportMeta(Long reportId) {
         return reportService.getReportMeta(reportId);
     }
+
+
+    public void updateReport(ReportCommand.GenerateReportRequest command) {
+        reportService.updateReportMain(command);
+    }
+
+    public void updateReportOption(ReportCommand.GenerateReportOptionGroupRequest command) {
+        reportService.updateReportOption(command);
+    }
+
+    public void updateReportOptionMethod(ReportCommand.GenerateReportOptionMethodRequest command) {
+        reportService.updateReportMethodOption(command);
+    }
 }

@@ -141,4 +141,22 @@ public class Report extends AbstractEntity {
             this.reportFileName = FilenameUtils.getName(reportFilePath);
         }
     }
+
+    public void updateReport(ReportCommand.GenerateReportRequest command) {
+
+        if(!StringUtils.isEmpty(command.getTitle())) this.title = command.getTitle();
+        if(!StringUtils.isEmpty(command.getJiraTicketNumber())) {
+            this.jiraTicketNumber = command.getJiraTicketNumber();
+            this.reportControlNumber = generateControlNumber(command.getJiraTicketNumber());
+        }
+        if(!StringUtils.isEmpty(command.getGeneralReview())) this.generalReview = command.getGeneralReview();
+        if(command.getReportVGrade() != null) {
+            this.reportVGrade = command.getReportVGrade();
+        }
+        if(command.getReportVPossibility() != null) {
+            this.reportVPossibility = command.getReportVPossibility();
+        }
+
+        this.reportVersion += 1;
+    }
 }

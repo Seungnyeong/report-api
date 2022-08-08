@@ -5,6 +5,8 @@ import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.IV;
 
 import com.wemakeprice.vms.reportapi.common.utils.crypto.WmpCryptoUtils;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
+import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethodReader;
+import com.wemakeprice.vms.reportapi.domain.report.option.ReportOptionReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class ReportServiceImpl implements ReportService{
     private final ReportStore reportStore;
     private final ReportSeriesFactory reportSeriesFactory;
     private final ReportReader reportReader;
+    private final ReportOptionMethodReader reportOptionMethodReader;
+    private final ReportOptionReader reportOptionReader;
 
     @Transactional
     @Override
@@ -63,6 +67,27 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public ReportInfo.Main getReportMeta(Long reportId) {
         var report = reportReader.findById(reportId);
-        return new ReportInfo.Main(report);
+        return new ReportInfo.Main(report, null);
+    }
+
+    @Transactional
+    @Override
+    public void updateReportMain(ReportCommand.GenerateReportRequest command) {
+        var report = reportReader.findById(command.getId());
+        report.updateReport(command);
+    }
+
+    @Transactional
+    @Override
+    public void updateReportOption(ReportCommand.GenerateReportOptionGroupRequest command) {
+        var reportOption = reportOptionReader.findById(command.getId());
+        reportOption.updateReportOption(command);
+    }
+
+    @Transactional
+    @Override
+    public void updateReportMethodOption(ReportCommand.GenerateReportOptionMethodRequest command) {
+        var reportOptionMethod = reportOptionMethodReader.findById(command.getId());
+        reportOptionMethod.updateReportOptionMethod(command);
     }
 }

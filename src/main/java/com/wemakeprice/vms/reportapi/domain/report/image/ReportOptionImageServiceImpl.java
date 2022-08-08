@@ -21,6 +21,7 @@ public class ReportOptionImageServiceImpl implements  ReportOptionImageService {
     private final FileStorageService fileStorageService;
     private final ReportReader reportReader;
     private final ReportOptionReader reportOptionReader;
+    private final ReportOptionImageReader reportOptionImageReader;
 
     @Transactional
     @Override
@@ -31,5 +32,12 @@ public class ReportOptionImageServiceImpl implements  ReportOptionImageService {
         var initReportOptionImage = command.toEntity(report, reportOption, fileInfo);
         var reportOptionImage = reportOptionImageStore.store(initReportOptionImage);
         return new ReportInfo.ReportOptionImageInfo(reportOptionImage, fileInfo.getFileUrl());
+    }
+
+    @Override
+    public void deleteImage(Long reportOptionImageId, Long reportId) {
+        var report = reportReader.findById(reportId);
+        var reportOptionImage = reportOptionImageReader.findByIdAndReport(reportOptionImageId, report);
+        reportOptionImageStore.delete(reportOptionImage);
     }
 }

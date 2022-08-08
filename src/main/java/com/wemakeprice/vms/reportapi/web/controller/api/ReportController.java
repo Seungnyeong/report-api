@@ -22,8 +22,6 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 @Api(tags = "보고서")
 public class ReportController {
-    //TODO Report Update API 제작
-    //TODO Report File Upload 함께 구현
     //TODO 사용자 비밀번호 인증 관련하여 필요함 ( 지라 꺼 쓰면 될듯 )
     private final ReportFacade reportFacade;
 
@@ -68,4 +66,29 @@ public class ReportController {
         var response = reportFacade.getReportMeta(report_id);
         return CommonResponse.success(response);
     }
+
+    @ApiOperation(value = "레포트 Meta 수정", notes = "레포트 Meta 수정")
+    @PutMapping("/edit/main")
+    public CommonResponse editReportMain(@RequestBody ReportDto.UpdateReportMainRequest request) {
+        var command = request.toCommand();
+        reportFacade.updateReport(command);
+        return CommonResponse.success("success");
+    }
+
+    @ApiOperation(value = "레포트 상세내용 수정", notes = "레포트 상세내용 수정")
+    @PutMapping("/edit/option")
+    public CommonResponse editReportOption(@RequestBody ReportDto.UpdateReportOption request) {
+        var command = request.toCommand();
+        reportFacade.updateReportOption(command);
+        return CommonResponse.success("success");
+    }
+
+    @ApiOperation(value = "레포트 메소드 수정", notes = "레포트 메소드 수정")
+    @PutMapping("/edit/method")
+    public CommonResponse editReportOptionMethod(@RequestBody ReportDto.UpdateReportOptionMethod request) {
+        var command = request.toCommand();
+        reportFacade.updateReportOptionMethod(command);
+        return CommonResponse.success("success");
+    }
+
 }

@@ -1,10 +1,12 @@
 package com.wemakeprice.vms.reportapi.domain.report.method;
 
+import com.wemakeprice.vms.reportapi.domain.report.ReportCommand;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -51,4 +53,10 @@ public class ReportOptionMethod {
         this.reportOption = reportOption;
     }
 
+    public void updateReportOptionMethod(ReportCommand.GenerateReportOptionMethodRequest command) {
+        if(!StringUtils.isEmpty(command.getMethodName())) this.methodName = command.getMethodName();
+        if(!StringUtils.isEmpty(command.getMethodDescription())) this.methodDescription = command.getMethodDescription();
+        if(!StringUtils.isEmpty(command.getMethodPackage())) this.methodPackage = command.getMethodPackage();
+        if(command.getOrdering() != null) this.ordering = command.getOrdering();
+    }
 }

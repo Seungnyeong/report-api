@@ -10,6 +10,10 @@ import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.swing.*;
+import java.io.File;
 import java.util.List;
 
 public class ReportCommand {
@@ -18,6 +22,7 @@ public class ReportCommand {
     @Builder
     @ToString
     public static class GenerateReportRequest {
+        private final Long id;
         private final String title;
         private final String jiraTicketNumber;
         private final Report.Vulnerability reportVPossibility;
@@ -30,7 +35,6 @@ public class ReportCommand {
             return Report.builder()
                     .title(title)
                     .diagnosisTable(diagnosisTable)
-                    .reportFileName(null)
                     .generalReview(generalReview)
                     .jiraTicketNumber(jiraTicketNumber)
                     .reportVGrade(reportVGrade)
@@ -59,6 +63,7 @@ public class ReportCommand {
     @Builder
     @ToString
     public static class GenerateReportOptionGroupRequest {
+        private final Long id;
         private final String vName;
         private final Integer reportVCount;
         private final String reportVIssue;
@@ -82,6 +87,7 @@ public class ReportCommand {
     @Builder
     @ToString
     public static class GenerateReportOptionMethodRequest {
+        private final Long id;
         private final String methodName;
         private final String methodPackage;
         private final String methodDescription;
@@ -109,18 +115,17 @@ public class ReportCommand {
         private final String caption;
         private final Long report_option_id;
 
-        public ReportOptionImage toEntity(Report report, ReportOption reportOption, FileResponse file) {
+        public ReportOptionImage toEntity(Report report, ReportOption reportOption, FileResponse fileResponse) {
             return ReportOptionImage.builder()
-                    .reportOptionImageFilePath(file.getFilePath())
+                    .reportOptionImageFilePath(fileResponse.getFilePath())
                     .report(report)
                     .reportOption(reportOption)
-                    .imageName(file.getFileName())
-                    .extension(file.getExtension())
+                    .imageName(fileResponse.getFileName())
+                    .extension(fileResponse.getExtension())
                     .ordering(ordering)
                     .description(description)
                     .caption(caption)
                     .build();
         }
     }
-
 }

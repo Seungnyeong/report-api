@@ -33,10 +33,12 @@ public class ReportInfo  {
         private final String reportFilePath;
         private final LocalDateTime created;
         private final List<ReportOptionGroupInfo> reportOptionGroupsList;
+        private final ReportUserInfo reportUserInfo;
 
         public Main(Report report, List<ReportOptionGroupInfo> reportOptionGroupInfoList) {
             this.id = report.getId();
             this.title = report.getTitle();
+            this.reportUserInfo = new ReportUserInfo(report.getUser());
             this.reportControlNumber = report.getReportControlNumber();
             this.jiraTicketNumber = report.getJiraTicketNumber();
             this.reportVPossibility = report.getReportVPossibility();
@@ -47,21 +49,6 @@ public class ReportInfo  {
             this.reportFilePath = report.getReportFilePath();
             this.created = report.getCreatedDate();
             this.reportOptionGroupsList = reportOptionGroupInfoList;
-        }
-
-        public Main(Report report) {
-            this.id = report.getId();
-            this.title = report.getTitle();
-            this.reportControlNumber = report.getReportControlNumber();
-            this.jiraTicketNumber = report.getJiraTicketNumber();
-            this.reportVPossibility = report.getReportVPossibility();
-            this.reportVGrade = report.getReportVGrade();
-            this.generalReview = report.getGeneralReview();
-            this.diagnosisTable = report.getDiagnosisTable();
-            this.fileExtension = report.getFileExtension();
-            this.reportFilePath = report.getReportFilePath();
-            this.created = report.getCreatedDate();
-            this.reportOptionGroupsList = null;
         }
     }
 
@@ -152,6 +139,21 @@ public class ReportInfo  {
             this.methodPackage = reportOptionMethod.getMethodPackage();
             this.methodDescription = reportOptionMethod.getMethodDescription();
             this.ordering = reportOptionMethod.getOrdering();
+        }
+    }
+
+    @Getter
+    @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class ReportUserInfo {
+        private final Long id;
+        private final String username;
+        private final String displayName;
+
+        public ReportUserInfo(User user) {
+            this.id = user.getId();
+            this.username = user.getUsername();
+            this.displayName = user.getDisplayName();
         }
     }
 

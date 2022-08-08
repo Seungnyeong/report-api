@@ -25,8 +25,13 @@ public class ImageFacade {
         return reportOptionImageService.store(command, reportId, file);
     }
 
-    public Resource serveFile(Long fileId) throws FileNotFoundException {
+    public Resource serve(Long fileId) throws FileNotFoundException {
         return null;
 //        return fileStorageService.loadFileAsResource();
+    }
+
+    public void delete(Long reportOptionImageId, Long reportId) {
+        // 파일 IO 삭제도 필요할 수 있음.
+        reportOptionImageService.deleteImage(reportOptionImageId, reportId);
     }
 }
