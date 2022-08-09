@@ -31,4 +31,9 @@ public class ReportOptionImageReaderImpl implements ReportOptionImageReader {
     public ReportOptionImage findByIdAndReport(Long reportOptionImageId, Report report) {
         return reportOptionImageRepository.findByIdAndReport(reportOptionImageId, report).orElseThrow(EntityNotFoundException::new);
     }
+
+    @Override
+    public ReportOptionImage findById(Long reportOptionImageId) {
+        return reportOptionImageRepository.findById(reportOptionImageId).orElseThrow(EntityNotFoundException::new);
+    }
 }

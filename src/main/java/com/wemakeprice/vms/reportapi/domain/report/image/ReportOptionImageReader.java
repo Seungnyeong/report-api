@@ -8,4 +8,5 @@ import java.util.List;
 public interface ReportOptionImageReader {
     List<ReportInfo.ReportOptionImageInfo> finByReportOption(ReportOption reportOption);
     ReportOptionImage findByIdAndReport(Long reportOptionImageId, Report report);
+    ReportOptionImage findById(Long reportOptionImageId);
 }

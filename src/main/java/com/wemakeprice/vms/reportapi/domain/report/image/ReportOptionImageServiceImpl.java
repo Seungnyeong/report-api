@@ -34,10 +34,17 @@ public class ReportOptionImageServiceImpl implements  ReportOptionImageService {
         return new ReportInfo.ReportOptionImageInfo(reportOptionImage, fileInfo.getFileUrl());
     }
 
+    @Transactional
     @Override
     public void deleteImage(Long reportOptionImageId, Long reportId) {
         var report = reportReader.findById(reportId);
         var reportOptionImage = reportOptionImageReader.findByIdAndReport(reportOptionImageId, report);
         reportOptionImageStore.delete(reportOptionImage);
+    }
+
+    @Override
+    public ReportInfo.ReportOptionImageInfo retrieveReportOptionImage(Long reportOptionImageId) {
+        var reportOptionImage = reportOptionImageReader.findById(reportOptionImageId);
+        return new ReportInfo.ReportOptionImageInfo(reportOptionImage, null);
     }
 }

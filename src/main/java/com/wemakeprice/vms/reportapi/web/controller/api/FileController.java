@@ -11,12 +11,18 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,12 +51,16 @@ public class FileController {
     }
 
     @ApiOperation(value = "보고서 이미지 파일 다운로드", notes = "이미지 파일 다운로드.")
-    @GetMapping("/{fileId:.+}")
+    @GetMapping("/{fileId}")
     @ResponseBody
-    public CommonResponse<Resource> fileDownload(@PathVariable Long fileId) throws FileNotFoundException {
-
-        var file = imageFacade.serve(fileId);
-        return CommonResponse.success(file);
+    public ResponseEntity<InputStreamResource> fileDownload(@PathVariable Long fileId) throws FileNotFoundException {
+        var fileInfo = imageFacade.serve(fileId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+                        new String(fileInfo.getFileName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1) + "\";")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(fileInfo.getFile().length())
+                .body(new InputStreamResource(new FileInputStream(fileInfo.getFile())));
     }
 
     @ApiOperation(value = "레포트 파일 이미지 삭제", notes = "레포트 파일 이미지 삭제")

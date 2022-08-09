@@ -9,7 +9,7 @@ import java.io.File;
 @Getter
 @Builder
 @ToString
-public class DocxInfo {
+public class FileInfo {
     private final File file;
     private final String fileName;
 }
