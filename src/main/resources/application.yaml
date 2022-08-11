@@ -1,7 +1,7 @@
 server:
   port: 8888
-  servlet:
-    context-path : /report
+#  servlet:
+#    context-path : /report
 spring:
   profiles:
     - local
