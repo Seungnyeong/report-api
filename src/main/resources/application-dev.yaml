@@ -31,4 +31,4 @@ file:
   report-result-dir: /data/app/files/report
 
 cross:
-  origin-url : http://10.107.11.63:8887
+  origin-url : http://10.107.11.63:80
