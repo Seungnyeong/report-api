@@ -1,6 +1,7 @@
-package com.wemakeprice.vms.reportapi.docx;
+package com.wemakeprice.vms.reportapi.infrastructure.external.docx;
 
 import com.wemakeprice.vms.reportapi.config.FileStorageConfig;
+import com.wemakeprice.vms.reportapi.docx.DocxService;
 import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemService;

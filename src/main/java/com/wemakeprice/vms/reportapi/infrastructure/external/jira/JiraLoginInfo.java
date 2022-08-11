@@ -1,4 +1,4 @@
-package com.wemakeprice.vms.reportapi.jira;
+package com.wemakeprice.vms.reportapi.infrastructure.external.jira;
 
 import lombok.Getter;
 import lombok.Setter;

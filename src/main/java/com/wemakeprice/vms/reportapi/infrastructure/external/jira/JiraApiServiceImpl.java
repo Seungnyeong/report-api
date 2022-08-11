@@ -1,5 +1,7 @@
-package com.wemakeprice.vms.reportapi.jira;
+package com.wemakeprice.vms.reportapi.infrastructure.external.jira;
 
+import com.wemakeprice.vms.reportapi.jira.JiraApiService;
+import com.wemakeprice.vms.reportapi.jira.JiraLoginCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -9,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class JiraApiServiceImpl implements  JiraApiService {
+public class JiraApiServiceImpl implements JiraApiService {
 
     private static final String LOGIN_API_URL = "http://jira.wemakeprice.com/rest/auth/1/session";
 

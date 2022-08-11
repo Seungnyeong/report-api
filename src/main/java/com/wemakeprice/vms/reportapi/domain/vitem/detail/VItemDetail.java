@@ -48,8 +48,8 @@ public class VItemDetail {
 
     public void updateDetail(VItemCommand.UpdateVItemDetailRequest request) {
         if(!StringUtils.isEmpty(request.getDetail())) this.vDetail = request.getDetail();
-        if( request.getRespond().size() > 0 ) {
-            request.getRespond().forEach(item -> this.respond.add(0, item));
+        if( request.getRespond() != null) {
+            if ( request.getRespond().size() > 0) request.getRespond().forEach(item -> this.respond.add(0, item));
         }
     }
 

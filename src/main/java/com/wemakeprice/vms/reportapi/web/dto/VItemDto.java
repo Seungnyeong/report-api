@@ -65,6 +65,7 @@ public class VItemDto {
     @Getter
     @Setter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class RegisterVItemDetailGroup {
 
         @NotNull(message = "vCategoryName 필수 입니다.")
@@ -95,6 +96,7 @@ public class VItemDto {
     @Getter
     @Setter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class UpdateVItemDetailGroupRequest {
         @NotNull(message = "vItemDetailGroupId 필수 입니다.")
         private Long vItemDetailGroupId;
@@ -121,6 +123,7 @@ public class VItemDto {
     @Getter
     @Setter
     @ToString
+    @JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class RegisterVItemWithDetail {
 
         @NotEmpty(message = "detail 필수 입니다.")
