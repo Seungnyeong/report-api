@@ -1,6 +1,7 @@
 server:
   port: 8887
-
+  servlet:
+    context-path: /report
 spring:
   profiles:
     - dev
@@ -31,4 +32,4 @@ file:
   report-result-dir: /data/app/files/report
 
 cross:
-  origin-url : http://10.107.11.63:80
+  origin-url : http://10.107.11.63:8887
