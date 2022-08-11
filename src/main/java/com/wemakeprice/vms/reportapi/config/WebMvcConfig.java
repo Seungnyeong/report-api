@@ -44,6 +44,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
+                .allowedOrigins("http://wvms-dev.wemakeprice.work/")
+                .allowedOrigins("http://wvms-stg.wemakeprice.work/")
                 .allowedMethods("*");
     }
 }
