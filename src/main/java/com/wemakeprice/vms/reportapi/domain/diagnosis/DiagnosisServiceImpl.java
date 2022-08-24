@@ -14,7 +14,8 @@ public class DiagnosisServiceImpl implements DiagnosisTableService{
 
     @Transactional
     @Override
-    public DiagnosisTable getDiagnosisTable(Long id) {
-        return diagnosisTableReader.findById(id);
+    public DiagnosisTableInfo.Main getDiagnosisTable(Long id) {
+        var table = diagnosisTableReader.findById(id);
+        return new DiagnosisTableInfo.Main(table);
     }
 }

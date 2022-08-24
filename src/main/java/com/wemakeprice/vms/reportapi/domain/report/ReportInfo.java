@@ -3,6 +3,7 @@ package com.wemakeprice.vms.reportapi.domain.report;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
+import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTableInfo;
 import com.wemakeprice.vms.reportapi.domain.report.image.ReportOptionImage;
 import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethod;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOption;
@@ -28,14 +29,15 @@ public class ReportInfo  {
         private final Report.Vulnerability reportVPossibility;
         private final Report.Grade reportVGrade;
         private final String generalReview;
-        private final DiagnosisTable diagnosisTable;
+        private final DiagnosisTableInfo.Main diagnosisTableInfo;
         private final String fileExtension;
         private final String reportFilePath;
         private final LocalDateTime created;
         private final List<ReportOptionGroupInfo> reportOptionGroupsList;
         private final ReportUserInfo reportUserInfo;
+        private final String password;
 
-        public Main(Report report, List<ReportOptionGroupInfo> reportOptionGroupInfoList) {
+        public Main(Report report, List<ReportOptionGroupInfo> reportOptionGroupInfoList, DiagnosisTableInfo.Main diagnosisTableInfo) {
             this.id = report.getId();
             this.title = report.getTitle();
             this.reportUserInfo = new ReportUserInfo(report.getUser());
@@ -44,11 +46,12 @@ public class ReportInfo  {
             this.reportVPossibility = report.getReportVPossibility();
             this.reportVGrade = report.getReportVGrade();
             this.generalReview = report.getGeneralReview();
-            this.diagnosisTable = report.getDiagnosisTable();
+            this.diagnosisTableInfo = diagnosisTableInfo;
             this.fileExtension = report.getFileExtension();
             this.reportFilePath = report.getReportFilePath();
             this.created = report.getCreatedDate();
             this.reportOptionGroupsList = reportOptionGroupInfoList;
+            this.password = report.getReportPassword();
         }
     }
 

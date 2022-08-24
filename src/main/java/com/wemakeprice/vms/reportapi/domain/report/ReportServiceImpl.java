@@ -5,6 +5,8 @@ import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.IV;
 
 import com.wemakeprice.vms.reportapi.common.utils.crypto.WmpCryptoUtils;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
+import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTableInfo;
+import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTableReader;
 import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethodReader;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOptionReader;
 import lombok.RequiredArgsConstructor;
@@ -26,22 +28,25 @@ public class ReportServiceImpl implements ReportService{
     private final ReportReader reportReader;
     private final ReportOptionMethodReader reportOptionMethodReader;
     private final ReportOptionReader reportOptionReader;
+    private final DiagnosisTableReader diagnosisTableReader;
 
     @Transactional
     @Override
-    public ReportInfo.Main generateReport(ReportCommand.GenerateReportRequest command, DiagnosisTable diagnosisTable) {
+    public ReportInfo.Main generateReport(ReportCommand.GenerateReportRequest command, DiagnosisTableInfo.Main diagnosisTableInfo) {
+        var diagnosisTable = diagnosisTableReader.findById(diagnosisTableInfo.getId());
         var initReport = command.toEntity(diagnosisTable);
         var report = reportStore.store(initReport);
         var reportOptionGroup = reportSeriesFactory.store(command, report);
-        return new ReportInfo.Main(report, reportOptionGroup);
+        return new ReportInfo.Main(report, reportOptionGroup, diagnosisTableInfo);
     }
 
     @Transactional
     @Override
-    public ReportInfo.Main retrieveReport(DiagnosisTable diagnosisTable) {
+    public ReportInfo.Main retrieveReport(DiagnosisTableInfo.Main diagnosisTableInfo) {
+        var diagnosisTable = diagnosisTableReader.findById(diagnosisTableInfo.getId());
         var report = reportReader.findByDiagnosisTable(diagnosisTable);
         var reportOptionGroup = reportReader.reportOptionGroupList(report);
-        return new ReportInfo.Main(report, reportOptionGroup);
+        return new ReportInfo.Main(report, reportOptionGroup, diagnosisTableInfo);
     }
 
     @Transactional
@@ -67,7 +72,7 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public ReportInfo.Main getReportMeta(Long reportId) {
         var report = reportReader.findById(reportId);
-        return new ReportInfo.Main(report, null);
+        return new ReportInfo.Main(report, null, null);
     }
 
     @Transactional

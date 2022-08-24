@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,6 @@ public class VItemReaderImpl implements VItemReader {
                     var vItemDetailInfoList = vItemDetailList.stream()
                             .map(VItemInfo.VItemDetailInfo::new)
                             .collect(Collectors.toList());
-
                     return new VItemInfo.VItemDetailGroupInfo(vItemDetailGroup, vItemDetailInfoList);
                 }).collect(Collectors.toList());
     }
