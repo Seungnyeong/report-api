@@ -28,7 +28,7 @@ public class ReportReaderImpl implements ReportReader {
 
     @Override
     public Report findByDiagnosisTable(DiagnosisTable diagnosisTable) {
-        return reportRepository.findByDiagnosisTable(diagnosisTable);
+        return reportRepository.findByDiagnosisTable(diagnosisTable).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
