@@ -38,8 +38,7 @@ public class ReportController {
         var reportFile = reportFacade.printReport(diagnosis_table_id);
 
         return   ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,  String.format("attachment;filename=\"%1$s\";" +
-                        "filename*=\"UTF-8''%1$s\";", URLEncoder.encode(reportFile.getFileName(), StandardCharsets.UTF_8)))
+                .header(HttpHeaders.CONTENT_DISPOSITION,  String.format("attachment;filename=\"%1$s\";", URLEncoder.encode(reportFile.getFileName(), StandardCharsets.UTF_8)))
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(reportFile.getFile().length())
                 .body(new InputStreamResource(new FileInputStream(reportFile.getFile())));
