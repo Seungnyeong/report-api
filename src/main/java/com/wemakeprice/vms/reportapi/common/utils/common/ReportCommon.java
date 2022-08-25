@@ -1,14 +1,17 @@
 package com.wemakeprice.vms.reportapi.common.utils.common;
 
 import com.wemakeprice.vms.reportapi.common.utils.crypto.WmpCryptoUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.spec.SecretKeySpec;
 
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.KEY;
 import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.IV;
 
+@Slf4j
 public class ReportCommon {
 
     public static String getTempPassword(int length) {
@@ -27,5 +30,40 @@ public class ReportCommon {
 
         SecretKeySpec keySpec = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), "AES");
         return WmpCryptoUtils.encrypt(sb.toString(), keySpec, IV.substring(0,16).getBytes(StandardCharsets.UTF_8));
+    }
+
+
+    /**
+     * 브라우저 종류에 따라 한글을 인코딩하여 리턴한다.
+     * @param filename
+     * @return
+     * @throws Exception
+     */
+
+    public static String getEncodingFilename(String filename, boolean attachmentPrefix) {
+
+        String encodedFilename = new String(filename);
+
+        try {
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < filename.length(); i++) {
+                    char c = filename.charAt(i);
+                    if (c > '~') {
+                        sb.append(URLEncoder.encode("" + c, StandardCharsets.UTF_8));
+                    } else {
+                        sb.append(c);
+                    }
+
+                }
+
+                encodedFilename = sb.toString();
+
+            if (attachmentPrefix) {
+                return "attachment; filename=" + encodedFilename + ";";
+            }
+        } catch (Exception e) {
+            log.error("Cannot Convert FileName");
+        }
+        return encodedFilename;
     }
 }

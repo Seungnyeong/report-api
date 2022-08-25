@@ -2,6 +2,12 @@ server:
   port: 8888
   servlet:
     context-path : /report
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat:
+    uri-encoding: UTF-8
 spring:
   profiles:
     - local

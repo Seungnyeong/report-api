@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.*;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @RestController
@@ -32,13 +33,13 @@ public class ReportController {
     private final JiraApiService jiraApiService;
 
     @ApiOperation(value = "레포트 파일 생성/다운로드", notes = "레포트 파일 생성 및 다운로드")
-    @GetMapping(value = "/print/{diagnosis_table_id}")
+    @GetMapping(value = "/print/{diagnosis_table_id}" )
     public ResponseEntity<InputStreamResource> printReport(@PathVariable Long diagnosis_table_id) throws Exception {
         var reportFile = reportFacade.printReport(diagnosis_table_id);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
-                        new String(reportFile.getFileName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1) + "\";")
+        return   ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,  String.format("attachment;filename=\"%1$s\";" +
+                        "filename*=\"UTF-8''%1$s\";", URLEncoder.encode(reportFile.getFileName(), StandardCharsets.UTF_8)))
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(reportFile.getFile().length())
                 .body(new InputStreamResource(new FileInputStream(reportFile.getFile())));

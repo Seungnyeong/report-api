@@ -22,8 +22,8 @@ public class HTMLCharacterEscapes extends CharacterEscapes {
         asciiEscapes['>'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['&'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['\"'] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes['('] = CharacterEscapes.ESCAPE_CUSTOM;
-        asciiEscapes[')'] = CharacterEscapes.ESCAPE_CUSTOM;
+//        asciiEscapes['('] = CharacterEscapes.ESCAPE_CUSTOM;
+//        asciiEscapes[')'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['#'] = CharacterEscapes.ESCAPE_CUSTOM;
         asciiEscapes['\''] = CharacterEscapes.ESCAPE_CUSTOM;
 
@@ -31,16 +31,16 @@ public class HTMLCharacterEscapes extends CharacterEscapes {
         translator = new AggregateTranslator(
                 new LookupTranslator(EntityArrays.BASIC_ESCAPE()), // <, >, &, " 는 여기에 포함됨
                 new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE()),
-                new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE()),
+                new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE())
                 // 여기에서 커스터마이징 가능
-                new LookupTranslator(
-                        new String[][]{
-                                {"(", "&#40;"},
-                                {")", "&#41;"},
-                                {"#", "&#35;"},
-                                {"\\'", "&#39;"}
-                        }
-                )
+//                new LookupTranslator(
+//                        new String[][]{
+//                                {"(", "&#40;"},
+//                                {")", "&#41;"},
+//                                {"#", "&#35;"},
+//                                {"\\'", "&#39;"}
+//                        }
+//                )
         );
     }
 

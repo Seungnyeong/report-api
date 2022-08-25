@@ -37,7 +37,7 @@ public class ReportFacade {
         var savedPath = reportService.updateReportFilePath(rePortFilePath, report.getId());
         return FileInfo.builder()
                 .file(new File(savedPath))
-                .fileName(report.getTitle() + "." + report.getFileExtension())
+                .fileName(report.getTitle() + ".docx")
                 .build();
     }
 
