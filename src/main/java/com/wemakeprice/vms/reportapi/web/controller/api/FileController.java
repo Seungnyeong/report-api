@@ -3,7 +3,6 @@ package com.wemakeprice.vms.reportapi.web.controller.api;
 import com.wemakeprice.vms.reportapi.annotation.ValidFile;
 import com.wemakeprice.vms.reportapi.application.report.ImageFacade;
 import com.wemakeprice.vms.reportapi.common.response.CommonResponse;
-import com.wemakeprice.vms.reportapi.domain.report.image.FileStorageService;
 import com.wemakeprice.vms.reportapi.web.dto.ImageFileDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,14 +50,14 @@ public class FileController {
 
     @ApiOperation(value = "보고서 이미지 파일 다운로드", notes = "이미지 파일 다운로드.")
     @GetMapping("/{fileId}")
-    @ResponseBody
-    public ResponseEntity<InputStreamResource> fileDownload(@PathVariable Long fileId) throws FileNotFoundException {
-        var fileInfo = imageFacade.serve(fileId);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
-                        new String(fileInfo.getFileName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1) + "\";")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(fileInfo.getFile().length())
+        @ResponseBody
+        public ResponseEntity<InputStreamResource> fileDownload(@PathVariable Long fileId) throws FileNotFoundException {
+            var fileInfo = imageFacade.serve(fileId);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+                            new String(fileInfo.getFileName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1) + "\";")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(fileInfo.getFile().length())
                 .body(new InputStreamResource(new FileInputStream(fileInfo.getFile())));
     }
 
