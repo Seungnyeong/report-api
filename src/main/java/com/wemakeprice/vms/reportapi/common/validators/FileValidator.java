@@ -1,17 +1,15 @@
 package com.wemakeprice.vms.reportapi.common.validators;
 
 import com.wemakeprice.vms.reportapi.annotation.ValidFile;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+@Slf4j
 public class FileValidator implements ConstraintValidator<ValidFile, MultipartFile> {
 
-    @Override
-    public void initialize(ValidFile constraintAnnotation) {
-
-    }
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
@@ -26,10 +24,9 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
         return result;
     }
 
+
     private boolean isSupportedContentType(String contentType) {
-        return contentType.equals("text/xml")
-                || contentType.equals("application/pdf")
-                || contentType.equals("image/png")
+        return contentType.equals("image/png")
                 || contentType.equals("image/jpg")
                 || contentType.equals("image/jpeg");
     }

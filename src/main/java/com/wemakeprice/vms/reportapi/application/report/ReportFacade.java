@@ -58,7 +58,23 @@ public class ReportFacade {
         reportService.updateReportOption(command);
     }
 
+    public ReportInfo.ReportOptionGroupInfo createReportOption(ReportCommand.GenerateReportGroupRequest command, Long reportId) {
+        return reportService.createReportOptionGroup(command, reportId, command.getVItemDetailGroupId());
+    }
+
     public void updateReportOptionMethod(ReportCommand.GenerateReportOptionMethodRequest command) {
         reportService.updateReportMethodOption(command);
+    }
+
+    public void deleteReportOptionGroup(Long reportOptionGroupId) {
+        reportService.deleteReportOptionGroup(reportOptionGroupId);
+    }
+
+    public void deleteReportOptionMethod(Long reportOptionMethodId) {
+        reportService.deleteReportOptionMethod(reportOptionMethodId);
+    }
+
+    public ReportInfo.ReportOptionMethodInfo addReportOptionMethod(ReportCommand.GenerateReportOptionMethodRequest command, Long reportOptionId) {
+        return reportService.addOptionMethod(command, reportOptionId);
     }
 }

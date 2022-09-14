@@ -16,4 +16,9 @@ public class ReportOptionGroupStoreImpl implements ReportOptionGroupStore {
     public ReportOptionGroup store(ReportOptionGroup reportOptionGroup) {
         return reportOptionGroupRepository.save(reportOptionGroup);
     }
+
+    @Override
+    public void delete(ReportOptionGroup reportOptionGroupInfo) {
+        reportOptionGroupRepository.deleteById(reportOptionGroupInfo.getId());
+    }
 }

@@ -1,11 +1,13 @@
 package com.wemakeprice.vms.reportapi.web.dto;
 
+import com.wemakeprice.vms.reportapi.annotation.ValidFile;
 import com.wemakeprice.vms.reportapi.domain.report.ReportCommand;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class ImageFileDto {
@@ -22,9 +24,13 @@ public class ImageFileDto {
     @Setter
     @ToString
     public static class ReportOptionImage {
+
+        @ValidFile
         private MultipartFile file;
         private Long report_option_id;
         private Integer ordering;
+
+        @Size(min = 1, max = 1000, message = "최소 Size= 1, 최대 Size=100 입니다.")
         private String caption;
         private String description;
 

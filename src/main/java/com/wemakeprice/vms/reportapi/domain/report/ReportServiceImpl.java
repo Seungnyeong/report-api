@@ -4,11 +4,16 @@ import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.KEY;
 import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.IV;
 
 import com.wemakeprice.vms.reportapi.common.utils.crypto.WmpCryptoUtils;
-import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTable;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTableInfo;
 import com.wemakeprice.vms.reportapi.domain.diagnosis.DiagnosisTableReader;
+import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethod;
 import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethodReader;
+import com.wemakeprice.vms.reportapi.domain.report.method.ReportOptionMethodStore;
 import com.wemakeprice.vms.reportapi.domain.report.option.ReportOptionReader;
+import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroupReader;
+import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroupSeriesFactory;
+import com.wemakeprice.vms.reportapi.domain.report.optionGroup.ReportOptionGroupStore;
+import com.wemakeprice.vms.reportapi.domain.vitem.detailGroup.VItemDetailGroupReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +34,11 @@ public class ReportServiceImpl implements ReportService{
     private final ReportOptionMethodReader reportOptionMethodReader;
     private final ReportOptionReader reportOptionReader;
     private final DiagnosisTableReader diagnosisTableReader;
+    private final ReportOptionGroupStore reportOptionGroupStore;
+    private final VItemDetailGroupReader vItemDetailGroupReader;
+    private final ReportOptionGroupSeriesFactory reportOptionGroupSeriesFactory;
+    private final ReportOptionGroupReader reportOptionGroupReader;
+    private final ReportOptionMethodStore reportOptionMethodStore;
 
     @Transactional
     @Override
@@ -94,5 +104,35 @@ public class ReportServiceImpl implements ReportService{
     public void updateReportMethodOption(ReportCommand.GenerateReportOptionMethodRequest command) {
         var reportOptionMethod = reportOptionMethodReader.findById(command.getId());
         reportOptionMethod.updateReportOptionMethod(command);
+    }
+
+    @Transactional
+    @Override
+    public ReportInfo.ReportOptionGroupInfo createReportOptionGroup(ReportCommand.GenerateReportGroupRequest command, Long reportId, Long vItemDetailGroupId) {
+        var report = reportReader.findById(reportId);
+        return reportOptionGroupSeriesFactory.store(report, command);
+    }
+
+    @Transactional
+    @Override
+    public void deleteReportOptionGroup(Long reportOptionGroupId) {
+        var reportOptionGroup = reportOptionGroupReader.find(reportOptionGroupId);
+        reportOptionGroupStore.delete(reportOptionGroup);
+    }
+
+    @Transactional
+    @Override
+    public void deleteReportOptionMethod(Long reportOptionMethodId) {
+        var reportOptionMethod = reportOptionMethodReader.findById(reportOptionMethodId);
+        reportOptionMethodStore.delete(reportOptionMethod);
+    }
+
+    @Transactional
+    @Override
+    public ReportInfo.ReportOptionMethodInfo addOptionMethod(ReportCommand.GenerateReportOptionMethodRequest command, Long reportOptionId) {
+        var reportOption = reportOptionReader.findById(reportOptionId);
+        var initReportOptionMethod = command.toEntity(reportOption);
+        var reportOptionMethod = reportOptionMethodStore.save(initReportOptionMethod);
+        return new ReportInfo.ReportOptionMethodInfo(reportOptionMethod);
     }
 }

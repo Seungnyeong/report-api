@@ -6,12 +6,15 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 @Documented
-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
-@Retention(RetentionPolicy.RUNTIME)
+@Target({FIELD, PARAMETER})
+@Retention(RUNTIME)
 @Constraint(validatedBy = {FileValidator.class})
 public @interface ValidFile {
-    String message() default "Only PDF,XML,PNG or JPG images are allowed";
+    String message() default "OnlyPNG or JPG images are allowed";
 
     Class<?>[] groups() default {};
 

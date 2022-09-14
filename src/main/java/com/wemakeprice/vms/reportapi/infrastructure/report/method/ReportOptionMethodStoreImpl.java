@@ -17,4 +17,9 @@ public class ReportOptionMethodStoreImpl implements ReportOptionMethodStore {
     public ReportOptionMethod save(ReportOptionMethod reportOptionMethod) {
         return reportOptionMethodRepository.save(reportOptionMethod);
     }
+
+    @Override
+    public void delete(ReportOptionMethod reportOptionMethod) {
+        reportOptionMethodRepository.delete(reportOptionMethod);
+    }
 }

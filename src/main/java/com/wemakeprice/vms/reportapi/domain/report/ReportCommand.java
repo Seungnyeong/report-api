@@ -47,7 +47,6 @@ public class ReportCommand {
     @Builder
     @ToString
     public static class GenerateReportGroupRequest {
-
         Long vItemDetailGroupId;
         List<GenerateReportOptionGroupRequest> generateReportOptionGroupRequestList;
 

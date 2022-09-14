@@ -17,9 +17,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
@@ -28,15 +30,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/report/file")
 @Slf4j
 @Api(tags = "보고서 이미지 업로드")
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal=true)
 public class FileController {
 
     private final ImageFacade imageFacade;
 
     @ApiOperation(value = "보고서 이미지 파일 업로드", notes = "이미지 파일 업로드입니다.")
     @PostMapping
-    public CommonResponse fileUpload(@Validated @ValidFile @ModelAttribute ImageFileDto.RegisterFile request) {
-        var files = request.getFiles().stream().map(file -> {
+    public CommonResponse fileUpload(@Valid @ModelAttribute ImageFileDto.RegisterFile request) {
+            var files = request.getFiles().stream().map(file -> {
             var command = file.toCommand();
             try {
                 return imageFacade.storeImageFile(command, request.getReport_id(), file.getFile());
@@ -54,8 +55,7 @@ public class FileController {
         public ResponseEntity<InputStreamResource> fileDownload(@PathVariable Long fileId) throws FileNotFoundException {
             var fileInfo = imageFacade.serve(fileId);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
-                            new String(fileInfo.getFileName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1) + "\";")
+                    .header(HttpHeaders.CONTENT_DISPOSITION,  String.format("attachment;filename=\"%1$s\";", URLEncoder.encode(fileInfo.getFileName(), StandardCharsets.UTF_8)))
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .contentLength(fileInfo.getFile().length())
                 .body(new InputStreamResource(new FileInputStream(fileInfo.getFile())));

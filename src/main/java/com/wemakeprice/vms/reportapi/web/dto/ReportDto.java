@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.swing.*;
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,8 @@ public class ReportDto {
     @Setter
     @ToString
     public static class GenerateReportRequest {
+
+        @NotNull
         private String title;
         private String jira_ticket_number;
         private Report.Vulnerability report_v_possibility;
@@ -84,7 +87,7 @@ public class ReportDto {
     @Setter
     @ToString
     public static class RegisterReportOptionGroup {
-
+        private Long report_id;
         private Long v_item_detail_group_id;
         private List<RegisterReportOption> report_option_list;
 

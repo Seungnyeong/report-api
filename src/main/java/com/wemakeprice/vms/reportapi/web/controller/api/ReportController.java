@@ -101,6 +101,14 @@ public class ReportController {
         return CommonResponse.success("success");
     }
 
+    @ApiOperation(value = "레포트 상세내용 추가", notes = "레포트 상세내용 추가")
+    @PostMapping("/create/option")
+    public CommonResponse createReportOption(@RequestBody ReportDto.RegisterReportOptionGroup request) {
+        var command = request.toCommand();
+        var result = reportFacade.createReportOption(command, request.getReport_id());
+        return CommonResponse.success(result);
+    }
+
     @ApiOperation(value = "레포트 메소드 수정", notes = "레포트 메소드 수정")
     @PutMapping("/edit/method")
     public CommonResponse editReportOptionMethod(@RequestBody ReportDto.UpdateReportOptionMethod request) {
@@ -109,4 +117,25 @@ public class ReportController {
         return CommonResponse.success("success");
     }
 
+    @ApiOperation(value = "레포트 옵션그룹 삭제", notes = "레포트 옵션그룹 삭제")
+    @DeleteMapping("/option/{report_option_group_id}")
+    public CommonResponse deleteReportOptionGroup(@PathVariable Long report_option_group_id) {
+        reportFacade.deleteReportOptionGroup(report_option_group_id);
+        return CommonResponse.success("success");
+    }
+
+    @ApiOperation(value = "레포트 옵션그룹 삭제", notes = "레포트 옵션그룹 삭제")
+    @DeleteMapping("/option/method/{report_option_method_id}")
+    public CommonResponse deleteReportOptionMethod(@PathVariable Long report_option_method_id) {
+        reportFacade.deleteReportOptionMethod(report_option_method_id);
+        return CommonResponse.success("success");
+    }
+
+    @ApiOperation(value = "레포트 옵션 메소드 추가", notes = "레포트 옵션 메소드 추가")
+    @PostMapping("/option/method/{report_option_id}")
+    public CommonResponse addReportOptionMethod(@PathVariable Long report_option_id, @RequestBody ReportDto.RegisterReportOptionMethod request) {
+        var command = request.toCommand();
+        var reportOptionMethodInfo = reportFacade.addReportOptionMethod(command, report_option_id);
+        return CommonResponse.success(reportOptionMethodInfo);
+    }
 }
