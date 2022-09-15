@@ -135,4 +135,11 @@ public class ReportServiceImpl implements ReportService{
         var reportOptionMethod = reportOptionMethodStore.save(initReportOptionMethod);
         return new ReportInfo.ReportOptionMethodInfo(reportOptionMethod);
     }
+
+    @Transactional
+    @Override
+    public void deleteReport(Long reportId) {
+        var report = reportReader.findById(reportId);
+        reportStore.delete(report);
+    }
 }

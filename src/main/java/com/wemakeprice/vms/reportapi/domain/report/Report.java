@@ -70,7 +70,7 @@ public class Report extends AbstractEntity {
     @JoinColumn(name = "diagnosis_table_id", referencedColumnName = "id")
     private DiagnosisTable diagnosisTable;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "report" , cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "report" , cascade = CascadeType.ALL)
     private final List<ReportOptionGroup> reportOptionGroupsList = Lists.newArrayList();
 
     @Builder

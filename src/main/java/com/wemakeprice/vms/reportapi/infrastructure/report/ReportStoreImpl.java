@@ -19,4 +19,9 @@ public class ReportStoreImpl implements ReportStore {
     public Report store(Report report) {
         return reportRepository.save(report);
     }
+
+    @Override
+    public void delete(Report report) {
+        reportRepository.delete(report);
+    }
 }

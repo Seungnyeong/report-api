@@ -138,4 +138,11 @@ public class ReportController {
         var reportOptionMethodInfo = reportFacade.addReportOptionMethod(command, report_option_id);
         return CommonResponse.success(reportOptionMethodInfo);
     }
+
+    @ApiOperation(value = "레포트 객체 삭제", notes = "레포트 객체 삭제")
+    @DeleteMapping("/delete/{report_id}")
+    public CommonResponse deleteReportEntity(@PathVariable Long report_id) {
+        reportFacade.deleteReportEntity(report_id);
+        return CommonResponse.success(null);
+    }
 }

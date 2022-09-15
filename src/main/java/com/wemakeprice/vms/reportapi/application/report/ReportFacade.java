@@ -77,4 +77,8 @@ public class ReportFacade {
     public ReportInfo.ReportOptionMethodInfo addReportOptionMethod(ReportCommand.GenerateReportOptionMethodRequest command, Long reportOptionId) {
         return reportService.addOptionMethod(command, reportOptionId);
     }
+
+    public void deleteReportEntity(Long reportId) {
+        reportService.deleteReport(reportId);
+    }
 }

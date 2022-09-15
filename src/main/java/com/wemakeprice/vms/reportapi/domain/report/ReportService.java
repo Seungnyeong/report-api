@@ -20,4 +20,5 @@ public interface ReportService {
     void updateReportMethodOption(ReportCommand.GenerateReportOptionMethodRequest command);
     void deleteReportOptionGroup(Long reportOptionGroupId);
     void deleteReportOptionMethod(Long reportOptionMethodId);
+    void deleteReport(Long reportId);
 }

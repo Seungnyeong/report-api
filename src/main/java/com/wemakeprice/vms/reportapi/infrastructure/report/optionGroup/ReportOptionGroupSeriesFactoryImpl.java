@@ -1,5 +1,6 @@
 package com.wemakeprice.vms.reportapi.infrastructure.report.optionGroup;
 
+import com.google.common.collect.Lists;
 import com.wemakeprice.vms.reportapi.domain.report.Report;
 import com.wemakeprice.vms.reportapi.domain.report.ReportCommand;
 import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
@@ -38,7 +39,7 @@ public class ReportOptionGroupSeriesFactoryImpl implements ReportOptionGroupSeri
                 var reportOptionMethod = reportOptionMethodStore.save(initOptionMethod);
                 return new ReportInfo.ReportOptionMethodInfo(reportOptionMethod);
             }).collect(Collectors.toList());
-            return new ReportInfo.ReportOptionInfo(newReportOption, reportOptionMethodInfoList, null);
+            return new ReportInfo.ReportOptionInfo(newReportOption, reportOptionMethodInfoList, Lists.newArrayList());
         }).collect(Collectors.toList());
         return new ReportInfo.ReportOptionGroupInfo(reportOptionGroup, new VItemInfo.VItemDetailGroupInfo(vItemDetailGroup, null), reportOptionInfoList);
     }
