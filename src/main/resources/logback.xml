@@ -52,6 +52,7 @@
     </root>
     <logger name="com.wemakeprice.vms" level="info" additivity="false">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="SYSLOG" />
     </logger>
     <logger name="access-log" level="info" additivity="false">
         <appender-ref ref="ACCESSLOG" />
