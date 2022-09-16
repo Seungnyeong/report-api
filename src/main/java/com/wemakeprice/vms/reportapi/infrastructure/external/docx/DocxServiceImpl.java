@@ -55,7 +55,8 @@ public class DocxServiceImpl implements DocxService {
     public Path createReport(ReportInfo.Main reportInfo) throws Exception {
 
         ClassPathResource resource = new ClassPathResource(TEMPLATE_FILE);
-        var main = getTemplate(resource.getURI().getPath());
+        InputStream template = resource.getInputStream();
+        var main = getTemplate(template);
 
         List<Object> texts = getAllElementFromObject(main.getMainDocumentPart(), Text.class);
         searchAndReplace(texts, new HashMap<>(){
@@ -387,10 +388,10 @@ public class DocxServiceImpl implements DocxService {
             }
     }
 
-    private WordprocessingMLPackage getTemplate(String name)
+    private WordprocessingMLPackage getTemplate(InputStream template)
             throws Docx4JException, FileNotFoundException {
         return WordprocessingMLPackage
-                .load(new FileInputStream(name));
+                .load(template);
     }
 
     private static List<Object> getAllElementFromObject(Object obj,
