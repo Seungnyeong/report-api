@@ -2,6 +2,12 @@ server:
   port: 8887
   servlet:
     context-path: /report
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat:
+    uri-encoding: UTF-8
 spring:
   profiles:
     - dev
@@ -28,7 +34,7 @@ wkms:
 
 file:
   upload-dir : /data/app/files/image
-  report-template-dir: report_template/header.docx
+  report-template-dir: /home/secutech/data/jenkins/agent02/workspace/vms-report-api/src/main/resources/report_template/header.docx
   report-result-dir: /data/app/files/report
 
 cross:
