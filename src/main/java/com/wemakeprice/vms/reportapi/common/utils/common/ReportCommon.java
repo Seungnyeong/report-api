@@ -7,6 +7,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.KEY;
 import static com.wemakeprice.vms.reportapi.config.CryptoKeyConfig.IV;
@@ -65,5 +67,10 @@ public class ReportCommon {
             log.error("Cannot Convert FileName");
         }
         return encodedFilename;
+    }
+
+    public static String formatDateYYYYMMDD(Date date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
+        return simpleDateFormat.format(date);
     }
 }

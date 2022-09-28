@@ -40,11 +40,12 @@ public class VItemDetailGroup {
     @Getter
     @RequiredArgsConstructor
     public enum VGroupGrade {
-        HIGH("상"),
-        MEDIUM("중"),
-        LOW("하");
+        HIGH("상", "red"),
+        MEDIUM("중", "blue"),
+        LOW("하", "black");
 
         private final String description;
+        private final String color;
     }
 
     @Builder

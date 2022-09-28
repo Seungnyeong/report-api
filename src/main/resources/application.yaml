@@ -40,7 +40,7 @@ spring:
 
 file:
   upload-dir : /Users/sn/workspace/vms-report-api/files/image
-  report-template-file : report_template/header.docx
+  report-template-file : report_template/header2.docx
   report-result-dir : /Users/sn/workspace/vms-report-api/files/report
 
 logging:

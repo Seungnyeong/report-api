@@ -108,7 +108,7 @@ public class Report extends AbstractEntity {
     @RequiredArgsConstructor
     public enum Vulnerability {
         HIGH("어려움"),
-        MEDIUM("중간"),
+        MEDIUM("보통"),
         LOW("쉬움");
 
         private final String description;

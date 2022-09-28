@@ -10,6 +10,7 @@ import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
+import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
 import org.docx4j.wml.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -25,6 +26,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static org.docx4j.wml.STBrType.PAGE;
+
 
 @Service
 @Slf4j
@@ -35,6 +38,7 @@ public class DocxServiceImpl implements DocxService {
     private final Path reportStorageLocation;
     private static final String DOC_TYPE = "docx";
     private final String TEMPLATE_FILE;
+    Integer tblContentFontSize = 16;
 
     @Autowired
     public DocxServiceImpl(FileStorageConfig fileStorageConfig, VItemService vItemService) throws FileNotFoundException {
@@ -51,31 +55,68 @@ public class DocxServiceImpl implements DocxService {
         }
     }
 
+
+
     @Override
     public Path createReport(ReportInfo.Main reportInfo) throws Exception {
 
         ClassPathResource resource = new ClassPathResource(TEMPLATE_FILE);
         InputStream template = resource.getInputStream();
+
         var main = getTemplate(template);
+        Br paging = factory.createBr();
+        paging.setType(PAGE);
+        P Bempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 3000);
+        P Sempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 1000);
+        P title = createParaGraph(reportInfo.getTitle(), "black", 60, JcEnumeration.CENTER, true, 50);
+        P titleAppendix = createParaGraph("취약점 점검 결과 보고", "black", 60, JcEnumeration.CENTER, true,50);
+        P created = createParaGraph(reportInfo.getCreated().format(DateTimeFormatter.ofPattern("yyyy. MM. dd")), "black", 40, JcEnumeration.CENTER, true,50);
+        P teamName = createParaGraph("CERT팀", "black", 40, JcEnumeration.CENTER, true,300);
 
-        List<Object> texts = getAllElementFromObject(main.getMainDocumentPart(), Text.class);
-        searchAndReplace(texts, new HashMap<>(){
-            {
-                this.put("${controlnumber}", reportInfo.getReportControlNumber());
-                this.put("${title}", reportInfo.getTitle());
-                this.put("${created}", reportInfo.getCreated().toString());
-                this.put("${grade}", reportInfo.getReportVGrade().toString());
-                this.put("${possibility}", reportInfo.getReportVPossibility().toString());
-                this.put("${review}", reportInfo.getGeneralReview());
-            }
-        });
+        var controlTbl =  createControlTbl(reportInfo.getReportControlNumber());
 
-        var tbl = createMainTbl(main, vItemService.retrieveVItemList(), reportInfo.getReportOptionGroupsList());
-        main.getMainDocumentPart().addObject(tbl);
+        main.getMainDocumentPart().addObject(controlTbl);
+        main.getMainDocumentPart().addObject(Bempty);
+        main.getMainDocumentPart().addObject(title);
+        main.getMainDocumentPart().addObject(titleAppendix);
+        main.getMainDocumentPart().addObject(Bempty);
+        main.getMainDocumentPart().addObject(created);
+        main.getMainDocumentPart().addObject(teamName);
+        main.getMainDocumentPart().addObject(Bempty);
+        main.getMainDocumentPart().addObject(paging);
 
-        Br br = factory.createBr();
-        br.setType(org.docx4j.wml.STBrType.PAGE);
-        main.getMainDocumentPart().addObject(br);
+        var resultText = createParaGraph("1. 취약점 점검 결과 등급 ",
+
+                "black",
+                20,
+                JcEnumeration.LEFT,
+                true,25
+        );
+
+        var resultTbl = resultGradeTbl(reportInfo.getTitle(), reportInfo.getReportVGrade().getDescription());
+
+        main.getMainDocumentPart().addObject(resultText);
+        main.getMainDocumentPart().addObject(resultTbl);
+        main.getMainDocumentPart().addObject(Sempty);
+        var resultCheckTable = createParaGraph("2. 취약점 점검 결과 요약",
+
+                "black",
+                20,
+                JcEnumeration.LEFT,
+                true,25
+        );
+
+        var checkListTbl = createMainTbl(vItemService.retrieveVItemList(), reportInfo.getReportOptionGroupsList());
+        main.getMainDocumentPart().addObject(resultCheckTable);
+        main.getMainDocumentPart().addObject(checkListTbl);
+
+        P check = createParaGraph("※ 체크리스트 기준", "black", 14, JcEnumeration.LEFT, true, 25);
+        P owasp = createParaGraph("OWASP(Open Web Application Security Project) Top 10 – www.owasp.org", "black", 12, JcEnumeration.LEFT, false, 25);
+        P nist = createParaGraph("NIST(National Institute of standards and Technology) Web Application Check List – c/src.nist.gov", "black", 12, JcEnumeration.LEFT, false, 25);
+        main.getMainDocumentPart().getContent().add(check);
+        main.getMainDocumentPart().getContent().add(owasp);
+        main.getMainDocumentPart().getContent().add(nist);
+        main.getMainDocumentPart().addObject(paging);
 
         int length = reportInfo.getReportOptionGroupsList().size();
         for (int i = 0; i < reportInfo.getReportOptionGroupsList().size(); i++) {
@@ -87,42 +128,125 @@ public class DocxServiceImpl implements DocxService {
         return targetLocation.toAbsolutePath();
     }
 
+    private Tbl resultGradeTbl(String title, String grade) {
+        TblPr tblPr = new TblPr();
+        Tbl tbl = factory.createTbl();
+        tbl.setTblPr(tblPr);
+        Tr first = factory.createTr();
+        Tr second = factory.createTr();
+        Tr third = factory.createTr();
+        TcPr tcpr = new TcPr();
+        TcPrInner.HMerge merge = new TcPrInner.HMerge();
+        merge.setVal(null);
+        tcpr.setHMerge(merge);
 
-    private Tbl createMainTbl(WordprocessingMLPackage mlPackage, List<VItemInfo.Main> data, List<ReportInfo.ReportOptionGroupInfo> reportOptionGroupInfos) {
 
+        addTableCell(factory.createTc(),first, "대상", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        Tc titleTc = factory.createTc();
+        titleTc.setTcPr(tcpr);
+
+        addTableCell(titleTc, first, title, "black", tblContentFontSize, JcEnumeration.CENTER, true);
+
+        for (int i = 0; i < 5; i++) {
+            Tc tc = factory.createTc();
+            tc.setTcPr(tcpr);
+            addTableCell(tc,first, " ", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        }
+
+//        addTableCell(factory.createTc(),first, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+//        addTableCell(factory.createTc(),first, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+//        addTableCell(factory.createTc(),first, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+//        addTableCell(factory.createTc(),first, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),second, "등급", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),second, grade, "red", tblContentFontSize, JcEnumeration.CENTER, true);
+
+        for (int i = 0; i < 5; i++) {
+            Tc tc = factory.createTc();
+            tc.setTcPr(tcpr);
+            addTableCell(tc, second, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        }
+
+        addTableCell(factory.createTc(),third, "결과", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),third, "1차", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),third, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),third, "2차", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),third, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),third, "3차", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),third, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+
+        tbl.getContent().add(first);
+        tbl.getContent().add(second);
+        tbl.getContent().add(third);
+        addBorders(tbl, "black");
+        return tbl;
+    }
+
+    private Tbl createControlTbl(String controlNumber) {
+        TblPr tblPr = new TblPr();
+        Tbl tbl = factory.createTbl();
+        tbl.setTblPr(tblPr);
+        Tr first = factory.createTr();
+        Tr second = factory.createTr();
+        addTableCell(factory.createTc(),first, "대외비", "red", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),first, "수신자 외 열람 불가", "red", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),second, "관리번호", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),second, controlNumber, "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        tbl.getContent().add(first);
+        tbl.getContent().add(second);
+        addBorders(tbl, "orange");
+        return tbl;
+    }
+
+    private Tbl createMainTbl( List<VItemInfo.Main> data, List<ReportInfo.ReportOptionGroupInfo> reportOptionGroupInfos) {
+        TblPr tableProps = new TblPr();
         Tbl table = factory.createTbl();
-        createTblTh(table, mlPackage);
-        addBorders(table);
+        CTHeight ctHeight = new CTHeight();
+        ctHeight.setHRule(STHeightRule.EXACT);
+        JAXBElement<CTHeight> jaxbElement = factory.createCTTrPrBaseTrHeight(ctHeight);
+        table.setTblPr(tableProps);
+        var header = createTblTh();
+        table.getContent().add(header);
+        addBorders(table, "black");
+
         for (VItemInfo.Main item : data) {
             int groupInfoLength = item.getVItemDetailInfoGroupList().size();
             for (int k = 0; k < groupInfoLength; k++) {
                 Tc tableCell = factory.createTc();
                 TcPr tableCellProperties = new TcPr();
                 TcPrInner.VMerge merge = new TcPrInner.VMerge();
-                tableCell.getContent().add(
-                        mlPackage.getMainDocumentPart().
-                                createParagraphOfText(item.getVCategoryName()));
+                P content = createParaGraph(item.getVCategoryName(), "black", tblContentFontSize, JcEnumeration.CENTER, false, 25);
+
                 if (groupInfoLength - 1 == k) {
                     merge.setVal("restart");
                 } else {
                     merge.setVal(null);
                 }
-                tableCellProperties.setVMerge(merge);
+
+                CTVerticalJc ctjc = new CTVerticalJc();
+                ctjc.setVal(STVerticalJc.CENTER);
+                tableCellProperties.setVAlign(ctjc);
                 tableCell.setTcPr(tableCellProperties);
+                tableCellProperties.setVMerge(merge);
+                tableCell.getContent().add(content);
+
+                TrPr trpr = new TrPr();
+                trpr.getCnfStyleOrDivIdOrGridBefore().add(jaxbElement);
                 Tr tableRow1 = factory.createTr();
+                tableRow1.setTrPr(trpr);
                 tableRow1.getContent().add(tableCell);
-                addTableCell(tableRow1, item.getVItemDetailInfoGroupList().get(k).getVGroupName(), mlPackage);
-                addTableCell(tableRow1, item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().name(), mlPackage);
+
+                addTableCell(factory.createTc(),tableRow1, String.format("%d.%d %s",item.getVCategoryCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupName()), "black", tblContentFontSize, JcEnumeration.LEFT, false);
+                addTableCell(factory.createTc(),tableRow1, item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getDescription(), item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getColor(), tblContentFontSize, JcEnumeration.CENTER, true);
                 boolean find = false;
                 for (ReportInfo.ReportOptionGroupInfo groupInfo : reportOptionGroupInfos) {
                     if(Objects.equals(groupInfo.getVItemDetailGroupInfo().getId(), item.getVItemDetailInfoGroupList().get(k).getId())) {
-                        addTableCell(tableRow1, "취약", mlPackage);
+                        addTableCell(factory.createTc(),tableRow1, "취약", "red", tblContentFontSize, JcEnumeration.CENTER, true);
                         find = true;
                         break;
                     }
                 }
                 if(!find) {
-                    addTableCell(tableRow1, "", mlPackage);
+                    addTableCell(factory.createTc(),tableRow1, "", "black", 30, JcEnumeration.CENTER, false);
                 }
 
                 table.getContent().add(tableRow1);
@@ -131,13 +255,13 @@ public class DocxServiceImpl implements DocxService {
         return table;
     }
 
-    private void createTblTh(Tbl tbl, WordprocessingMLPackage mlPackage) {
+    private Tr createTblTh() {
         Tr tr = factory.createTr();
-        addTableCell(tr, "분류", mlPackage);
-        addTableCell(tr, "세부 진단 항목", mlPackage);
-        addTableCell(tr, "취약점 등급", mlPackage);
-        addTableCell(tr, "점검 결과", mlPackage);
-        tbl.getContent().add(tr);
+        addTableCell(factory.createTc(),tr, "분류", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(), tr, "세부 진단 항목", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(), tr,"취약점 등급", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(), tr, "점검 결과", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        return tr;
     }
 
     /**
@@ -158,6 +282,7 @@ public class DocxServiceImpl implements DocxService {
         if(vMergeVal != null){
             merge.setVal(vMergeVal);
         }
+
         tableCellProperties.setVMerge(merge);
 
         tableCell.setTcPr(tableCellProperties);
@@ -174,21 +299,19 @@ public class DocxServiceImpl implements DocxService {
      * In this method we add a table cell to the given row with the given
      *  paragraph as content.
      */
-    private void addTableCell(Tr tr, String content, WordprocessingMLPackage mlPackage) {
-        Tc tc1 = factory.createTc();
-        tc1.getContent().add(
-                mlPackage.getMainDocumentPart().createParagraphOfText(
-                        content));
-        tr.getContent().add(tc1);
+    private void addTableCell(Tc tc, Tr tr, String content, String colorName, Integer fontSize , JcEnumeration align, Boolean bold) {
+        P p = createParaGraph(content, colorName, fontSize, align, bold, 25);
+        tc.getContent().add(p);
+        tr.getContent().add(tc);
     }
 
     /**
      *  In this method we'll add the borders to the table.
      */
-    private void addBorders(Tbl table) {
+    private void addBorders(Tbl table, String color) {
         table.setTblPr(new TblPr());
         CTBorder border = new CTBorder();
-        border.setColor("auto");
+        border.setColor(color);
         border.setSz(new BigInteger("4"));
         border.setSpace(new BigInteger("0"));
         border.setVal(STBorder.SINGLE);
@@ -206,11 +329,32 @@ public class DocxServiceImpl implements DocxService {
 
     private void createDetail(ReportInfo.ReportOptionGroupInfo reportOptionGroupInfo, WordprocessingMLPackage mlPackage, int i, int length) {
 
-        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0",  String.format("%d-%d. %s",
-                reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering(),
-                reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupCode(),
-                reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupName())
+//        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0",  String.format("%d-%d. %s",
+//                reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering(),
+//                reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupCode(),
+//                reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupName())
+//        );
+        var detailName = createParaGraph("3. 상세내용",
+                "black",
+                20,
+                JcEnumeration.LEFT,
+                true,25
         );
+
+        mlPackage.getMainDocumentPart().addObject(detailName);
+
+        var categoryName = createParaGraph(String.format("%d-%d. %s",
+                        reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering(),
+                        reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupCode(),
+                        reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupName()),
+                "black",
+                20,
+                JcEnumeration.LEFT,
+                true,25
+        );
+
+        mlPackage.getMainDocumentPart().addObject(categoryName);
+
 
         mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "문제점");
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
@@ -242,7 +386,7 @@ public class DocxServiceImpl implements DocxService {
 
         if (i != length - 1) {
             Br br = factory.createBr();
-            br.setType(org.docx4j.wml.STBrType.PAGE);
+            br.setType(PAGE);
             mlPackage.getMainDocumentPart().addObject(br);
         }
     }
@@ -410,5 +554,39 @@ public class DocxServiceImpl implements DocxService {
 
         }
         return result;
+    }
+
+    private P createParaGraph(String content, String colorName, Integer fontSize, JcEnumeration align, boolean bold, int beforeSpace) {
+        PPrBase.Spacing spacing = factory.createPPrBaseSpacing();
+        spacing.setLine(BigInteger.valueOf(150));
+        spacing.setLineRule(STLineSpacingRule.AUTO);
+        PPr ppr = factory.createPPr();
+        P p = factory.createP();
+        R r = factory.createR();
+        Text t = factory.createText();
+        t.setSpace("preserve");
+        Jc jc = factory.createJc();
+        jc.setVal(align);
+        ppr.setJc(jc);
+        spacing.setBefore(BigInteger.valueOf(beforeSpace));
+        spacing.setAfter(BigInteger.valueOf(25));
+        ppr.setSpacing(spacing);
+        p.setPPr(ppr);
+        t.setValue(content);
+        r.getContent().add(t);
+        p.getContent().add(r);
+        RPr rpr = factory.createRPr();
+        Color color = factory.createColor();
+        BooleanDefaultTrue boolTrue = new BooleanDefaultTrue();
+        ppr.setAutoSpaceDE(boolTrue);
+        color.setVal(colorName);
+        boolTrue.setVal(bold);
+        rpr.setColor(color);
+        rpr.setB(boolTrue);
+        HpsMeasure size = new HpsMeasure();
+        size.setVal(BigInteger.valueOf(fontSize));
+        rpr.setSz(size);
+        r.setRPr(rpr);
+        return p;
     }
 }
