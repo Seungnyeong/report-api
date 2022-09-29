@@ -6,18 +6,18 @@ import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.xmlgraphics.image.loader.ImageSize;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
-import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
 import org.docx4j.wml.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-
 import javax.xml.bind.JAXBElement;
 import java.io.*;
+import java.lang.reflect.TypeVariable;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.docx4j.wml.STBrType.PAGE;
 
@@ -85,26 +86,14 @@ public class DocxServiceImpl implements DocxService {
         main.getMainDocumentPart().addObject(Bempty);
         main.getMainDocumentPart().addObject(paging);
 
-        var resultText = createParaGraph("1. 취약점 점검 결과 등급 ",
-
-                "black",
-                20,
-                JcEnumeration.LEFT,
-                true,25
-        );
+        var resultText = createUnnumberedList("취약점 점검 결과 등급", 1, 50,0);
 
         var resultTbl = resultGradeTbl(reportInfo.getTitle(), reportInfo.getReportVGrade().getDescription());
 
         main.getMainDocumentPart().addObject(resultText);
         main.getMainDocumentPart().addObject(resultTbl);
         main.getMainDocumentPart().addObject(Sempty);
-        var resultCheckTable = createParaGraph("2. 취약점 점검 결과 요약",
-
-                "black",
-                20,
-                JcEnumeration.LEFT,
-                true,25
-        );
+        var resultCheckTable = createUnnumberedList("취약점 점검 결과 요약",1, 50,0);
 
         var checkListTbl = createMainTbl(vItemService.retrieveVItemList(), reportInfo.getReportOptionGroupsList());
         main.getMainDocumentPart().addObject(resultCheckTable);
@@ -131,48 +120,41 @@ public class DocxServiceImpl implements DocxService {
     private Tbl resultGradeTbl(String title, String grade) {
         TblPr tblPr = new TblPr();
         Tbl tbl = factory.createTbl();
+        CTHeight ctHeight = new CTHeight();
+        CTShd ctShd = factory.createCTShd();
+        CTVerticalJc ctjc = new CTVerticalJc();
+        ctjc.setVal(STVerticalJc.CENTER);
+        ctShd.setColor("FFFFFF");
+        ctShd.setFill("#d1cdcd");
+        ctHeight.setHRule(STHeightRule.EXACT);
+        JAXBElement<CTHeight> jaxbElement = factory.createCTTrPrBaseTrHeight(ctHeight);
         tbl.setTblPr(tblPr);
         Tr first = factory.createTr();
         Tr second = factory.createTr();
         Tr third = factory.createTr();
-        TcPr tcpr = new TcPr();
-        TcPrInner.HMerge merge = new TcPrInner.HMerge();
-        merge.setVal(null);
-        tcpr.setHMerge(merge);
-
-
-        addTableCell(factory.createTc(),first, "대상", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        TcPr coloredTcPr = factory.createTcPr();
+        coloredTcPr.setVAlign(ctjc);
+        coloredTcPr.setShd(ctShd);
         Tc titleTc = factory.createTc();
-        titleTc.setTcPr(tcpr);
+        Tc gradeTc = factory.createTc();
+        TcPr gridSpanTcpr = new TcPr();
+        TcPrInner.GridSpan gridSpan = new TcPrInner.GridSpan();
 
-        addTableCell(titleTc, first, title, "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        gridSpanTcpr.setVAlign(ctjc);
+        gridSpan.setVal(BigInteger.valueOf(6));
+        gridSpanTcpr.setGridSpan(gridSpan);
 
-        for (int i = 0; i < 5; i++) {
-            Tc tc = factory.createTc();
-            tc.setTcPr(tcpr);
-            addTableCell(tc,first, " ", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        }
-
-//        addTableCell(factory.createTc(),first, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-//        addTableCell(factory.createTc(),first, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-//        addTableCell(factory.createTc(),first, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-//        addTableCell(factory.createTc(),first, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),second, "등급", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),second, grade, "red", tblContentFontSize, JcEnumeration.CENTER, true);
-
-        for (int i = 0; i < 5; i++) {
-            Tc tc = factory.createTc();
-            tc.setTcPr(tcpr);
-            addTableCell(tc, second, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        }
-
-        addTableCell(factory.createTc(),third, "결과", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),third, "1차", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),third, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),third, "2차", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),third, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),third, "3차", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),third, "", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),first, coloredTcPr, "대상", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(titleTc, first, gridSpanTcpr, title, "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(),second, coloredTcPr,"등급", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(gradeTc, second, gridSpanTcpr, grade, "red", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(),third, coloredTcPr,"결과", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(),third, factory.createTcPr(),"1차", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(),third,factory.createTcPr(), "", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(),third, factory.createTcPr(),"2차", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(),third,factory.createTcPr(), "", "black", tblContentFontSize, JcEnumeration.CENTER, true,2000);
+        addTableCell(factory.createTc(),third, factory.createTcPr(),"3차", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(),third,factory.createTcPr(), "", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
 
         tbl.getContent().add(first);
         tbl.getContent().add(second);
@@ -187,10 +169,10 @@ public class DocxServiceImpl implements DocxService {
         tbl.setTblPr(tblPr);
         Tr first = factory.createTr();
         Tr second = factory.createTr();
-        addTableCell(factory.createTc(),first, "대외비", "red", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),first, "수신자 외 열람 불가", "red", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),second, "관리번호", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(),second, controlNumber, "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        addTableCell(factory.createTc(),first, factory.createTcPr(),"대외비", "red", tblContentFontSize, JcEnumeration.CENTER, true, 0);
+        addTableCell(factory.createTc(),first, factory.createTcPr(),"수신자 외 열람 불가", "red", tblContentFontSize, JcEnumeration.CENTER, true, 0);
+        addTableCell(factory.createTc(),second, factory.createTcPr(),"관리번호", "black", tblContentFontSize, JcEnumeration.CENTER, true, 0);
+        addTableCell(factory.createTc(),second,factory.createTcPr(), controlNumber, "black", tblContentFontSize, JcEnumeration.CENTER, true, 0);
         tbl.getContent().add(first);
         tbl.getContent().add(second);
         addBorders(tbl, "orange");
@@ -200,11 +182,8 @@ public class DocxServiceImpl implements DocxService {
     private Tbl createMainTbl( List<VItemInfo.Main> data, List<ReportInfo.ReportOptionGroupInfo> reportOptionGroupInfos) {
         TblPr tableProps = new TblPr();
         Tbl table = factory.createTbl();
-        CTHeight ctHeight = new CTHeight();
-        ctHeight.setHRule(STHeightRule.EXACT);
-        JAXBElement<CTHeight> jaxbElement = factory.createCTTrPrBaseTrHeight(ctHeight);
         table.setTblPr(tableProps);
-        var header = createTblTh();
+        var header = createCheckTblTh();
         table.getContent().add(header);
         addBorders(table, "black");
 
@@ -213,6 +192,7 @@ public class DocxServiceImpl implements DocxService {
             for (int k = 0; k < groupInfoLength; k++) {
                 Tc tableCell = factory.createTc();
                 TcPr tableCellProperties = new TcPr();
+
                 TcPrInner.VMerge merge = new TcPrInner.VMerge();
                 P content = createParaGraph(item.getVCategoryName(), "black", tblContentFontSize, JcEnumeration.CENTER, false, 25);
 
@@ -225,28 +205,27 @@ public class DocxServiceImpl implements DocxService {
                 CTVerticalJc ctjc = new CTVerticalJc();
                 ctjc.setVal(STVerticalJc.CENTER);
                 tableCellProperties.setVAlign(ctjc);
-                tableCell.setTcPr(tableCellProperties);
                 tableCellProperties.setVMerge(merge);
+                tableCell.setTcPr(tableCellProperties);
                 tableCell.getContent().add(content);
 
                 TrPr trpr = new TrPr();
-                trpr.getCnfStyleOrDivIdOrGridBefore().add(jaxbElement);
                 Tr tableRow1 = factory.createTr();
                 tableRow1.setTrPr(trpr);
                 tableRow1.getContent().add(tableCell);
 
-                addTableCell(factory.createTc(),tableRow1, String.format("%d.%d %s",item.getVCategoryCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupName()), "black", tblContentFontSize, JcEnumeration.LEFT, false);
-                addTableCell(factory.createTc(),tableRow1, item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getDescription(), item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getColor(), tblContentFontSize, JcEnumeration.CENTER, true);
+                addTableCell(factory.createTc(),tableRow1, factory.createTcPr(),String.format("%d.%d %s",item.getVCategoryCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupName()), "black", tblContentFontSize, JcEnumeration.LEFT, false, 0);
+                addTableCell(factory.createTc(),tableRow1, factory.createTcPr(),item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getDescription(), item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getColor(), tblContentFontSize, JcEnumeration.CENTER, true, 0);
                 boolean find = false;
                 for (ReportInfo.ReportOptionGroupInfo groupInfo : reportOptionGroupInfos) {
                     if(Objects.equals(groupInfo.getVItemDetailGroupInfo().getId(), item.getVItemDetailInfoGroupList().get(k).getId())) {
-                        addTableCell(factory.createTc(),tableRow1, "취약", "red", tblContentFontSize, JcEnumeration.CENTER, true);
+                        addTableCell(factory.createTc(),tableRow1, factory.createTcPr(),"취약", "red", tblContentFontSize, JcEnumeration.CENTER, true,0);
                         find = true;
                         break;
                     }
                 }
                 if(!find) {
-                    addTableCell(factory.createTc(),tableRow1, "", "black", 30, JcEnumeration.CENTER, false);
+                    addTableCell(factory.createTc(),tableRow1, factory.createTcPr(),"", "black", 30, JcEnumeration.CENTER, false, 0);
                 }
 
                 table.getContent().add(tableRow1);
@@ -255,52 +234,56 @@ public class DocxServiceImpl implements DocxService {
         return table;
     }
 
-    private Tr createTblTh() {
+    private Tr createCheckTblTh() {
         Tr tr = factory.createTr();
-        addTableCell(factory.createTc(),tr, "분류", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(), tr, "세부 진단 항목", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(), tr,"취약점 등급", "black", tblContentFontSize, JcEnumeration.CENTER, true);
-        addTableCell(factory.createTc(), tr, "점검 결과", "black", tblContentFontSize, JcEnumeration.CENTER, true);
+        TcPr tcPr = factory.createTcPr();
+        CTShd ctShd = factory.createCTShd();
+        ctShd.setColor("FFFFFF");
+        ctShd.setFill("#d1cdcd");
+        tcPr.setShd(ctShd);
+        addTableCell(factory.createTc(), tr, tcPr,"분류", "black", tblContentFontSize, JcEnumeration.CENTER, true,1000);
+        addTableCell(factory.createTc(), tr, tcPr,"세부 진단 항목", "black", tblContentFontSize, JcEnumeration.CENTER, true, 3000);
+        addTableCell(factory.createTc(), tr, tcPr,"취약점 등급", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(), tr, tcPr,"점검 결과", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
         return tr;
     }
 
-    /**
-     *  We create a table cell and then a table cell properties object.
-     *  We also create a vertical merge object. If the merge value is not null,
-     *  we set it on the object. Then we add the merge object to the table cell
-     *  properties and add the properties to the table cell. Finally we set the
-     *  content in the table cell and add the cell to the row.
-     *
-     *  If the merge value is 'restart', a new row is started. If it is null, we
-     *  continue with the previous row, thus merging the cells.
-     */
-    private void addMergedCell(Tr row, String content, String vMergeVal, WordprocessingMLPackage mlPackage) {
-        Tc tableCell = factory.createTc();
-        TcPr tableCellProperties = new TcPr();
-
-        TcPrInner.VMerge merge = new TcPrInner.VMerge();
-        if(vMergeVal != null){
-            merge.setVal(vMergeVal);
-        }
-
-        tableCellProperties.setVMerge(merge);
-
-        tableCell.setTcPr(tableCellProperties);
-        if(content != null) {
-            tableCell.getContent().add(
-                    mlPackage.getMainDocumentPart().
-                            createParagraphOfText(content));
-        }
-
-        row.getContent().add(tableCell);
+    private Tr createFunctionTblTh() {
+        Tr tr = factory.createTr();
+        TcPr tcPr = factory.createTcPr();
+        CTShd ctShd = factory.createCTShd();
+        ctShd.setColor("FFFFFF");
+        ctShd.setFill("#d1cdcd");
+        tcPr.setShd(ctShd);
+        addTableCell(factory.createTc(), tr, tcPr,"함수 이름", "black", tblContentFontSize, JcEnumeration.CENTER, true,3000);
+        addTableCell(factory.createTc(), tr, tcPr,"함수 패키지", "black", tblContentFontSize, JcEnumeration.CENTER, true, 3000);
+        addTableCell(factory.createTc(), tr, tcPr,"함수 설명", "black", tblContentFontSize, JcEnumeration.CENTER, true, 3000);
+        return tr;
     }
+
 
     /**
      * In this method we add a table cell to the given row with the given
      *  paragraph as content.
      */
-    private void addTableCell(Tc tc, Tr tr, String content, String colorName, Integer fontSize , JcEnumeration align, Boolean bold) {
+    private void addTableCell(Tc tc,
+                              Tr tr,
+                              TcPr tcpr,
+                              String content,
+                              String colorName,
+                              Integer fontSize ,
+                              JcEnumeration align,
+                              Boolean bold,
+                              Integer width
+    ) {
+        if (width > 0) {
+            TblWidth tblWidth = new TblWidth();
+            tblWidth.setW(BigInteger.valueOf(width));
+            tblWidth.setType(TblWidth.TYPE_DXA);
+            tcpr.setTcW(tblWidth);
+        }
         P p = createParaGraph(content, colorName, fontSize, align, bold, 25);
+        tc.setTcPr(tcpr);
         tc.getContent().add(p);
         tr.getContent().add(tc);
     }
@@ -326,22 +309,54 @@ public class DocxServiceImpl implements DocxService {
         table.getTblPr().setTblBorders(borders);
     }
 
+    public P createUnnumberedList(String text, int deps, Integer idnt, Integer level) {
+        P  p = factory.createP();
+        BooleanDefaultTrue boolTrue = new BooleanDefaultTrue();
+        PPrBase.NumPr numPr =  factory.createPPrBaseNumPr();
+        PPrBase.Ind indent = factory.createPPrBaseInd();
+        RPr rpr = factory.createRPr();
+        PPr ppr = factory.createPPr();
+        ParaRPr paraRPr = factory.createParaRPr();
+        R  run = factory.createR();
+        boolTrue.setVal(true);
+        Text  t = factory.createText();
+
+        t.setValue(text);
+        rpr.setB(boolTrue);
+        run.getContent().add(t);
+        p.getContent().add(run);
+        paraRPr.setB(boolTrue);
+        PPrBase.Spacing spacing = factory.createPPrBaseSpacing();
+        spacing.setBefore(BigInteger.valueOf(100));
+        ppr.setSpacing(spacing);
+        // Create and add <w:numPr>
+        indent.setRight(BigInteger.valueOf(idnt));
+        ppr.setInd(indent);
+        ppr.setNumPr(numPr);
+        // The <w:ilvl> element
+        ppr.setRPr(paraRPr);
+        p.setPPr( ppr );
+
+
+        PPrBase.NumPr.Ilvl ilvlElement = factory.createPPrBaseNumPrIlvl();
+        numPr.setIlvl(ilvlElement);
+        ilvlElement.setVal(BigInteger.valueOf(level));
+
+        // The <w:numId> element
+        PPrBase.NumPr.NumId numIdElement = factory.createPPrBaseNumPrNumId();
+        numPr.setNumId(numIdElement);
+        numIdElement.setVal(BigInteger.valueOf(deps));
+
+        return p;
+    }
+
 
     private void createDetail(ReportInfo.ReportOptionGroupInfo reportOptionGroupInfo, WordprocessingMLPackage mlPackage, int i, int length) {
 
-//        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0",  String.format("%d-%d. %s",
-//                reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering(),
-//                reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupCode(),
-//                reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupName())
-//        );
-        var detailName = createParaGraph("3. 상세내용",
-                "black",
-                20,
-                JcEnumeration.LEFT,
-                true,25
-        );
-
-        mlPackage.getMainDocumentPart().addObject(detailName);
+        if ( i == 0) {
+            var detailName = createUnnumberedList("상세내용", 1, 50, 0);
+            mlPackage.getMainDocumentPart().addObject(detailName);
+        }
 
         var categoryName = createParaGraph(String.format("%d-%d. %s",
                         reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering(),
@@ -350,40 +365,52 @@ public class DocxServiceImpl implements DocxService {
                 "black",
                 20,
                 JcEnumeration.LEFT,
-                true,25
+                true,300
         );
 
         mlPackage.getMainDocumentPart().addObject(categoryName);
 
 
-        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "문제점");
+        var problem_tag = createUnnumberedList("문제점", 2, 1000, 1);
+        mlPackage.getMainDocumentPart().addObject(problem_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionInfo.getReportVIssue());
-            reportOptionInfo.getReportOptionImageInfoList().forEach(reportOptionImageInfo -> {
 
+            var pIssue = createTabParaGraph(reportOptionInfo.getReportVIssue(), 1);
+            mlPackage.getMainDocumentPart().addObject(pIssue);
+            AtomicInteger imageNum = new AtomicInteger(1);
+            reportOptionInfo.getReportOptionImageInfoList().forEach(reportOptionImageInfo -> {
                 try {
                         int id = (int) (Math.random() * 10000);
                         BinaryPartAbstractImage imgPart = BinaryPartAbstractImage.createImagePart(mlPackage, new File(reportOptionImageInfo.getFilePath()));
-                        Inline inline = imgPart.createImageInline(  "Baeldung Image (filename hint)", "Alt Text", id, id * 2, false);
-                        var p = addImageToParagraph(inline, reportOptionImageInfo.getCaption());
+                        Inline inline = imgPart.createImageInline(reportOptionImageInfo.getDescription(), "Alt Text", id, id * 2, 3000,  false);
+                        var p = addImageToParagraph(inline, reportOptionImageInfo.getCaption(), imageNum.get());
                         mlPackage.getMainDocumentPart().addObject(p);
+                        imageNum.getAndIncrement();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error(e.toString());
                 }
             });
 
         });
 
-        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "대응방안");
-        reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionInfo.getReportVResponse()));
+        var respond_tag = createUnnumberedList("대응방안", 2, 150, 1);
+        mlPackage.getMainDocumentPart().addObject(respond_tag);
+        reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
+            var response = createTabParaGraph( reportOptionInfo.getReportVResponse(), 1);
+            mlPackage.getMainDocumentPart().addObject(response);
+        });
 
-        mlPackage.getMainDocumentPart().addStyledParagraphOfText("a0", "관련함수");
+        var function_tag = createUnnumberedList("관련함수", 2, 150, 1);
+        mlPackage.getMainDocumentPart().addObject(function_tag);
+        Tbl functionTbl = factory.createTbl();
+        var functionTblHeader= createFunctionTblTh();
+        functionTbl.getContent().add(functionTblHeader);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> reportOptionInfo.getReportOptionMethodInfoList().forEach(reportOptionMethodInfo -> {
-            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodName());
-            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodPackage());
-            mlPackage.getMainDocumentPart().addStyledParagraphOfText("3", reportOptionMethodInfo.getMethodDescription());
+            var tr = createFunctionTbl(reportOptionMethodInfo);
+            functionTbl.getContent().add(tr);
         }));
-
+        addBorders(functionTbl, "black");
+        mlPackage.getMainDocumentPart().addObject(functionTbl);
         if (i != length - 1) {
             Br br = factory.createBr();
             br.setType(PAGE);
@@ -391,11 +418,25 @@ public class DocxServiceImpl implements DocxService {
         }
     }
 
-    private P addImageToParagraph(Inline inline, String caption) {
+    private Tr createFunctionTbl(ReportInfo.ReportOptionMethodInfo reportOptionMethodInfo) {
+        Tr tr = factory.createTr();
+        addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodName(), "black", 16, JcEnumeration.LEFT, true, 20);
+        addTableCell(factory.createTc(),  tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodPackage(), "black", 16, JcEnumeration.LEFT, true, 20);
+        addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodDescription(), "black", 16, JcEnumeration.LEFT, true, 20);
+        return tr;
+    }
+
+    private P addImageToParagraph(Inline inline, String caption, int imageNum) {
+
         PPr paragraphProperties = factory.createPPr();
+        ParaRPr rpr = factory.createParaRPr();
+        HpsMeasure sz = factory.createHpsMeasure();
+        sz.setVal(BigInteger.valueOf(200));
+        rpr.setSz(sz);
         Jc justification = factory.createJc();
         justification.setVal(JcEnumeration.CENTER);
         paragraphProperties.setJc(justification);
+        paragraphProperties.setRPr(rpr);
         P p = factory.createP();
         R r = factory.createR();
         Drawing drawing = factory.createDrawing();
@@ -404,7 +445,7 @@ public class DocxServiceImpl implements DocxService {
         var textWrapped = factory
                 .createRT(text);
         r.getContent().add(textWrapped);
-        text.setValue(String.format("[그림%d].%s", 1, caption));
+        text.setValue(String.format("[그림%d].%s", imageNum, caption));
         text.setSpace("preserve");
         r.getContent().add(drawing);
         p.getContent().add(paragraphProperties);
@@ -413,147 +454,24 @@ public class DocxServiceImpl implements DocxService {
     }
 
 
-    private void searchAndReplace(List<Object> texts, Map<String, String> values){
-
-        // -- scan all expressions
-        // Will later contain all the expressions used though not used at the moment
-        List<String> els = new ArrayList<String>();
-
-        StringBuilder sb = new StringBuilder();
-        int PASS = 0;
-        int PREPARE = 1;
-        int READ = 2;
-        int mode = PASS;
-
-        // to nullify
-        List<int[]> toNullify = new ArrayList<int[]>();
-        int[] currentNullifyProps = new int[4];
-
-        // Do scan of els and immediately insert value
-        for(int i = 0; i<texts.size(); i++){
-            Object text = texts.get(i);
-            Text textElement = (Text) text;
-            StringBuilder newVal = new StringBuilder();
-            String v = textElement.getValue();
-//          System.out.println("text: "+v);
-            StringBuilder textSofar = new StringBuilder();
-            int extra = 0;
-            char[] vchars = v.toCharArray();
-            for(int col = 0; col<vchars.length; col++){
-                char c = vchars[col];
-                textSofar.append(c);
-                switch(c){
-                    case '$': {
-                        mode=PREPARE;
-                        sb.append(c);
-//                  extra = 0;
-                    } break;
-                    case '{': {
-                        if(mode==PREPARE){
-                            sb.append(c);
-                            mode=READ;
-                            currentNullifyProps[0]=i;
-                            currentNullifyProps[1]=col+extra-1;
-                            System.out.println("extra-- "+extra);
-                        } else {
-                            if(mode==READ){
-                                // consecutive opening curl found. just read it
-                                // but supposedly throw error
-                                sb = new StringBuilder();
-                                mode=PASS;
-                            }
-                        }
-                    } break;
-                    case '}': {
-                        if(mode==READ){
-                            mode=PASS;
-                            sb.append(c);
-                            els.add(sb.toString());
-                            newVal.append(textSofar).append(null == values.get(sb.toString()) ? sb.toString() : values.get(sb.toString()));
-                            textSofar = new StringBuilder();
-                            currentNullifyProps[2]=i;
-                            currentNullifyProps[3]=col+extra;
-                            toNullify.add(currentNullifyProps);
-                            currentNullifyProps = new int[4];
-                            extra += sb.toString().length();
-                            sb = new StringBuilder();
-                        } else if(mode==PREPARE){
-                            mode = PASS;
-                            sb = new StringBuilder();
-                        }
-                    }
-                    default: {
-                        if(mode==READ) sb.append(c);
-                        else if(mode==PREPARE){
-                            mode=PASS;
-                            sb = new StringBuilder();
-                        }
-                    }
-                }
-            }
-            newVal.append(textSofar.toString());
-            textElement.setValue(newVal.toString());
-        }
-
-        // remove original expressions
-        if(toNullify.size()>0)
-            for(int i = 0; i<texts.size(); i++){
-                if(toNullify.size()==0) break;
-                currentNullifyProps = toNullify.get(0);
-                Object text = texts.get(i);
-                Text textElement = (Text) text;
-                String v = textElement.getValue();
-                StringBuilder nvalSB = new StringBuilder();
-                char[] textChars = v.toCharArray();
-                for(int j = 0; j<textChars.length; j++){
-                    char c = textChars[j];
-                    if(null==currentNullifyProps) {
-                        nvalSB.append(c);
-                        continue;
-                    }
-                    // I know 100000 is too much!!! And so what???
-                    int floor = currentNullifyProps[0]*100000+currentNullifyProps[1];
-                    int ceil = currentNullifyProps[2]*100000+currentNullifyProps[3];
-                    int head = i*100000+j;
-                    if(!(head>=floor && head<=ceil)){
-                        nvalSB.append(c);
-                    }
-
-                    if(j>currentNullifyProps[3] && i>=currentNullifyProps[2]){
-                        toNullify.remove(0);
-                        if(toNullify.size()==0) {
-                            currentNullifyProps = null;
-                            continue;
-                        }
-                        currentNullifyProps = toNullify.get(0);
-                    }
-                }
-                textElement.setValue(nvalSB.toString());
-            }
-    }
-
     private WordprocessingMLPackage getTemplate(InputStream template)
-            throws Docx4JException, FileNotFoundException {
+            throws Docx4JException {
         return WordprocessingMLPackage
                 .load(template);
     }
 
-    private static List<Object> getAllElementFromObject(Object obj,
-                                                        Class<?> toSearch) {
-        List<Object> result = new ArrayList<Object>();
-        if (obj instanceof JAXBElement)
-            obj = ((JAXBElement<?>) obj).getValue();
-
-        if (obj.getClass().equals(toSearch))
-            result.add(obj);
-        else if (obj instanceof ContentAccessor) {
-            List<?> children = ((ContentAccessor) obj).getContent();
-            for (Object child : children) {
-                result.addAll(getAllElementFromObject(child, toSearch));
-            }
-
+    private P createTabParaGraph(String content, int howManyTabNeed ) {
+        P p = factory.createP();
+        R r = factory.createR();
+        R.Tab rT = factory.createRTab();
+        Text t = factory.createText();
+        t.setValue(content);
+        for (int i =0; i < howManyTabNeed ; i++) {
+            r.getContent().add(rT);
         }
-        return result;
+        r.getContent().add(t);
+        p.getContent().add(r);
+        return p;
     }
 
     private P createParaGraph(String content, String colorName, Integer fontSize, JcEnumeration align, boolean bold, int beforeSpace) {
