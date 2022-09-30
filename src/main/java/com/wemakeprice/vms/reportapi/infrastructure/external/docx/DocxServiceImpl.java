@@ -88,7 +88,7 @@ public class DocxServiceImpl implements DocxService {
 
         var resultText = createUnnumberedList("취약점 점검 결과 등급", 1, 50,0);
 
-        var resultTbl = resultGradeTbl(reportInfo.getTitle(), reportInfo.getReportVGrade().getDescription());
+        var resultTbl = resultGradeTbl(reportInfo.getTitle(), String.format("%s (%s)", reportInfo.getReportVGrade().getDescription(), reportInfo.getReportVPossibility().getDescription()));
 
         main.getMainDocumentPart().addObject(resultText);
         main.getMainDocumentPart().addObject(resultTbl);
@@ -108,9 +108,16 @@ public class DocxServiceImpl implements DocxService {
         main.getMainDocumentPart().addObject(paging);
 
         int length = reportInfo.getReportOptionGroupsList().size();
-        for (int i = 0; i < reportInfo.getReportOptionGroupsList().size(); i++) {
-            createDetail(reportInfo.getReportOptionGroupsList().get(i), main, i, length);
-        }
+        AtomicInteger pageIndex = new AtomicInteger(0);
+//        for (int i = 0; i < reportInfo.getReportOptionGroupsList().size(); i++) {
+//            createDetail(reportInfo.getReportOptionGroupsList().get(i), main, i, length);
+//        }
+        reportInfo.getReportOptionGroupsList().stream()
+                .sorted(Comparator.comparing(reportOptionGroupInfo -> reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering()))
+                .forEach(reportOptionGroupInfo -> {
+                    createDetail(reportOptionGroupInfo, main, pageIndex.intValue(), length);
+                    pageIndex.getAndIncrement();
+                });
         UUID uuid = UUID.randomUUID();
         Path targetLocation = this.reportStorageLocation.resolve(uuid + "." + DOC_TYPE);
         main.save(new File(targetLocation.toAbsolutePath().toString()));
@@ -190,13 +197,10 @@ public class DocxServiceImpl implements DocxService {
         for (VItemInfo.Main item : data) {
             int groupInfoLength = item.getVItemDetailInfoGroupList().size();
             for (int k = 0; k < groupInfoLength; k++) {
+                TcPrInner.VMerge merge = factory.createTcPrInnerVMerge();
                 Tc tableCell = factory.createTc();
                 TcPr tableCellProperties = new TcPr();
-
-                TcPrInner.VMerge merge = new TcPrInner.VMerge();
-                P content = createParaGraph(item.getVCategoryName(), "black", tblContentFontSize, JcEnumeration.CENTER, false, 25);
-
-                if (groupInfoLength - 1 == k) {
+                if ((k == 0) ) {
                     merge.setVal("restart");
                 } else {
                     merge.setVal(null);
@@ -205,27 +209,26 @@ public class DocxServiceImpl implements DocxService {
                 CTVerticalJc ctjc = new CTVerticalJc();
                 ctjc.setVal(STVerticalJc.CENTER);
                 tableCellProperties.setVAlign(ctjc);
-                tableCellProperties.setVMerge(merge);
                 tableCell.setTcPr(tableCellProperties);
-                tableCell.getContent().add(content);
-
                 TrPr trpr = new TrPr();
                 Tr tableRow1 = factory.createTr();
                 tableRow1.setTrPr(trpr);
-                tableRow1.getContent().add(tableCell);
+                tableCellProperties.setVMerge(merge);
+                addTableCell(factory.createTc(),tableRow1, tableCellProperties, item.getVCategoryName(), "black", tblContentFontSize, JcEnumeration.CENTER, false, 0);
 
-                addTableCell(factory.createTc(),tableRow1, factory.createTcPr(),String.format("%d.%d %s",item.getVCategoryCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupName()), "black", tblContentFontSize, JcEnumeration.LEFT, false, 0);
-                addTableCell(factory.createTc(),tableRow1, factory.createTcPr(),item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getDescription(), item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getColor(), tblContentFontSize, JcEnumeration.CENTER, true, 0);
+                addTableCell(factory.createTc(),tableRow1, null, String.format("%d.%d %s",item.getVCategoryCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupCode(),item.getVItemDetailInfoGroupList().get(k).getVGroupName()), "black", tblContentFontSize, JcEnumeration.LEFT, false, 0);
+                addTableCell(factory.createTc(),tableRow1, null, item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getDescription(), item.getVItemDetailInfoGroupList().get(k).getVGroupGrade().getColor(), tblContentFontSize, JcEnumeration.CENTER, true, 0);
+
                 boolean find = false;
                 for (ReportInfo.ReportOptionGroupInfo groupInfo : reportOptionGroupInfos) {
                     if(Objects.equals(groupInfo.getVItemDetailGroupInfo().getId(), item.getVItemDetailInfoGroupList().get(k).getId())) {
-                        addTableCell(factory.createTc(),tableRow1, factory.createTcPr(),"취약", "red", tblContentFontSize, JcEnumeration.CENTER, true,0);
+                        addTableCell(factory.createTc(),tableRow1, null,"취약", "red", tblContentFontSize, JcEnumeration.CENTER, true,0);
                         find = true;
                         break;
                     }
                 }
                 if(!find) {
-                    addTableCell(factory.createTc(),tableRow1, factory.createTcPr(),"", "black", 30, JcEnumeration.CENTER, false, 0);
+                    addTableCell(factory.createTc(),tableRow1, null,"", "black", 30, JcEnumeration.CENTER, false, 0);
                 }
 
                 table.getContent().add(tableRow1);
@@ -242,9 +245,9 @@ public class DocxServiceImpl implements DocxService {
         ctShd.setFill("#d1cdcd");
         tcPr.setShd(ctShd);
         addTableCell(factory.createTc(), tr, tcPr,"분류", "black", tblContentFontSize, JcEnumeration.CENTER, true,1000);
-        addTableCell(factory.createTc(), tr, tcPr,"세부 진단 항목", "black", tblContentFontSize, JcEnumeration.CENTER, true, 3000);
-        addTableCell(factory.createTc(), tr, tcPr,"취약점 등급", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
-        addTableCell(factory.createTc(), tr, tcPr,"점검 결과", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
+        addTableCell(factory.createTc(), tr, tcPr,"세부 진단 항목", "black", tblContentFontSize, JcEnumeration.CENTER, true, 4000);
+        addTableCell(factory.createTc(), tr, tcPr,"취약점 등급", "black", tblContentFontSize, JcEnumeration.CENTER, true, 1500);
+        addTableCell(factory.createTc(), tr, tcPr,"점검 결과", "black", tblContentFontSize, JcEnumeration.CENTER, true, 1500);
         return tr;
     }
 
@@ -282,6 +285,8 @@ public class DocxServiceImpl implements DocxService {
             tblWidth.setType(TblWidth.TYPE_DXA);
             tcpr.setTcW(tblWidth);
         }
+
+
         P p = createParaGraph(content, colorName, fontSize, align, bold, 25);
         tc.setTcPr(tcpr);
         tc.getContent().add(p);
@@ -309,7 +314,7 @@ public class DocxServiceImpl implements DocxService {
         table.getTblPr().setTblBorders(borders);
     }
 
-    public P createUnnumberedList(String text, int deps, Integer idnt, Integer level) {
+    public P createUnnumberedList(String text, long deps, Integer idnt, long level) {
         P  p = factory.createP();
         BooleanDefaultTrue boolTrue = new BooleanDefaultTrue();
         PPrBase.NumPr numPr =  factory.createPPrBaseNumPr();
@@ -326,9 +331,6 @@ public class DocxServiceImpl implements DocxService {
         run.getContent().add(t);
         p.getContent().add(run);
         paraRPr.setB(boolTrue);
-        PPrBase.Spacing spacing = factory.createPPrBaseSpacing();
-        spacing.setBefore(BigInteger.valueOf(100));
-        ppr.setSpacing(spacing);
         // Create and add <w:numPr>
         indent.setRight(BigInteger.valueOf(idnt));
         ppr.setInd(indent);
@@ -354,7 +356,7 @@ public class DocxServiceImpl implements DocxService {
     private void createDetail(ReportInfo.ReportOptionGroupInfo reportOptionGroupInfo, WordprocessingMLPackage mlPackage, int i, int length) {
 
         if ( i == 0) {
-            var detailName = createUnnumberedList("상세내용", 1, 50, 0);
+            var detailName = createUnnumberedList("상세내용", 1, 100, 0);
             mlPackage.getMainDocumentPart().addObject(detailName);
         }
 
@@ -371,20 +373,23 @@ public class DocxServiceImpl implements DocxService {
         mlPackage.getMainDocumentPart().addObject(categoryName);
 
 
-        var problem_tag = createUnnumberedList("문제점", 2, 1000, 1);
+        var problem_tag = createUnnumberedList("문제점", 999999-i, 10, 1);
         mlPackage.getMainDocumentPart().addObject(problem_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-
-            var pIssue = createTabParaGraph(reportOptionInfo.getReportVIssue(), 1);
+            var pIssue = createTabParaGraph(reportOptionInfo.getReportVIssue());
             mlPackage.getMainDocumentPart().addObject(pIssue);
             AtomicInteger imageNum = new AtomicInteger(1);
             reportOptionInfo.getReportOptionImageInfoList().forEach(reportOptionImageInfo -> {
                 try {
                         int id = (int) (Math.random() * 10000);
                         BinaryPartAbstractImage imgPart = BinaryPartAbstractImage.createImagePart(mlPackage, new File(reportOptionImageInfo.getFilePath()));
-                        Inline inline = imgPart.createImageInline(reportOptionImageInfo.getDescription(), "Alt Text", id, id * 2, 3000,  false);
-                        var p = addImageToParagraph(inline, reportOptionImageInfo.getCaption(), imageNum.get());
-                        mlPackage.getMainDocumentPart().addObject(p);
+                        Inline inline = imgPart.createImageInline(reportOptionImageInfo.getDescription(), "Alt Text", id, id * 2, 8200,  false);
+                        var image = addImageToParagraph(inline);
+                        var caption = createParaGraph(String.format("%s", reportOptionImageInfo.getCaption()),"black", 16, JcEnumeration.CENTER, false, 100);
+                        var desc = createParaGraph(reportOptionImageInfo.getDescription(),"black", 16, JcEnumeration.CENTER, false, 100);
+                        mlPackage.getMainDocumentPart().addObject(image);
+                        mlPackage.getMainDocumentPart().addObject(desc);
+                        mlPackage.getMainDocumentPart().addObject(caption);
                         imageNum.getAndIncrement();
                 } catch (Exception e) {
                     log.error(e.toString());
@@ -393,24 +398,32 @@ public class DocxServiceImpl implements DocxService {
 
         });
 
-        var respond_tag = createUnnumberedList("대응방안", 2, 150, 1);
+        var respond_tag = createUnnumberedList("대응방안", 999999-i, 10, 1);
         mlPackage.getMainDocumentPart().addObject(respond_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-            var response = createTabParaGraph( reportOptionInfo.getReportVResponse(), 1);
+            var response = createTabParaGraph(reportOptionInfo.getReportVResponse());
             mlPackage.getMainDocumentPart().addObject(response);
         });
 
-        var function_tag = createUnnumberedList("관련함수", 2, 150, 1);
+
+        var function_tag = createUnnumberedList("관련함수", 999999-i, 10, 1);
         mlPackage.getMainDocumentPart().addObject(function_tag);
         Tbl functionTbl = factory.createTbl();
         var functionTblHeader= createFunctionTblTh();
         functionTbl.getContent().add(functionTblHeader);
-        reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> reportOptionInfo.getReportOptionMethodInfoList().forEach(reportOptionMethodInfo -> {
-            var tr = createFunctionTbl(reportOptionMethodInfo);
-            functionTbl.getContent().add(tr);
-        }));
+
+        reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo ->{
+            if(reportOptionInfo.getReportOptionMethodInfoList().size() > 0) {
+                reportOptionInfo.getReportOptionMethodInfoList().forEach(reportOptionMethodInfo -> {
+                    var tr = createFunctionTbl(reportOptionMethodInfo);
+                    functionTbl.getContent().add(tr);
+                });
+            }
+        });
+
         addBorders(functionTbl, "black");
         mlPackage.getMainDocumentPart().addObject(functionTbl);
+
         if (i != length - 1) {
             Br br = factory.createBr();
             br.setType(PAGE);
@@ -426,13 +439,9 @@ public class DocxServiceImpl implements DocxService {
         return tr;
     }
 
-    private P addImageToParagraph(Inline inline, String caption, int imageNum) {
-
+    private P addImageToParagraph(Inline inline) {
         PPr paragraphProperties = factory.createPPr();
         ParaRPr rpr = factory.createParaRPr();
-        HpsMeasure sz = factory.createHpsMeasure();
-        sz.setVal(BigInteger.valueOf(200));
-        rpr.setSz(sz);
         Jc justification = factory.createJc();
         justification.setVal(JcEnumeration.CENTER);
         paragraphProperties.setJc(justification);
@@ -441,12 +450,8 @@ public class DocxServiceImpl implements DocxService {
         R r = factory.createR();
         Drawing drawing = factory.createDrawing();
         drawing.getAnchorOrInline().add(inline);
-        Text text = factory.createText();
-        var textWrapped = factory
-                .createRT(text);
-        r.getContent().add(textWrapped);
-        text.setValue(String.format("[그림%d].%s", imageNum, caption));
-        text.setSpace("preserve");
+        Br br = factory.createBr();
+        r.getContent().add(br);
         r.getContent().add(drawing);
         p.getContent().add(paragraphProperties);
         p.getContent().add(r);
@@ -460,16 +465,54 @@ public class DocxServiceImpl implements DocxService {
                 .load(template);
     }
 
-    private P createTabParaGraph(String content, int howManyTabNeed ) {
+    private P createTabParaGraph(String content ) {
+        PPrBase.Spacing spacing = factory.createPPrBaseSpacing();
+        spacing.setLine(BigInteger.valueOf(150));
+        spacing.setLineRule(STLineSpacingRule.AUTO);
+        PPr pPr = factory.createPPr();
         P p = factory.createP();
         R r = factory.createR();
+        RPr rPr = factory.createRPr();
         R.Tab rT = factory.createRTab();
+        StringBuilder sb = new StringBuilder();
         Text t = factory.createText();
-        t.setValue(content);
-        for (int i =0; i < howManyTabNeed ; i++) {
-            r.getContent().add(rT);
+        for (int tIndex = 0; tIndex < content.length(); tIndex++) {
+            var ct = content.charAt(tIndex);
+
+            sb.append(ct);
+
+            if(tIndex == content.length() -1) {
+                t.setValue(sb.toString());
+                r.getContent().add(rT);
+                r.getContent().add(t);
+                sb.delete(0, sb.length());
+            }
+
+            if(ct == '\n') {
+
+                Br br = factory.createBr();
+                t.setValue(sb.toString());
+                r.getContent().add(rT);
+                r.getContent().add(t);
+                r.getContent().add(br);
+                sb.delete(0, sb.length());
+            }
+
+            if(sb.length() % 47 == 0) {
+                Br br = factory.createBr();
+                t.setValue(sb.toString());
+                r.getContent().add(rT);
+                r.getContent().add(t);
+                r.getContent().add(br);
+                sb.delete(0, sb.length());
+            }
         }
-        r.getContent().add(t);
+
+        HpsMeasure size = factory.createHpsMeasure();
+        size.setVal(BigInteger.valueOf(30));
+        rPr.setSz(size);
+        pPr.setSpacing(spacing);
+        p.setPPr(pPr);
         p.getContent().add(r);
         return p;
     }
