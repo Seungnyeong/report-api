@@ -6,6 +6,7 @@ import com.wemakeprice.vms.reportapi.domain.report.ReportInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.xmlgraphics.image.loader.ImageSize;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -109,17 +110,23 @@ public class DocxServiceImpl implements DocxService {
 
         int length = reportInfo.getReportOptionGroupsList().size();
         AtomicInteger pageIndex = new AtomicInteger(0);
-//        for (int i = 0; i < reportInfo.getReportOptionGroupsList().size(); i++) {
-//            createDetail(reportInfo.getReportOptionGroupsList().get(i), main, i, length);
-//        }
         reportInfo.getReportOptionGroupsList().stream()
                 .sorted(Comparator.comparing(reportOptionGroupInfo -> reportOptionGroupInfo.getVItemDetailGroupInfo().getOrdering()))
                 .forEach(reportOptionGroupInfo -> {
                     createDetail(reportOptionGroupInfo, main, pageIndex.intValue(), length);
                     pageIndex.getAndIncrement();
                 });
-        UUID uuid = UUID.randomUUID();
-        Path targetLocation = this.reportStorageLocation.resolve(uuid + "." + DOC_TYPE);
+        return saveReport(main, reportInfo);
+    }
+
+    private Path saveReport(WordprocessingMLPackage main, ReportInfo.Main reportInfo) throws Docx4JException {
+        Path targetLocation;
+        if (reportInfo.getReportFilePath() == null) {
+            UUID uuid = UUID.randomUUID();
+            targetLocation = this.reportStorageLocation.resolve(uuid + "." + DOC_TYPE);
+        } else {
+            targetLocation = this.reportStorageLocation.resolve(reportInfo.getReportFilePath());
+        }
         main.save(new File(targetLocation.toAbsolutePath().toString()));
         return targetLocation.toAbsolutePath();
     }
@@ -371,9 +378,7 @@ public class DocxServiceImpl implements DocxService {
         );
 
         mlPackage.getMainDocumentPart().addObject(categoryName);
-
-
-        var problem_tag = createUnnumberedList("문제점", 999999-i, 10, 1);
+        var problem_tag = createUnnumberedList("문제점", reportOptionGroupInfo.getId() + 10, 10, 1);
         mlPackage.getMainDocumentPart().addObject(problem_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
             var pIssue = createTabParaGraph(reportOptionInfo.getReportVIssue());
@@ -398,7 +403,7 @@ public class DocxServiceImpl implements DocxService {
 
         });
 
-        var respond_tag = createUnnumberedList("대응방안", 999999-i, 10, 1);
+        var respond_tag = createUnnumberedList("대응방안", reportOptionGroupInfo.getId() + 10, 10, 1);
         mlPackage.getMainDocumentPart().addObject(respond_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
             var response = createTabParaGraph(reportOptionInfo.getReportVResponse());
@@ -406,7 +411,7 @@ public class DocxServiceImpl implements DocxService {
         });
 
 
-        var function_tag = createUnnumberedList("관련함수", 999999-i, 10, 1);
+        var function_tag = createUnnumberedList("관련함수", reportOptionGroupInfo.getId() + 10, 10, 1);
         mlPackage.getMainDocumentPart().addObject(function_tag);
         Tbl functionTbl = factory.createTbl();
         var functionTblHeader= createFunctionTblTh();
@@ -475,23 +480,13 @@ public class DocxServiceImpl implements DocxService {
         RPr rPr = factory.createRPr();
         R.Tab rT = factory.createRTab();
         StringBuilder sb = new StringBuilder();
-        Text t = factory.createText();
+
         for (int tIndex = 0; tIndex < content.length(); tIndex++) {
-            var ct = content.charAt(tIndex);
-
-            sb.append(ct);
-
-            if(tIndex == content.length() -1) {
-                t.setValue(sb.toString());
-                r.getContent().add(rT);
-                r.getContent().add(t);
-                sb.delete(0, sb.length());
-            }
-
-            if(ct == '\n') {
-
+            Text t = factory.createText();
+            sb.append(content.charAt(tIndex));
+            if(content.charAt(tIndex) == '\n') {
                 Br br = factory.createBr();
-                t.setValue(sb.toString());
+                t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
                 r.getContent().add(rT);
                 r.getContent().add(t);
                 r.getContent().add(br);
@@ -500,10 +495,17 @@ public class DocxServiceImpl implements DocxService {
 
             if(sb.length() % 47 == 0) {
                 Br br = factory.createBr();
-                t.setValue(sb.toString());
+                t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
                 r.getContent().add(rT);
                 r.getContent().add(t);
                 r.getContent().add(br);
+                sb.delete(0, sb.length());
+            }
+
+            if(tIndex == content.length() -1) {
+                t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
+                r.getContent().add(rT);
+                r.getContent().add(t);
                 sb.delete(0, sb.length());
             }
         }
