@@ -68,12 +68,12 @@ public class DocxServiceImpl implements DocxService {
         var main = getTemplate(template);
         Br paging = factory.createBr();
         paging.setType(PAGE);
-        P Bempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 3000);
-        P Sempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 1000);
-        P title = createParaGraph(reportInfo.getTitle(), "black", 60, JcEnumeration.CENTER, true, 50);
-        P titleAppendix = createParaGraph("취약점 점검 결과 보고", "black", 60, JcEnumeration.CENTER, true,50);
-        P created = createParaGraph(reportInfo.getCreated().format(DateTimeFormatter.ofPattern("yyyy. MM. dd")), "black", 40, JcEnumeration.CENTER, true,50);
-        P teamName = createParaGraph("CERT팀", "black", 40, JcEnumeration.CENTER, true,300);
+        P Bempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 3000, 25);
+        P Sempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 1000, 25);
+        P title = createParaGraph(reportInfo.getTitle(), "black", 60, JcEnumeration.CENTER, true, 50,25);
+        P titleAppendix = createParaGraph("취약점 점검 결과 보고", "black", 60, JcEnumeration.CENTER, true,50, 25);
+        P created = createParaGraph(reportInfo.getCreated().format(DateTimeFormatter.ofPattern("yyyy. MM. dd")), "black", 40, JcEnumeration.CENTER, true,50, 25);
+        P teamName = createParaGraph("CERT팀", "black", 40, JcEnumeration.CENTER, true,300, 25);
 
         var controlTbl =  createControlTbl(reportInfo.getReportControlNumber());
 
@@ -100,9 +100,9 @@ public class DocxServiceImpl implements DocxService {
         main.getMainDocumentPart().addObject(resultCheckTable);
         main.getMainDocumentPart().addObject(checkListTbl);
 
-        P check = createParaGraph("※ 체크리스트 기준", "black", 14, JcEnumeration.LEFT, true, 25);
-        P owasp = createParaGraph("OWASP(Open Web Application Security Project) Top 10 – www.owasp.org", "black", 12, JcEnumeration.LEFT, false, 25);
-        P nist = createParaGraph("NIST(National Institute of standards and Technology) Web Application Check List – c/src.nist.gov", "black", 12, JcEnumeration.LEFT, false, 25);
+        P check = createParaGraph("※ 체크리스트 기준", "black", 14, JcEnumeration.LEFT, true, 25, 25);
+        P owasp = createParaGraph("OWASP(Open Web Application Security Project) Top 10 – www.owasp.org", "black", 12, JcEnumeration.LEFT, false, 25, 25);
+        P nist = createParaGraph("NIST(National Institute of standards and Technology) Web Application Check List – c/src.nist.gov", "black", 12, JcEnumeration.LEFT, false, 25, 25);
         main.getMainDocumentPart().getContent().add(check);
         main.getMainDocumentPart().getContent().add(owasp);
         main.getMainDocumentPart().getContent().add(nist);
@@ -294,7 +294,7 @@ public class DocxServiceImpl implements DocxService {
         }
 
 
-        P p = createParaGraph(content, colorName, fontSize, align, bold, 25);
+        P p = createParaGraph(content, colorName, fontSize, align, bold, 25, 25);
         tc.setTcPr(tcpr);
         tc.getContent().add(p);
         tr.getContent().add(tc);
@@ -374,11 +374,11 @@ public class DocxServiceImpl implements DocxService {
                 "black",
                 20,
                 JcEnumeration.LEFT,
-                true,300
+                true,300, 200
         );
 
         mlPackage.getMainDocumentPart().addObject(categoryName);
-        var problem_tag = createUnnumberedList("문제점", reportOptionGroupInfo.getId() + 10, 10, 1);
+        var problem_tag = createTabParaGraph("1) 문제점");
         mlPackage.getMainDocumentPart().addObject(problem_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
             var pIssue = createTabParaGraph(reportOptionInfo.getReportVIssue());
@@ -390,8 +390,8 @@ public class DocxServiceImpl implements DocxService {
                         BinaryPartAbstractImage imgPart = BinaryPartAbstractImage.createImagePart(mlPackage, new File(reportOptionImageInfo.getFilePath()));
                         Inline inline = imgPart.createImageInline(reportOptionImageInfo.getDescription(), "Alt Text", id, id * 2, 8200,  false);
                         var image = addImageToParagraph(inline);
-                        var caption = createParaGraph(String.format("%s", reportOptionImageInfo.getCaption()),"black", 16, JcEnumeration.CENTER, false, 100);
-                        var desc = createParaGraph(reportOptionImageInfo.getDescription(),"black", 16, JcEnumeration.CENTER, false, 100);
+                        var caption = createParaGraph(String.format("%s", reportOptionImageInfo.getCaption()),"black", 16, JcEnumeration.CENTER, false, 100, 30);
+                        var desc = createParaGraph(reportOptionImageInfo.getDescription(),"black", 16, JcEnumeration.CENTER, false, 100, 30);
                         mlPackage.getMainDocumentPart().addObject(image);
                         mlPackage.getMainDocumentPart().addObject(desc);
                         mlPackage.getMainDocumentPart().addObject(caption);
@@ -403,7 +403,8 @@ public class DocxServiceImpl implements DocxService {
 
         });
 
-        var respond_tag = createUnnumberedList("대응방안", reportOptionGroupInfo.getId() + 10, 10, 1);
+//        var respond_tag = createUnnumberedList("대응방안", reportOptionGroupInfo.getId() + i, 10, 1);
+        var respond_tag = createTabParaGraph("2) 대응방안");
         mlPackage.getMainDocumentPart().addObject(respond_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
             var response = createTabParaGraph(reportOptionInfo.getReportVResponse());
@@ -411,7 +412,8 @@ public class DocxServiceImpl implements DocxService {
         });
 
 
-        var function_tag = createUnnumberedList("관련함수", reportOptionGroupInfo.getId() + 10, 10, 1);
+//        var function_tag = createUnnumberedList("관련함수", reportOptionGroupInfo.getId() + i, 10, 1);
+        var function_tag = createTabParaGraph("3) 관련함수");
         mlPackage.getMainDocumentPart().addObject(function_tag);
         Tbl functionTbl = factory.createTbl();
         var functionTblHeader= createFunctionTblTh();
@@ -480,12 +482,21 @@ public class DocxServiceImpl implements DocxService {
         RPr rPr = factory.createRPr();
         R.Tab rT = factory.createRTab();
         StringBuilder sb = new StringBuilder();
+        Br br = factory.createBr();
 
         for (int tIndex = 0; tIndex < content.length(); tIndex++) {
-            Text t = factory.createText();
             sb.append(content.charAt(tIndex));
+
+            if(tIndex == content.length() -1) {
+                Text t = factory.createText();
+                t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
+                r.getContent().add(rT);
+                r.getContent().add(t);
+                sb.delete(0, sb.length());
+            }
+
             if(content.charAt(tIndex) == '\n') {
-                Br br = factory.createBr();
+                Text t = factory.createText();
                 t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
                 r.getContent().add(rT);
                 r.getContent().add(t);
@@ -494,7 +505,7 @@ public class DocxServiceImpl implements DocxService {
             }
 
             if(sb.length() % 47 == 0) {
-                Br br = factory.createBr();
+                Text t = factory.createText();
                 t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
                 r.getContent().add(rT);
                 r.getContent().add(t);
@@ -502,16 +513,11 @@ public class DocxServiceImpl implements DocxService {
                 sb.delete(0, sb.length());
             }
 
-            if(tIndex == content.length() -1) {
-                t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
-                r.getContent().add(rT);
-                r.getContent().add(t);
-                sb.delete(0, sb.length());
-            }
+
         }
 
         HpsMeasure size = factory.createHpsMeasure();
-        size.setVal(BigInteger.valueOf(30));
+        size.setVal(BigInteger.valueOf(20));
         rPr.setSz(size);
         pPr.setSpacing(spacing);
         p.setPPr(pPr);
@@ -519,7 +525,7 @@ public class DocxServiceImpl implements DocxService {
         return p;
     }
 
-    private P createParaGraph(String content, String colorName, Integer fontSize, JcEnumeration align, boolean bold, int beforeSpace) {
+    private P createParaGraph(String content, String colorName, Integer fontSize, JcEnumeration align, boolean bold, int beforeSpace, int afterSpace) {
         PPrBase.Spacing spacing = factory.createPPrBaseSpacing();
         spacing.setLine(BigInteger.valueOf(150));
         spacing.setLineRule(STLineSpacingRule.AUTO);
@@ -532,7 +538,7 @@ public class DocxServiceImpl implements DocxService {
         jc.setVal(align);
         ppr.setJc(jc);
         spacing.setBefore(BigInteger.valueOf(beforeSpace));
-        spacing.setAfter(BigInteger.valueOf(25));
+        spacing.setAfter(BigInteger.valueOf(afterSpace));
         ppr.setSpacing(spacing);
         p.setPPr(ppr);
         t.setValue(content);
