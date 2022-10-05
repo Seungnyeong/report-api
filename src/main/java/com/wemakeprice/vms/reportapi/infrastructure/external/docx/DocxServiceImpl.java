@@ -68,8 +68,8 @@ public class DocxServiceImpl implements DocxService {
         var main = getTemplate(template);
         Br paging = factory.createBr();
         paging.setType(PAGE);
-        P Bempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 3000, 25);
-        P Sempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 1000, 25);
+        P Bempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 1000, 25);
+        P Sempty = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 500, 25);
         P title = createParaGraph(reportInfo.getTitle(), "black", 60, JcEnumeration.CENTER, true, 50,25);
         P titleAppendix = createParaGraph("취약점 점검 결과 보고", "black", 60, JcEnumeration.CENTER, true,50, 25);
         P created = createParaGraph(reportInfo.getCreated().format(DateTimeFormatter.ofPattern("yyyy. MM. dd")), "black", 40, JcEnumeration.CENTER, true,50, 25);
@@ -79,8 +79,10 @@ public class DocxServiceImpl implements DocxService {
 
         main.getMainDocumentPart().addObject(controlTbl);
         main.getMainDocumentPart().addObject(Bempty);
+        main.getMainDocumentPart().addObject(Bempty);
         main.getMainDocumentPart().addObject(title);
         main.getMainDocumentPart().addObject(titleAppendix);
+        main.getMainDocumentPart().addObject(Bempty);
         main.getMainDocumentPart().addObject(Bempty);
         main.getMainDocumentPart().addObject(created);
         main.getMainDocumentPart().addObject(teamName);
@@ -378,10 +380,10 @@ public class DocxServiceImpl implements DocxService {
         );
 
         mlPackage.getMainDocumentPart().addObject(categoryName);
-        var problem_tag = createTabParaGraph("1) 문제점");
+        var problem_tag = createTabParaGraph("1) 문제점", true);
         mlPackage.getMainDocumentPart().addObject(problem_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-            var pIssue = createTabParaGraph(reportOptionInfo.getReportVIssue());
+            var pIssue = createTabParaGraph(reportOptionInfo.getReportVIssue(), false);
             mlPackage.getMainDocumentPart().addObject(pIssue);
             AtomicInteger imageNum = new AtomicInteger(1);
             reportOptionInfo.getReportOptionImageInfoList().forEach(reportOptionImageInfo -> {
@@ -404,16 +406,16 @@ public class DocxServiceImpl implements DocxService {
         });
 
 //        var respond_tag = createUnnumberedList("대응방안", reportOptionGroupInfo.getId() + i, 10, 1);
-        var respond_tag = createTabParaGraph("2) 대응방안");
+        var respond_tag = createTabParaGraph("2) 대응방안", true);
         mlPackage.getMainDocumentPart().addObject(respond_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
-            var response = createTabParaGraph(reportOptionInfo.getReportVResponse());
+            var response = createTabParaGraph(reportOptionInfo.getReportVResponse(), false);
             mlPackage.getMainDocumentPart().addObject(response);
         });
 
 
 //        var function_tag = createUnnumberedList("관련함수", reportOptionGroupInfo.getId() + i, 10, 1);
-        var function_tag = createTabParaGraph("3) 관련함수");
+        var function_tag = createTabParaGraph("3) 관련함수", true);
         mlPackage.getMainDocumentPart().addObject(function_tag);
         Tbl functionTbl = factory.createTbl();
         var functionTblHeader= createFunctionTblTh();
@@ -447,20 +449,27 @@ public class DocxServiceImpl implements DocxService {
     }
 
     private P addImageToParagraph(Inline inline) {
-        PPr paragraphProperties = factory.createPPr();
-        ParaRPr rpr = factory.createParaRPr();
+        CTBorder border = new CTBorder();
+        border.setColor("black");
+        border.setSz(new BigInteger("10"));
+        border.setSpace(new BigInteger("0"));
+        border.setVal(STBorder.SINGLE);
+        PPr ppr = factory.createPPr();
+        RPr rpr = factory.createRPr();
+        rpr.setBdr(border);
         Jc justification = factory.createJc();
         justification.setVal(JcEnumeration.CENTER);
-        paragraphProperties.setJc(justification);
-        paragraphProperties.setRPr(rpr);
+
+        ppr.setJc(justification);
         P p = factory.createP();
         R r = factory.createR();
+        r.setRPr(rpr);
         Drawing drawing = factory.createDrawing();
         drawing.getAnchorOrInline().add(inline);
         Br br = factory.createBr();
         r.getContent().add(br);
         r.getContent().add(drawing);
-        p.getContent().add(paragraphProperties);
+        p.getContent().add(ppr);
         p.getContent().add(r);
         return p;
     }
@@ -472,11 +481,10 @@ public class DocxServiceImpl implements DocxService {
                 .load(template);
     }
 
-    private P createTabParaGraph(String content ) {
-        PPrBase.Spacing spacing = factory.createPPrBaseSpacing();
-        spacing.setLine(BigInteger.valueOf(150));
-        spacing.setLineRule(STLineSpacingRule.AUTO);
+    private P createTabParaGraph(String content, boolean bold ) {
         PPr pPr = factory.createPPr();
+        BooleanDefaultTrue boolTrue = factory.createBooleanDefaultTrue();
+        boolTrue.setVal(bold);
         P p = factory.createP();
         R r = factory.createR();
         RPr rPr = factory.createRPr();
@@ -512,22 +520,21 @@ public class DocxServiceImpl implements DocxService {
                 r.getContent().add(br);
                 sb.delete(0, sb.length());
             }
-
-
         }
 
         HpsMeasure size = factory.createHpsMeasure();
         size.setVal(BigInteger.valueOf(20));
+        rPr.setB(boolTrue);
         rPr.setSz(size);
-        pPr.setSpacing(spacing);
         p.setPPr(pPr);
+        r.setRPr(rPr);
         p.getContent().add(r);
         return p;
     }
 
     private P createParaGraph(String content, String colorName, Integer fontSize, JcEnumeration align, boolean bold, int beforeSpace, int afterSpace) {
         PPrBase.Spacing spacing = factory.createPPrBaseSpacing();
-        spacing.setLine(BigInteger.valueOf(150));
+        spacing.setLine(BigInteger.valueOf(200));
         spacing.setLineRule(STLineSpacingRule.AUTO);
         PPr ppr = factory.createPPr();
         P p = factory.createP();
