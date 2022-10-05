@@ -267,9 +267,9 @@ public class DocxServiceImpl implements DocxService {
         ctShd.setColor("FFFFFF");
         ctShd.setFill("#d1cdcd");
         tcPr.setShd(ctShd);
-        addTableCell(factory.createTc(), tr, tcPr,"함수 이름", "black", tblContentFontSize, JcEnumeration.CENTER, true,3000);
-        addTableCell(factory.createTc(), tr, tcPr,"함수 패키지", "black", tblContentFontSize, JcEnumeration.CENTER, true, 3000);
-        addTableCell(factory.createTc(), tr, tcPr,"함수 설명", "black", tblContentFontSize, JcEnumeration.CENTER, true, 3000);
+        addTableCell(factory.createTc(), tr, tcPr,"파일명", "black", tblContentFontSize, JcEnumeration.CENTER, true,4000);
+        addTableCell(factory.createTc(), tr, tcPr,"메소드명", "black", tblContentFontSize, JcEnumeration.CENTER, true, 3000);
+        addTableCell(factory.createTc(), tr, tcPr,"취약여부", "black", tblContentFontSize, JcEnumeration.CENTER, true, 1000);
         return tr;
     }
 
@@ -330,7 +330,6 @@ public class DocxServiceImpl implements DocxService {
         PPrBase.Ind indent = factory.createPPrBaseInd();
         RPr rpr = factory.createRPr();
         PPr ppr = factory.createPPr();
-        ParaRPr paraRPr = factory.createParaRPr();
         R  run = factory.createR();
         boolTrue.setVal(true);
         Text  t = factory.createText();
@@ -339,20 +338,17 @@ public class DocxServiceImpl implements DocxService {
         rpr.setB(boolTrue);
         run.getContent().add(t);
         p.getContent().add(run);
-        paraRPr.setB(boolTrue);
+        rpr.setB(boolTrue);
         // Create and add <w:numPr>
         indent.setRight(BigInteger.valueOf(idnt));
         ppr.setInd(indent);
         ppr.setNumPr(numPr);
         // The <w:ilvl> element
-        ppr.setRPr(paraRPr);
+        run.setRPr(rpr);
         p.setPPr( ppr );
-
-
         PPrBase.NumPr.Ilvl ilvlElement = factory.createPPrBaseNumPrIlvl();
         numPr.setIlvl(ilvlElement);
         ilvlElement.setVal(BigInteger.valueOf(level));
-
         // The <w:numId> element
         PPrBase.NumPr.NumId numIdElement = factory.createPPrBaseNumPrNumId();
         numPr.setNumId(numIdElement);
@@ -380,8 +376,10 @@ public class DocxServiceImpl implements DocxService {
         );
 
         mlPackage.getMainDocumentPart().addObject(categoryName);
+
         var problem_tag = createTabParaGraph("1) 문제점", true);
         mlPackage.getMainDocumentPart().addObject(problem_tag);
+
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
             var pIssue = createTabParaGraph(reportOptionInfo.getReportVIssue(), false);
             mlPackage.getMainDocumentPart().addObject(pIssue);
@@ -405,7 +403,8 @@ public class DocxServiceImpl implements DocxService {
 
         });
 
-//        var respond_tag = createUnnumberedList("대응방안", reportOptionGroupInfo.getId() + i, 10, 1);
+        P emp = createParaGraph(" ", "black", 100, JcEnumeration.LEFT, true, 100, 0);
+        mlPackage.getMainDocumentPart().addObject(emp);
         var respond_tag = createTabParaGraph("2) 대응방안", true);
         mlPackage.getMainDocumentPart().addObject(respond_tag);
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo -> {
@@ -413,13 +412,17 @@ public class DocxServiceImpl implements DocxService {
             mlPackage.getMainDocumentPart().addObject(response);
         });
 
-
-//        var function_tag = createUnnumberedList("관련함수", reportOptionGroupInfo.getId() + i, 10, 1);
         var function_tag = createTabParaGraph("3) 관련함수", true);
+        mlPackage.getMainDocumentPart().addObject(emp);
         mlPackage.getMainDocumentPart().addObject(function_tag);
         Tbl functionTbl = factory.createTbl();
+        TblPr tableProps = new TblPr();
         var functionTblHeader= createFunctionTblTh();
         functionTbl.getContent().add(functionTblHeader);
+        Jc justification = factory.createJc();
+        justification.setVal(JcEnumeration.CENTER);
+        tableProps.setJc(justification);
+        functionTbl.setTblPr(tableProps);
 
         reportOptionGroupInfo.getReportOptionInfoList().forEach(reportOptionInfo ->{
             if(reportOptionInfo.getReportOptionMethodInfoList().size() > 0) {
@@ -442,9 +445,9 @@ public class DocxServiceImpl implements DocxService {
 
     private Tr createFunctionTbl(ReportInfo.ReportOptionMethodInfo reportOptionMethodInfo) {
         Tr tr = factory.createTr();
-        addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodName(), "black", 16, JcEnumeration.LEFT, true, 20);
-        addTableCell(factory.createTc(),  tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodPackage(), "black", 16, JcEnumeration.LEFT, true, 20);
-        addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodDescription(), "black", 16, JcEnumeration.LEFT, true, 20);
+        addTableCell(factory.createTc(),  tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodPackage(), "black", 16, JcEnumeration.LEFT, true, 3000);
+        addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodName(), "black", 16, JcEnumeration.LEFT, true, 4000);
+        addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodDescription(), "black", 16, JcEnumeration.CENTER, true, 1000);
         return tr;
     }
 
@@ -500,7 +503,7 @@ public class DocxServiceImpl implements DocxService {
                 t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
                 r.getContent().add(rT);
                 r.getContent().add(t);
-                sb.delete(0, sb.length());
+                sb.delete(0, sb.length() - 1);
             }
 
             if(content.charAt(tIndex) == '\n') {
@@ -509,7 +512,7 @@ public class DocxServiceImpl implements DocxService {
                 r.getContent().add(rT);
                 r.getContent().add(t);
                 r.getContent().add(br);
-                sb.delete(0, sb.length());
+                sb.delete(0, sb.length() - 1);
             }
 
             if(sb.length() % 47 == 0) {
@@ -518,7 +521,7 @@ public class DocxServiceImpl implements DocxService {
                 r.getContent().add(rT);
                 r.getContent().add(t);
                 r.getContent().add(br);
-                sb.delete(0, sb.length());
+                sb.delete(0, sb.length() - 1);
             }
         }
 
