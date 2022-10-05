@@ -521,7 +521,7 @@ public class DocxServiceImpl implements DocxService {
                 r.getContent().add(rT);
                 r.getContent().add(t);
                 r.getContent().add(br);
-                sb.delete(0, sb.length() - 1);
+                sb.delete(0, sb.length());
             }
         }
 
