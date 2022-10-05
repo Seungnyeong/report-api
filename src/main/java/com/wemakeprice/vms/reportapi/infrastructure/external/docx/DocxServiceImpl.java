@@ -77,7 +77,9 @@ public class DocxServiceImpl implements DocxService {
 
         var controlTbl =  createControlTbl(reportInfo.getReportControlNumber());
 
+
         main.getMainDocumentPart().addObject(controlTbl);
+        main.getMainDocumentPart().addObject(Bempty);
         main.getMainDocumentPart().addObject(Bempty);
         main.getMainDocumentPart().addObject(Bempty);
         main.getMainDocumentPart().addObject(title);
@@ -412,7 +414,7 @@ public class DocxServiceImpl implements DocxService {
             mlPackage.getMainDocumentPart().addObject(response);
         });
 
-        var function_tag = createTabParaGraph("3) 관련함수", true);
+        var function_tag = createTabParaGraph("3) 상세경로", true);
         mlPackage.getMainDocumentPart().addObject(emp);
         mlPackage.getMainDocumentPart().addObject(function_tag);
         Tbl functionTbl = factory.createTbl();
@@ -498,6 +500,10 @@ public class DocxServiceImpl implements DocxService {
         for (int tIndex = 0; tIndex < content.length(); tIndex++) {
             sb.append(content.charAt(tIndex));
 
+            if(content.length() == 1) {
+
+            }
+
             if(tIndex == content.length() -1) {
                 Text t = factory.createText();
                 t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
@@ -512,16 +518,16 @@ public class DocxServiceImpl implements DocxService {
                 r.getContent().add(rT);
                 r.getContent().add(t);
                 r.getContent().add(br);
-                sb.delete(0, sb.length() - 1);
+                sb.delete(0, sb.length() );
             }
 
-            if(sb.length() % 47 == 0) {
+            if(sb.length() % 45 == 0) {
                 Text t = factory.createText();
                 t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
                 r.getContent().add(rT);
                 r.getContent().add(t);
                 r.getContent().add(br);
-                sb.delete(0, sb.length());
+                sb.delete(0, sb.length() );
             }
         }
 
