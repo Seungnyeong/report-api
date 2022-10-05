@@ -534,7 +534,7 @@ public class DocxServiceImpl implements DocxService {
 
     private P createParaGraph(String content, String colorName, Integer fontSize, JcEnumeration align, boolean bold, int beforeSpace, int afterSpace) {
         PPrBase.Spacing spacing = factory.createPPrBaseSpacing();
-        spacing.setLine(BigInteger.valueOf(200));
+        spacing.setLine(BigInteger.valueOf(180));
         spacing.setLineRule(STLineSpacingRule.AUTO);
         PPr ppr = factory.createPPr();
         P p = factory.createP();
