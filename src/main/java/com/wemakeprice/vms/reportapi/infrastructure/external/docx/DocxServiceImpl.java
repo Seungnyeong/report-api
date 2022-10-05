@@ -267,8 +267,8 @@ public class DocxServiceImpl implements DocxService {
         ctShd.setColor("FFFFFF");
         ctShd.setFill("#d1cdcd");
         tcPr.setShd(ctShd);
-        addTableCell(factory.createTc(), tr, tcPr,"파일명", "black", tblContentFontSize, JcEnumeration.CENTER, true,4000);
-        addTableCell(factory.createTc(), tr, tcPr,"메소드명", "black", tblContentFontSize, JcEnumeration.CENTER, true, 3000);
+        addTableCell(factory.createTc(), tr, tcPr,"파일명", "black", tblContentFontSize, JcEnumeration.CENTER, true,5000);
+        addTableCell(factory.createTc(), tr, tcPr,"메소드명", "black", tblContentFontSize, JcEnumeration.CENTER, true, 2000);
         addTableCell(factory.createTc(), tr, tcPr,"취약여부", "black", tblContentFontSize, JcEnumeration.CENTER, true, 1000);
         return tr;
     }
@@ -445,8 +445,8 @@ public class DocxServiceImpl implements DocxService {
 
     private Tr createFunctionTbl(ReportInfo.ReportOptionMethodInfo reportOptionMethodInfo) {
         Tr tr = factory.createTr();
-        addTableCell(factory.createTc(),  tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodPackage(), "black", 16, JcEnumeration.LEFT, true, 3000);
-        addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodName(), "black", 16, JcEnumeration.LEFT, true, 4000);
+        addTableCell(factory.createTc(),  tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodPackage(), "black", 16, JcEnumeration.LEFT, true, 5000);
+        addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodName(), "black", 16, JcEnumeration.LEFT, true, 2000);
         addTableCell(factory.createTc(), tr ,factory.createTcPr(), reportOptionMethodInfo.getMethodDescription(), "black", 16, JcEnumeration.CENTER, true, 1000);
         return tr;
     }
