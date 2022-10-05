@@ -86,7 +86,7 @@ public class DocxServiceImpl implements DocxService {
         main.getMainDocumentPart().addObject(Bempty);
         main.getMainDocumentPart().addObject(created);
         main.getMainDocumentPart().addObject(teamName);
-        main.getMainDocumentPart().addObject(Bempty);
+        main.getMainDocumentPart().createParagraphOfText("");
         main.getMainDocumentPart().addObject(paging);
 
         var resultText = createUnnumberedList("취약점 점검 결과 등급", 1, 50,0);
