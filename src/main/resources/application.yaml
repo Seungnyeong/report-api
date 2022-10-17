@@ -12,20 +12,20 @@ spring:
   profiles:
     - local
   datasource:
-    url: jdbc:mysql://localhost:13306/wvms?serverTimezone=UTC&characterEncoding=UTF-8
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root-pass
+    url: jdbc:postgresql://127.0.0.1:5432/wvms
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
   pid :
     file : report-api.pid
   h2:
     console:
       enabled: false
   jpa:
-    database: MYSQL
-    generate-ddl: true
+    database: postgresql
+    generate-ddl: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate.jdbc.lob.non_contextual_creation: true
       hibernate.connection.provider_disables_autocommit: false

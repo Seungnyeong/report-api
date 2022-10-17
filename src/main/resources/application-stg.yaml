@@ -6,10 +6,10 @@ spring:
   profiles:
     - stg
   datasource:
-    url: jdbc:mysql://172.19.30.164:3306/wvms?serverTimezone=UTC&characterEncoding=UTF-8
-    driver-class-name:  com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:5432/wvms
+    driver-class-name:  org.postgresql.Driver
   jpa:
-    database: MYSQL
+    database: postgresql
     hibernate:
       ddl-auto: validate
       show-sql : true
