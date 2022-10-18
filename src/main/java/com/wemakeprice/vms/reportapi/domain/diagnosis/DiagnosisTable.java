@@ -61,10 +61,10 @@ public class DiagnosisTable {
 
     @Column(name = "jira_name", length = 45)
     private String jiraName;
-
-    @Lob
-    @Column(name = "discription")
-    private String discription;
+//
+//    @Lob
+//    @Column(name = "discription", columnDefinition = "text")
+//    private String discription;
 
     @Column(name = "step", length = 45)
     private String step;
@@ -86,10 +86,10 @@ public class DiagnosisTable {
 
     @Column(name = "improvement_normal", length = 45)
     private String improvementNormal;
-
-    @Lob
-    @Column(name = "env_info_text")
-    private String envInfoText;
+//
+//    @Lob
+//    @Column(name = "env_info_text")
+//    private String envInfoText;
 
     @Column(name = "sonar_url", length = 300)
     private String sonarUrl;
