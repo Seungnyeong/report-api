@@ -6,7 +6,7 @@ spring:
   profiles:
     - stg
   datasource:
-    url: jdbc:mysql://127.0.0.1:5432/wvms
+    url: jdbc:postgresql://127.0.0.1:5432/wvms
     driver-class-name:  org.postgresql.Driver
   jpa:
     database: postgresql
