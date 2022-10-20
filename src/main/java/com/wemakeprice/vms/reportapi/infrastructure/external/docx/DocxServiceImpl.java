@@ -372,7 +372,7 @@ public class DocxServiceImpl implements DocxService {
                         reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupCode(),
                         reportOptionGroupInfo.getVItemDetailGroupInfo().getVGroupName()),
                 "black",
-                20,
+                23,
                 JcEnumeration.LEFT,
                 true,300, 200
         );
@@ -390,7 +390,7 @@ public class DocxServiceImpl implements DocxService {
                 try {
                         int id = (int) (Math.random() * 10000);
                         BinaryPartAbstractImage imgPart = BinaryPartAbstractImage.createImagePart(mlPackage, new File(reportOptionImageInfo.getFilePath()));
-                        Inline inline = imgPart.createImageInline(reportOptionImageInfo.getDescription(), "Alt Text", id, id * 2, 8200,  false);
+                        Inline inline = imgPart.createImageInline(reportOptionImageInfo.getDescription(), "Alt Text", id, id * 2, 7790,  false);
                         var image = addImageToParagraph(inline);
                         var caption = createParaGraph(String.format("%s", reportOptionImageInfo.getCaption()),"black", 16, JcEnumeration.CENTER, false, 100, 30);
                         var desc = createParaGraph(reportOptionImageInfo.getDescription(),"black", 16, JcEnumeration.CENTER, false, 100, 30);
@@ -413,7 +413,7 @@ public class DocxServiceImpl implements DocxService {
             var response = createTabParaGraph(reportOptionInfo.getReportVResponse(), false);
             mlPackage.getMainDocumentPart().addObject(response);
         });
-
+        boolean isFuncExist = false;
         var function_tag = createTabParaGraph("3) 상세경로", true);
         mlPackage.getMainDocumentPart().addObject(emp);
         mlPackage.getMainDocumentPart().addObject(function_tag);
@@ -493,7 +493,7 @@ public class DocxServiceImpl implements DocxService {
         P p = factory.createP();
         R r = factory.createR();
         RPr rPr = factory.createRPr();
-        R.Tab rT = factory.createRTab();
+//        R.Tab rT = factory.createRTab();
         StringBuilder sb = new StringBuilder();
         Br br = factory.createBr();
 
@@ -507,7 +507,7 @@ public class DocxServiceImpl implements DocxService {
             if(tIndex == content.length() -1) {
                 Text t = factory.createText();
                 t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
-                r.getContent().add(rT);
+//                r.getContent().add(rT);
                 r.getContent().add(t);
                 sb.delete(0, sb.length() - 1);
             }
@@ -515,20 +515,20 @@ public class DocxServiceImpl implements DocxService {
             if(content.charAt(tIndex) == '\n') {
                 Text t = factory.createText();
                 t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
-                r.getContent().add(rT);
+//                r.getContent().add(rT);
                 r.getContent().add(t);
                 r.getContent().add(br);
                 sb.delete(0, sb.length() );
             }
-
-            if(sb.length() % 45 == 0) {
-                Text t = factory.createText();
-                t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
-                r.getContent().add(rT);
-                r.getContent().add(t);
-                r.getContent().add(br);
-                sb.delete(0, sb.length() );
-            }
+//
+//            if(sb.length() % 45 == 0) {
+//                Text t = factory.createText();
+//                t.setValue(StringEscapeUtils.unescapeHtml4(sb.toString()));
+////                r.getContent().add(rT);
+//                r.getContent().add(t);
+//                r.getContent().add(br);
+//                sb.delete(0, sb.length() );
+//            }
         }
 
         HpsMeasure size = factory.createHpsMeasure();
