@@ -12,6 +12,7 @@ import com.wemakeprice.vms.reportapi.domain.users.User;
 import com.wemakeprice.vms.reportapi.domain.vitem.VItemInfo;
 import lombok.Getter;
 import lombok.ToString;
+import org.docx4j.wml.P;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,6 +37,7 @@ public class ReportInfo  {
         private final List<ReportOptionGroupInfo> reportOptionGroupsList;
         private final ReportUserInfo reportUserInfo;
         private final String password;
+        private final boolean isPrint;
 
         public Main(Report report, List<ReportOptionGroupInfo> reportOptionGroupInfoList, DiagnosisTableInfo.Main diagnosisTableInfo) {
             this.id = report.getId();
@@ -52,6 +54,7 @@ public class ReportInfo  {
             this.created = report.getCreatedDate();
             this.reportOptionGroupsList = reportOptionGroupInfoList;
             this.password = report.getReportPassword();
+            this.isPrint = report.getReportFilePath() != null;
         }
     }
 

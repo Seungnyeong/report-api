@@ -36,7 +36,7 @@ public class FileController {
 
     @ApiOperation(value = "보고서 이미지 파일 업로드", notes = "이미지 파일 업로드입니다.")
     @PostMapping
-    public CommonResponse fileUpload(@Valid @ModelAttribute ImageFileDto.RegisterFile request) {
+    public CommonResponse fileUpload(@Valid  @ModelAttribute ImageFileDto.RegisterFile request) {
             var files = request.getFiles().stream().map(file -> {
             var command = file.toCommand();
             try {
@@ -51,14 +51,14 @@ public class FileController {
 
     @ApiOperation(value = "보고서 이미지 파일 다운로드", notes = "이미지 파일 다운로드.")
     @GetMapping("/{fileId}")
-        @ResponseBody
-        public ResponseEntity<InputStreamResource> fileDownload(@PathVariable Long fileId) throws FileNotFoundException {
-            var fileInfo = imageFacade.serve(fileId);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION,  String.format("attachment;filename=\"%1$s\";", URLEncoder.encode(fileInfo.getFileName(), StandardCharsets.UTF_8)))
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .contentLength(fileInfo.getFile().length())
-                .body(new InputStreamResource(new FileInputStream(fileInfo.getFile())));
+    @ResponseBody
+    public ResponseEntity<InputStreamResource> fileDownload(@PathVariable Long fileId) throws FileNotFoundException {
+        var fileInfo = imageFacade.serve(fileId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,  String.format("attachment;filename=\"%1$s\";", URLEncoder.encode(fileInfo.getFileName(), StandardCharsets.UTF_8)))
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(fileInfo.getFile().length())
+            .body(new InputStreamResource(new FileInputStream(fileInfo.getFile())));
     }
 
     @ApiOperation(value = "레포트 파일 이미지 삭제", notes = "레포트 파일 이미지 삭제")

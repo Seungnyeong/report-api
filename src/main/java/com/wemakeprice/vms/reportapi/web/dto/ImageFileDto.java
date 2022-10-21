@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -26,7 +27,9 @@ public class ImageFileDto {
     public static class ReportOptionImage {
 
         @ValidFile
+        @NotNull
         private MultipartFile file;
+
         private Long report_option_id;
         private Integer ordering;
 

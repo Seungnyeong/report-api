@@ -10,6 +10,10 @@ import javax.validation.ConstraintValidatorContext;
 @Slf4j
 public class FileValidator implements ConstraintValidator<ValidFile, MultipartFile> {
 
+    @Override
+    public void initialize(ValidFile constraintAnnotation) {
+
+    }
 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
@@ -18,6 +22,11 @@ public class FileValidator implements ConstraintValidator<ValidFile, MultipartFi
 
         String contentType = multipartFile.getContentType();
         if (!isSupportedContentType(contentType)) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(
+                            "Only PNG or JPG images are allowed.")
+                    .addConstraintViolation();
+
             result = false;
         }
 

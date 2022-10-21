@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
@@ -141,5 +142,14 @@ public class ReportServiceImpl implements ReportService{
     public void deleteReport(Long reportId) {
         var report = reportReader.findById(reportId);
         reportStore.delete(report);
+        File deleteFile = new File(report.getReportFilePath());
+        if (deleteFile.exists()) {
+            var isRemove = deleteFile.delete();
+            if (isRemove) {
+                log.info(report + "is Delete");
+            } else {
+                log.error(report + "is Not Exist");
+            }
+        }
     }
 }

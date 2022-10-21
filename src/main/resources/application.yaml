@@ -39,9 +39,9 @@ spring:
       max-file-size: 12MB
 
 file:
-  upload-dir : /Users/we/workspace/vms-report-api/files/image
+  upload-dir : /Users/sn/workspace/vms-report-api/files/image
   report-template-file : report_template/template.docx
-  report-result-dir : /Users/we/workspace/vms-report-api/files/report
+  report-result-dir : /Users/sn/workspace/vms-report-api/files/report
 
 logging:
   config: classpath:logback.xml
