@@ -1,4 +1,0 @@
-### WVMS 데이터 소스 테스트
-GET http://keyinfo-nd-dev.wemakeprice.kr/api?key=dev-vms-report-api
-Content-Type: application/json
-Authorization: Token 10412b099832011162af7f2c497552f1dc87c8d0
